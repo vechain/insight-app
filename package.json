@@ -8,7 +8,11 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "bignumber.js": "^8.0.1",
     "register-service-worker": "^1.5.2",
+    "spectre.css": "^0.5.7",
+    "thor-devkit": "^0.3.0",
+    "timeago.js": "^4.0.0-beta.1",
     "vue": "^2.5.17",
     "vue-class-component": "^6.0.0",
     "vue-property-decorator": "^7.0.0",
@@ -16,6 +20,8 @@
     "vuex": "^3.0.1"
   },
   "devDependencies": {
+    "@types/node": "^10.12.12",
+    "@vechain/connex": "^0.3.0",
     "@vue/cli-plugin-pwa": "^3.2.0",
     "@vue/cli-plugin-typescript": "^3.2.0",
     "@vue/cli-service": "^3.2.0",

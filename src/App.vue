@@ -1,29 +1,26 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <div id="app">
+        <header class="navbar container grid-lg py-2">
+            <section class="navbar-section">
+                <a href="#" class="navbar-brand mr-2">
+                    <h1>Insight</h1>
+                </a>
+                <span class="text-gray">super lightweight VeChain explorer</span>
+            </section>
+            <section class="navbar-section">
+                <div class="input-group input-inline col-8">
+                    <input class="form-input" type="text" placeholder="block, tx or account">
+                    <button class="btn btn-primary input-group-btn">Search</button>
+                </div>
+            </section>
+        </header>
+
+        <keep-alive>
+            <router-view class="container grid-lg my-2"/>
+        </keep-alive>
     </div>
-    <router-view/>
-  </div>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+
 </style>
