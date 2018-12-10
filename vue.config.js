@@ -1,4 +1,4 @@
 module.exports = {
   lintOnSave: false,
-  baseUrl: './'
+  baseUrl: process.env.NODE_ENV === 'production' ? '/insight-app/': '/'
 }
