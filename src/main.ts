@@ -5,7 +5,8 @@ import store from './store'
 import './registerServiceWorker'
 import 'spectre.css/dist/spectre.min.css'
 import 'spectre.css/dist/spectre-icons.min.css'
-import Loading from './components/Loading.vue'
+import './filters'
+import Loading from '@/components/Loading.vue'
 
 
 Vue.config.productionTip = false
@@ -16,4 +17,12 @@ new Vue({
     router,
     store,
     render: (h) => h(App),
-}).$mount('#app')
+}).$mount('#app');
+
+(async () => {
+    const ticker = connex.thor.ticker()
+    for (; ;) {
+        await ticker.next()
+        store.commit('UPDATE_CHAIN_STATUS')
+    }
+})()

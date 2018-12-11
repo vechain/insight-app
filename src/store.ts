@@ -1,16 +1,17 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from 'vue'
+import Vuex from 'vuex'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
-  state: {
+    state: {
+        chainStatus: connex.thor.status
+    },
+    mutations: {
+        UPDATE_CHAIN_STATUS(state) {
+            state.chainStatus = connex.thor.status
+        }
+    },
+    actions: {}
+})
 
-  },
-  mutations: {
-
-  },
-  actions: {
-
-  },
-});
