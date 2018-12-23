@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import TimeAgo from 'timeago.js'
 import { cry } from 'thor-devkit'
+import BigNumber from 'bignumber.js'
 
 const timeAgo = TimeAgo()
 
@@ -16,3 +17,12 @@ Vue.filter('abbr', (id: string) => {
     }
     return id
 })
+Vue.filter('amount', (val: string) => new BigNumber(val).div('1' + '0'.repeat(18)).toFormat())
+Vue.filter('checksum', (val: string) => {
+    try {
+        return cry.toChecksumAddress(val)
+    } catch{
+        return val
+    }
+})
+

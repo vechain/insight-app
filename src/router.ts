@@ -3,10 +3,15 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 
 import Account from './views/Account.vue'
+import Block from './views/Block.vue'
+import Tx from './views/Tx.vue'
+import Search from './views/Search.vue'
 
 Vue.use(Router)
 
 export default new Router({
+    mode: 'history',
+    base: process.env.BASE_URL,
     routes: [
         {
             path: '/',
@@ -14,17 +19,24 @@ export default new Router({
             component: Home,
         },
         {
-            path: '/about',
-            name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (about.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+            path: '/blocks/:id',
+            name: 'block',
+            component: Block
+        },
+        {
+            path: '/txs/:id',
+            name: 'tx',
+            component: Tx
         },
         {
             path: '/accounts/:address',
             name: 'account',
             component: Account
+        },
+        {
+            path: '/search',
+            name: 'search',
+            component: Search
         }
     ],
 })

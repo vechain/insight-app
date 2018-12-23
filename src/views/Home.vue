@@ -1,42 +1,43 @@
 <template>
     <div>
-        <div v-if="recentBlocks.length>0" class="columns">
-            <div class="col-5">
-                <div>
-                    <b>Recent blocks</b>
-                </div>
-                <div >
-                    <div v-for="b in recentBlocks" :key="b.id" class="card my-1">
-                        <div class="card-header">
-                            <div class="tile">
-                                <div>#{{b.number}}</div>
-                                <div class="tile-content text-right">{{b.id | abbr}}</div>
+        <div class="h6 text-center">Recent Blocks</div>
+        <div v-if="recentBlocks.length>0">
+            <transition-group tag="div" name="block-list">
+                <div class="card my-2" v-for="b in recentBlocks" :key="b.id">
+                    <div class="card-body columns" style="align-items: center;">
+                        <div class="column col-3">
+                            <div class="h5">
+                                <router-link :to="{name:'block', params: {id: b.id}}">{{b.number}}</router-link>
                             </div>
-                            <div class="text-right text-gray">{{b.timestamp | ago}}</div>
+                            <div class="caption text-mono">{{b.id | abbr}}</div>
+                            <div class="caption text-gray">{{b.timestamp | ago}}</div>
                         </div>
-                        <div class="card-body">
-                            <div class="tile">
-                                <div class="text-gray">Transactions</div>
-                                <div class="tile-content text-right">{{b.transactions.length}}</div>
+                        <div class="column columns text-center">
+                            <div class="column">
+                                <div class="heading">Gas Used</div>
+                                <div class="h6">{{b.gasUsed | locale}}</div>
                             </div>
-                            <div class="tile">
-                                <div class="text-gray">Gas Used</div>
-                                <div class="tile-content text-right">{{b.gasUsed | locale}}</div>
+                            <div class="column">
+                                <div class="heading">Transactions</div>
+                                <div class="h6">{{b.transactions.length}}</div>
                             </div>
-                            <div class="tile">
-                                <div class="text-gray">Signer</div>
-                                <div class="tile-content text-right">{{b.signer | abbr}}</div>
+                            <div class="column">
+                                <div class="heading">Signer</div>
+                                <div class="h6">
+                                    <router-link
+                                        class="text-mono text-bold"
+                                        :to="{name:'account', params: {address: b.signer}}"
+                                    >{{b.signer | abbr}}</router-link>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-8"></div>
+            </transition-group>
         </div>
-        <Loading v-else/>
+        <Loading v-else class="mx-2 my-2"/>
     </div>
-</template>
-
+</template>        
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator"
 
@@ -45,27 +46,48 @@ import { Vue, Component, Watch } from "vue-property-decorator"
 export default class Home extends Vue {
     recentBlocks: Connex.Thor.Block[] = []
 
-    get status(): Connex.Thor.Status {
-        return this.$store.state.chainStatus
+    get head(): Connex.Thor.Status['head'] {
+        return this.$store.state.chainStatus.head
     }
 
-    @Watch('status')
-    async queryBlocks() {
-        const blocks: Connex.Thor.Block[] = []
-        let bv = connex.thor.block(this.status.head.id)
-        for (let i = 0; i < 5; i++) {
-            const block = await bv.get()
-            if (!block) {
-                break
+    @Watch('head')
+    async reload() {
+        try {
+            const headNum = this.head.number
+            const requests: Promise<Connex.Thor.Block | null>[] = []
+            for (let i = headNum; i >= Math.max(headNum - 4, 0); i--) {
+                requests.push(connex.thor.block(i).get())
             }
-            blocks.push(block)
-            bv = connex.thor.block(block.parentID)
+
+            const blocks = await Promise.all(requests)
+            if (blocks.every(b => !!b)) {
+                this.recentBlocks = blocks as any
+            }
+        } catch (err) {
+            console.warn(err)
         }
-        this.recentBlocks = blocks
     }
 
     created() {
-        this.queryBlocks()
+        this.reload()
     }
 }
 </script>
+<style lang="scss" scoped>
+.block-list-enter-active {
+    transition: all 0.5s;
+    transition-timing-function: ease;
+}
+.block-list-enter {
+    transform: translateX(-10%);
+    opacity: 0;
+}
+.block-list-leave-to {
+    opacity: 0;
+}
+
+.block-list-move {
+    transition: all 0.3s;
+    transition-timing-function: ease;
+}
+</style>

@@ -1,12 +1,31 @@
 <template>
     <div>
-        <div class="my-2">
-            <b>Account</b>
-            {{displayAddress}}
+        <div>
+            <span class="h5 mr-2">Account</span>
+            <span class="text-mono">{{address | checksum}}</span>
         </div>
-        <div class="card">
-            <div v-if="!!account" class="columns card-body"></div>
-            <Loading v-else :error="error"/>
+        <div
+            v-if="!!account && account.hasCode"
+            class="label label-primary my-2 heading text-bold"
+        >Contract</div>
+        <div v-if="!!account" class="card my-2">
+            <div class="columns card-body">
+                <div class="column col-md-12 col-2 text-gray caption">Balance</div>
+                <div class="column col-md-12 col-10">
+                    {{account.balance |amount}}
+                    <span class="heading">vet</span>
+                </div>
+                <div class="column col-md-12 col-2 text-gray caption">Energy</div>
+                <div class="column col-md-12 col-10">
+                    {{account.energy |amount}}
+                    <span class="heading">vtho</span>
+                </div>
+            </div>
+        </div>
+        <div v-else class="card my-2">
+            <div class="card-body">
+                <Loading :error="error"/>
+            </div>
         </div>
     </div>
 </template>
@@ -16,35 +35,33 @@ import { cry } from 'thor-devkit'
 
 @Component
 export default class Account extends Vue {
-    address = ''
     account: Connex.Thor.Account | null = null
     error: Error | null = null
 
-    get displayAddress() {
-        return cry.toChecksumAddress(this.address)
-    }
-
-    @Watch('$route')
-    routed() {
-        if (this.$route.name === 'account') {
-            this.address = this.$route.params.address
-        }
+    get address() {
+        return this.$route.params.address
     }
 
     @Watch('address')
-    async query() {
-        this.error = null
+    async reload() {
         this.account = null
-        try{
-            this.account = await connex.thor.account(this.address).get()
-        }catch(err){
-            this.error = err
+        this.error = null
+
+        const addr = this.address
+        try {
+            const acc = await connex.thor.account(addr).get()
+            if (addr === this.$route.params.address) {
+                this.account = acc
+            }
+        } catch (err) {
+            if (addr === this.address) {
+                this.error = err
+            }
         }
     }
 
     created() {
-        this.routed()
-        this.query()
+        this.reload()
     }
 }
 </script>
