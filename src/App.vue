@@ -53,10 +53,14 @@ $body-bg: #f8f8f8;
 
 @import "node_modules/spectre.css/src/spectre";
 
+body {
+    font-family: "Roboto";
+}
+
 .heading {
     font-size: 11px;
     letter-spacing: 1px;
-    margin-bottom: 5px;
+    margin-bottom: 0.5rem;
     text-transform: uppercase;
 }
 .caption {
@@ -91,13 +95,13 @@ $body-bg: #f8f8f8;
         0px 1px 4px 0px rgba(0, 0, 0, 0.05);
 }
 .text-mono {
-    font-family: monospace;
-    letter-spacing: -1px;
+    font-family: "Roboto Mono";
+    letter-spacing: -0.5px;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition: opacity 0.15s;
+    transition: opacity 0.12s;
     transition-timing-function: ease;
 }
 

@@ -5,7 +5,9 @@ import Store from './store'
 import './registerServiceWorker'
 import './filters'
 import Loading from '@/components/Loading.vue'
-
+import 'roboto-fontface/css/roboto/roboto-fontface.css'
+import 'roboto-fontface/css/roboto-slab/roboto-slab-fontface.css'
+import 'typeface-roboto-mono'
 
 Vue.config.productionTip = false
 

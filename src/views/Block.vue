@@ -64,7 +64,6 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { cry } from 'thor-devkit'
 
 type Item = {
     name: string

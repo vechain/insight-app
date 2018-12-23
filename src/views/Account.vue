@@ -31,7 +31,6 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { cry } from 'thor-devkit'
 
 @Component
 export default class Account extends Vue {
