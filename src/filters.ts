@@ -21,7 +21,7 @@ Vue.filter('amount', (val: string) => new BigNumber(val).div('1' + '0'.repeat(18
 Vue.filter('checksum', (val: string) => {
     try {
         return toChecksumAddress(val)
-    } catch{
+    } catch {
         return val
     }
 })
