@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import TimeAgo from 'timeago.js'
-import { cry } from 'thor-devkit'
+import { toChecksumAddress } from 'thor-devkit/es6/cry'
 import BigNumber from 'bignumber.js'
 
 const timeAgo = TimeAgo()
@@ -12,7 +12,7 @@ Vue.filter('abbr', (id: string) => {
     if (id.length === 66) {
         return `${id.slice(0, 10)}...${id.slice(58)}`
     } else if (id.length === 42) {
-        id = cry.toChecksumAddress(id)
+        id = toChecksumAddress(id)
         return `${id.slice(0, 8)}...${id.slice(36)}`
     }
     return id
@@ -20,7 +20,7 @@ Vue.filter('abbr', (id: string) => {
 Vue.filter('amount', (val: string) => new BigNumber(val).div('1' + '0'.repeat(18)).toFormat())
 Vue.filter('checksum', (val: string) => {
     try {
-        return cry.toChecksumAddress(val)
+        return toChecksumAddress(val)
     } catch{
         return val
     }
