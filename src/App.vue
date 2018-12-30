@@ -31,9 +31,24 @@
         </div>
         <div style="flex:1 1 auto;overflow:auto">
             <div class="container grid-lg py-2">
-                <transition name="fade" mode="out-in">
-                    <router-view v-if="hasConnex" :key="$route.fullPath"/>
-                </transition>
+                <template v-if="hasConnex">
+                    <transition name="fade" mode="out-in">
+                        <router-view :key="$route.fullPath"/>
+                    </transition>
+                </template>
+                <div v-else class="modal active" id="modal-id">
+                    <div class="modal-overlay" style="opacity:0.5"/>
+                    <div class="modal-container">
+                        <div class="modal-header">
+                            <div class="modal-title h6">Connex Not Detected</div>
+                        </div>
+                        <div class="modal-body text-large">
+                            <div class="content">Download <a href="https://github.com/vechain/thor-sync.electron/releases">VeChain Sync</a> to load
+                                <span class="text-serif">Inisght</span> app.
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
