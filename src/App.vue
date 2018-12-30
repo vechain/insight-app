@@ -1,31 +1,31 @@
 <template>
     <div style="display:flex;height:100%;width:100%;flex-direction:column">
-        <div style="background-color:#303030;flex: 0 0 auto;position:relative">
-            <div style="box-shadow:0px 0px 1px 1px rgba(0, 0, 0, 0.3);position:absolutee">
-                <header class="navbar container grid-lg py-2">
-                    <section class="navbar-section">
-                        <router-link :to="{name:'home'}" class="navbar-brand mr-2 text-serif">
-                            <h4 class="my-0">Insight</h4>
-                        </router-link>
-                        <span class="caption text-gray mt-2">Serverless VeChain Explorer</span>
-                    </section>
-                    <section class="navbar-section">
-                        <div class="input-group input-inline col-8">
-                            <input
-                                v-model="searchString"
-                                class="form-input input-sm"
-                                type="text"
-                                placeholder="block, tx or account"
-                                @keypress.enter="search"
-                            >
-                            <button
-                                class="btn btn-primary input-group-btn btn-sm"
-                                @click="search"
-                            >Search</button>
-                        </div>
-                    </section>
-                </header>
-            </div>
+        <div
+            style="background-color:#303030;flex: 0 0 auto;position:relative;box-shadow:0px 0px 1px 1px rgba(0, 0, 0, 0.3);"
+        >
+            <header class="navbar container grid-lg py-2">
+                <section class="navbar-section">
+                    <router-link :to="{name:'home'}" class="navbar-brand mr-2 text-serif">
+                        <h4 class="my-0">Insight</h4>
+                    </router-link>
+                    <span class="caption text-gray mt-2">Serverless VeChain Explorer</span>
+                </section>
+                <section class="navbar-section">
+                    <div class="input-group input-inline col-8">
+                        <input
+                            v-model="searchString"
+                            class="form-input input-sm"
+                            type="text"
+                            placeholder="block, tx or account"
+                            @keypress.enter="search"
+                        >
+                        <button
+                            class="btn btn-primary input-group-btn btn-sm"
+                            @click="search"
+                        >Search</button>
+                    </div>
+                </section>
+            </header>
         </div>
         <div style="flex:1 1 auto;overflow:auto">
             <div class="container grid-lg py-2">
@@ -58,17 +58,17 @@ export default class App extends Vue {
 $primary-color: #3f51b5;
 $body-bg: #f8f8f8;
 $gray-color: #808080;
+$base-font-family: "Roboto";
+$mono-font-family: "Roboto Mono";
+$font-size: 0.7rem;
+$font-size-sm: 0.65rem;
+$font-size-lg: 0.8rem;
 
 @import "node_modules/spectre.css/src/spectre";
-html {
-    height: 100%;
-    overflow: hidden;
-}
+html,
 body {
-    font-family: "Roboto";
-    font-size: 0.7rem;
-    overflow: hidden;
     height: 100%;
+    overflow: hidden;
 }
 
 .heading {
@@ -94,7 +94,7 @@ body {
 .field-value {
     @extend .column;
     @extend .col-10;
-    line-height: 200%;
+    line-height: 220%;
 }
 
 .is-align-center {

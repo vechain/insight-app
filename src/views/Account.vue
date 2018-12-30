@@ -10,7 +10,7 @@
             :class="{'label-primary': account.hasCode}"
         >{{account.hasCode? 'Contract': 'Regular'}}</div>
         <div v-if="!!account" class="card my-2">
-            <div class="columns card-body">
+            <div class="columns card-body is-align-center">
                 <div class="field-name">Balance</div>
                 <div class="field-value">
                     <span class="token-amount">{{account.balance |amount}}</span>
@@ -31,7 +31,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component , Watch} from 'vue-property-decorator'
+import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class Account extends Vue {
