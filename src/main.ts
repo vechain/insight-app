@@ -5,6 +5,7 @@ import Store from './store'
 import './registerServiceWorker'
 import './filters'
 
+import './style.scss'
 import 'typeface-roboto'
 import 'typeface-roboto-mono'
 import 'typeface-roboto-slab'
