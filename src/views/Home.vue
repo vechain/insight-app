@@ -23,12 +23,7 @@
                             </div>
                             <div class="column">
                                 <div class="heading">Signer</div>
-                                <div class="h6">
-                                    <router-link
-                                        class="text-mono text-bold"
-                                        :to="{name:'account', params: {address: b.signer}}"
-                                    >{{b.signer | abbr}}</router-link>
-                                </div>
+                                <AccountLink :address="b.signer" abbr/>
                             </div>
                         </div>
                     </div>
@@ -75,11 +70,11 @@ export default class Home extends Vue {
 </script>
 <style lang="scss" scoped>
 .block-list-enter-active {
-    transition: all 0.5s;
+    transition: all 0.4s;
     transition-timing-function: ease;
 }
 .block-list-enter {
-    transform: translateX(-10%);
+    transform: translateY(-30%);
     opacity: 0;
 }
 .block-list-leave-to {

@@ -6,7 +6,7 @@
         </div>
         <div
             v-if="!!block&&!block.isTrunk"
-            class="label label-warning my-2 heading text-bold"
+            class="label label-warning my-2 caption text-bold"
         >Branch</div>
         <template v-if="!!block">
             <div class="card my-2">
@@ -28,13 +28,13 @@
                     <div class="field-name">Total Score</div>
                     <div class="field-value">{{block.totalScore | locale}}</div>
                     <div class="field-name">Signer</div>
-                    <div class="field-value text-mono">
-                        <router-link
-                            :to="{name: 'account', params:{address: block.signer}}"
-                        >{{block.signer}}</router-link>
+                    <div class="field-value">
+                        <AccountLink :address="block.signer"/>
                     </div>
                     <div class="field-name">Beneficiary</div>
-                    <div class="field-value text-mono">{{block.beneficiary}}</div>
+                    <div class="field-value">
+                        <AccountLink :address="block.beneficiary"/>
+                    </div>
                     <div class="field-name">State Root</div>
                     <div class="field-value text-mono">{{block.stateRoot}}</div>
                     <div class="field-name">Transactions Root</div>
@@ -43,16 +43,17 @@
                     <div class="field-value text-mono">{{block.receiptsRoot}}</div>
                 </div>
             </div>
-            <div class="h6">{{txs.length>0?`${txs.length} Transaction(s)`: 'No Transaction'}}</div>
+            <div class="h6 text-gray">{{txsCountText}}</div>
             <div v-if="txs.length>0" class="card my-2">
-                <ol v-if="txs.length>0" class="card-body mx-0 my-0">
-                    <li v-for="txid in txs" :key="txid">
+                <div class="card-body caption">
+                    <div class="my-1" v-for="(txid,i) in txs" :key="i">
+                        {{i+1}}.
                         <router-link
-                            class="text-mono"
+                            class="text-mono ml-2"
                             :to="{name: 'tx', params:{id: txid}}"
                         >{{txid}}</router-link>
-                    </li>
-                </ol>
+                    </div>
+                </div>
             </div>
         </template>
         <div v-else class="card my-2">
@@ -63,7 +64,7 @@
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component } from 'vue-property-decorator'
 
 type Item = {
     name: string
@@ -79,38 +80,37 @@ export default class Block extends Vue {
     block: Connex.Thor.Block | null = null
     error: Error | null = null
 
-    get id() {
-        return this.$route.params.id
+    id = ''
+
+    get txs() { return this.block!.transactions }
+    get txsCountText() {
+        if (this.txs.length === 0) {
+            return 'No Transaction'
+        } else if (this.txs.length === 1) {
+            return '1 Transaction'
+        } else {
+            return `${this.txs.length} Transactions`
+        }
     }
 
-    get txs() {
-        return this.block!.transactions
-    }
-
-    @Watch('id')
     async reload() {
         this.block = null
         this.error = null
 
-        const id = this.id
         try {
-            const block = await connex.thor.block(id).get()
-            if (id === this.id) {
-                if (!block) {
-                    this.error = new Error('block not found')
-                } else {
-                    this.block = block
-                }
+            const block = await connex.thor.block(this.id).get()
+            if (!block) {
+                this.error = new Error('block not found')
+            } else {
+                this.block = block
             }
         } catch (err) {
-            console.log(3, this.id)
-            if (id === this.id) {
-                this.error = err
-            }
+            this.error = err
         }
     }
 
     created() {
+        this.id = this.$route.params.id
         this.reload()
     }
 }

@@ -4,15 +4,16 @@ import router from './router'
 import Store from './store'
 import './registerServiceWorker'
 import './filters'
-import Loading from '@/components/Loading.vue'
-import 'roboto-fontface/css/roboto/roboto-fontface.css'
-import 'roboto-fontface/css/roboto-slab/roboto-slab-fontface.css'
+
+import 'typeface-roboto'
 import 'typeface-roboto-mono'
+import 'typeface-roboto-slab'
+import 'spectre.css/dist/spectre-icons.css'
+
+import '@/components'
+
 
 Vue.config.productionTip = false
-
-Vue.component('Loading', Loading)
-
 
 let store: Store | undefined
 

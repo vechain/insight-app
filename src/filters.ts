@@ -10,10 +10,10 @@ Vue.filter('date', (timestamp: number) => new Date(timestamp * 1000).toLocaleStr
 Vue.filter('ago', (timestamp: number) => timeAgo.format(timestamp * 1000))
 Vue.filter('abbr', (id: string) => {
     if (id.length === 66) {
-        return `${id.slice(0, 10)}...${id.slice(58)}`
+        return `${id.slice(0, 10)}…${id.slice(58)}`
     } else if (id.length === 42) {
         id = toChecksumAddress(id)
-        return `${id.slice(0, 8)}...${id.slice(36)}`
+        return `${id.slice(0, 8)}…${id.slice(36)}`
     }
     return id
 })

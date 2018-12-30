@@ -5,20 +5,21 @@
             <span class="text-mono">{{address | checksum}}</span>
         </div>
         <div
-            v-if="!!account && account.hasCode"
-            class="label label-primary my-2 heading text-bold"
-        >Contract</div>
+            v-if="!!account"
+            class="label my-2 caption text-bold"
+            :class="{'label-primary': account.hasCode}"
+        >{{account.hasCode? 'Contract': 'Regular'}}</div>
         <div v-if="!!account" class="card my-2">
             <div class="columns card-body">
-                <div class="column col-md-12 col-2 text-gray caption">Balance</div>
-                <div class="column col-md-12 col-10">
-                    {{account.balance |amount}}
-                    <span class="heading">vet</span>
+                <div class="field-name">Balance</div>
+                <div class="field-value">
+                    <span class="token-amount">{{account.balance |amount}}</span>
+                    <span class="token-symbol">vet</span>
                 </div>
-                <div class="column col-md-12 col-2 text-gray caption">Energy</div>
-                <div class="column col-md-12 col-10">
-                    {{account.energy |amount}}
-                    <span class="heading">vtho</span>
+                <div class="field-name">Energy</div>
+                <div class="field-value">
+                    <span class="token-amount">{{account.energy |amount}}</span>
+                    <span class="token-symbol">vtho</span>
                 </div>
             </div>
         </div>
@@ -30,36 +31,27 @@
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import { Vue, Component , Watch} from 'vue-property-decorator'
 
 @Component
 export default class Account extends Vue {
     account: Connex.Thor.Account | null = null
     error: Error | null = null
 
-    get address() {
-        return this.$route.params.address
-    }
+    address = ''
 
-    @Watch('address')
+    @Watch('$store.state.chainStatus')
     async reload() {
-        this.account = null
-        this.error = null
-
-        const addr = this.address
         try {
-            const acc = await connex.thor.account(addr).get()
-            if (addr === this.$route.params.address) {
-                this.account = acc
-            }
+            const acc = await connex.thor.account(this.address).get()
+            this.account = acc
         } catch (err) {
-            if (addr === this.address) {
-                this.error = err
-            }
+            this.error = err
         }
     }
 
     created() {
+        this.address = this.$route.params.address
         this.reload()
     }
 }

@@ -10,7 +10,8 @@ import Search from './views/Search.vue'
 Vue.use(Router)
 
 export default new Router({
-    mode: 'hash',
+    mode: 'history',
+    base: process.env.BASE_URL,
     routes: [
         {
             path: '/',
@@ -36,6 +37,10 @@ export default new Router({
             path: '/search',
             name: 'search',
             component: Search
+        },
+        {
+            path: '*',
+            redirect: '/'
         }
     ],
 })
