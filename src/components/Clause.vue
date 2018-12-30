@@ -42,7 +42,6 @@
                 </template>
                 <span v-else class="text-gray">- No data -</span>
             </div>
-            <div class="divider"/>
             <div class="heading mt-2 mb-1">transfers</div>
             <div class="indent caption">
                 <template v-if="output.transfers.length>0">
@@ -55,7 +54,6 @@
                 </template>
                 <span v-else class="text-gray">- None -</span>
             </div>
-            <div class="divider"/>
             <div class="heading mt-2 mb-1">events</div>
             <div class="indent caption">
                 <template v-if="output.events.length>0">
