@@ -7,8 +7,8 @@ import AccountLink from './AccountLink.vue'
 
 import Vue from 'vue'
 
-Vue.component(Loading.name, Loading)
-Vue.component(Clause.name, Clause)
-Vue.component(Event.name, Event)
-Vue.component(Transfer.name, Transfer)
-Vue.component(AccountLink.name, AccountLink)
+Vue.component('Loading', Loading)
+Vue.component('Clause', Clause)
+Vue.component('Event', Event)
+Vue.component('Transfer', Transfer)
+Vue.component('AccountLink', AccountLink)
