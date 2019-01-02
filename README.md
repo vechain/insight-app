@@ -1,5 +1,8 @@
 # VeChain Insight
-super lightweight VeChain explorer
+Serverless VeChain Explorer.
+
+It's deployed at https://vechain.github.io/insight.
+
 
 ## Project setup
 ```
@@ -16,15 +19,6 @@ npm run serve
 npm run build
 ```
 
-### Run your tests
-```
-npm run test
-```
+## Contributing
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Everyone is always welcome to contribute on the codebase.
