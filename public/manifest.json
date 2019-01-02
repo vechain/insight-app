@@ -1,6 +1,6 @@
 {
-  "name": "insight-app",
-  "short_name": "insight-app",
+  "name": "VeChain Insight",
+  "short_name": "Insight",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",
