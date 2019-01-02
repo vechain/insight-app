@@ -3,12 +3,12 @@
         style="display:flex;height:100%;width:100%;flex-direction:column;transition: opacity 0.35s"
     >
         <div
-            style="background-color:#303030;flex: 0 0 auto;position:relative;box-shadow:0px 0px 1px 1px rgba(0, 0, 0, 0.3);"
+            style="background-color:#383838;flex: 0 0 auto;position:relative;box-shadow:0px 0px 1px 1px rgba(0, 0, 0, 0.3);"
         >
             <header class="navbar container grid-lg py-2">
                 <section class="navbar-section">
                     <router-link :to="{name:'home'}" class="navbar-brand mr-2 text-serif">
-                        <h4 class="my-0">Insight</h4>
+                        <h4 class="my-0" style="color: white">Insight</h4>
                     </router-link>
                     <span class="caption text-gray mt-2">Serverless VeChain Explorer</span>
                 </section>
