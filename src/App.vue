@@ -40,11 +40,14 @@
                     <div class="modal-overlay" style="opacity:0.5"/>
                     <div class="modal-container">
                         <div class="modal-header">
-                            <div class="modal-title h6">Connex Not Detected</div>
+                            <div class="modal-title h6">Connex not detected</div>
                         </div>
                         <div class="modal-body text-large">
-                            <div class="content">Download <a href="https://github.com/vechain/thor-sync.electron/releases">VeChain Sync</a> to load
-                                <span class="text-serif">Inisght</span> app.
+                            <div class="content text-center">
+                                <div class="btn btn-primary" @click="openWithSync">
+                                    Open with
+                                    <b class="text-serif">VeChain Sync</b>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -55,6 +58,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
+const customProtocolDetection = require('custom-protocol-detection')
 
 @Component
 export default class App extends Vue {
@@ -73,6 +77,20 @@ export default class App extends Vue {
     mounted() {
         this.$el.style.opacity = '0'
         setTimeout(() => this.$el.style.opacity = null, 0)
+    }
+
+    openWithSync() {
+        const vechainAppUrl = 'vechain-app:///' + encodeURIComponent(window.location.href)
+        const gotoDownload = () => {
+            window.location.href = 'https://github.com/vechain/thor-sync.electron/releases'
+        }
+        customProtocolDetection(vechainAppUrl, () => {
+            gotoDownload()
+        }, () => {
+            console.log('opened with sync')
+        }, () => {
+            gotoDownload()
+        })
     }
 }
 </script>
