@@ -6,7 +6,7 @@
         </div>
         <div
             v-if="!!receipt && receipt.reverted"
-            class="label label-warning my-2 caption text-bold"
+            class="label label-error my-2 caption text-bold"
         >Reverted</div>
         <template v-if="!!tx">
             <div class="card my-2">
