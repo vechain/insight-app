@@ -54,7 +54,7 @@
                     @focus="vthoAmountFocus"
                 >
                 <div class="text-right mt-2">
-                    <button class="btn btn-sm btn-primary" @click="depositFormOpen=false">Cancel</button>
+                    <button class="btn btn-sm btn-link" @click="depositFormOpen=false">Cancel</button>
                     <button class="btn btn-sm btn-primary ml-2" @click="confirmDeposit">Confirm</button>
                 </div>
             </div>

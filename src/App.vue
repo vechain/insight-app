@@ -14,7 +14,11 @@
                 </section>
                 <section class="navbar-section">
                     <VeForgeLink class="mx-2" style="color: white">VeForge</VeForgeLink>
-                    <a class="mx-2" style="color: white" href="https://github.com/vechain/insight-app">Github</a>
+                    <a
+                        class="mx-2"
+                        style="color: white"
+                        href="https://github.com/vechain/insight-app"
+                    >Github</a>
                     <div class="ml-2 input-group input-inline col-8">
                         <input
                             v-model="searchString"
@@ -42,15 +46,16 @@
                     <div class="modal-overlay" style="opacity:0.5"/>
                     <div class="modal-container">
                         <div class="modal-header">
-                            <div class="modal-title h6">Connex not detected</div>
+                            <div class="modal-title h6"><span class="text-serif">Connex</span> not detected</div>
                         </div>
-                        <div class="modal-body text-large">
-                            <div class="content text-center">
-                                <div class="btn btn-primary" @click="openWithSync">
-                                    Open with
-                                    <b class="text-serif">VeChain Sync</b>
-                                </div>
-                            </div>
+                        <div class="modal-body">
+                            It's recommended to open in
+                            <span class="text-serif">VeChain Sync.</span>
+                        </div>
+                        <div class="modal-footer">
+                            <a class="btn btn-sm btn-primary" @click="openWithSync">Open in</a> or
+                            <a :href="syncReleaseUrl">Download</a>
+                            <span class="ml-1 text-serif">VeChain Sync</span>
                         </div>
                     </div>
                 </div>
@@ -66,6 +71,8 @@ const customProtocolDetection = require('custom-protocol-detection')
 export default class App extends Vue {
     hasConnex = !!window.connex
     searchString = ''
+
+    syncReleaseUrl = 'https://github.com/vechain/thor-sync.electron/releases'
 
     search() {
         const str = this.searchString.trim()
@@ -84,7 +91,7 @@ export default class App extends Vue {
     openWithSync() {
         const vechainAppUrl = 'vechain-app:///' + encodeURIComponent(window.location.href)
         const gotoDownload = () => {
-            window.location.href = 'https://github.com/vechain/thor-sync.electron/releases'
+            window.location.href = this.syncReleaseUrl
         }
         customProtocolDetection(vechainAppUrl, () => {
             gotoDownload()
