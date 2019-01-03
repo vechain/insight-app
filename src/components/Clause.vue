@@ -18,7 +18,7 @@
             </div>
             <div class="column text-right">
                 <div
-                    v-show="!!output"
+                    v-show="type!=='transfer'"
                     class="btn btn-primary caption my-0 py-0"
                     style="height:auto;line-height:inherit;"
                     @click="expand=!expand"
@@ -28,10 +28,9 @@
                 </div>
             </div>
         </div>
-        <div v-if="expand && !!output">
-            <div class="divider"/>
-            <div class="heading mt-2 mb-1">data</div>
-            <div class="indent caption">
+        <div v-if="expand">
+            <div class="divider" data-content="Input Data" style="margin-top:1.5rem"/>
+            <div class="caption">
                 <template v-if="type!=='transfer'">
                     <textarea
                         class="form-input caption text-mono"
@@ -42,25 +41,33 @@
                 </template>
                 <span v-else class="text-gray">- No data -</span>
             </div>
-            <div class="heading mt-2 mb-1">transfers</div>
-            <div class="indent caption">
-                <template v-if="output.transfers.length>0">
-                    <Transfer
-                        v-for="(item,i) in output.transfers"
-                        :key="i"
-                        :item="item"
-                        :index="i+1"
-                    />
-                </template>
-                <span v-else class="text-gray">- None -</span>
-            </div>
-            <div class="heading mt-2 mb-1">events</div>
-            <div class="indent caption">
-                <template v-if="output.events.length>0">
-                    <Event v-for="(item,i) in output.events" :key="i" :item="item" :index="i+1"/>
-                </template>
-                <span v-else class="text-gray">- None -</span>
-            </div>
+            <template v-if="!!output">
+                <div class="divider" data-content="Outputs" style="margin-top:1.5rem"/>
+                <div class="heading mt-2 mb-1">transfers</div>
+                <div class="indent caption">
+                    <template v-if="output.transfers.length>0">
+                        <Transfer
+                            v-for="(item,i) in output.transfers"
+                            :key="i"
+                            :item="item"
+                            :index="i+1"
+                        />
+                    </template>
+                    <span v-else class="text-gray">- None -</span>
+                </div>
+                <div class="heading mt-2 mb-1">events</div>
+                <div class="indent caption">
+                    <template v-if="output.events.length>0">
+                        <Event
+                            v-for="(item,i) in output.events"
+                            :key="i"
+                            :item="item"
+                            :index="i+1"
+                        />
+                    </template>
+                    <span v-else class="text-gray">- None -</span>
+                </div>
+            </template>
         </div>
     </div>
 </template>
