@@ -2,7 +2,10 @@
     <div>
         <div>
             <span class="h5 mr-2">Block</span>
-            <span>#{{block?block.number: ''}}</span>
+            <template v-if="block">
+                <span>#{{block.number}}</span>
+                <VeForgeLink btn type="block" :arg="block.id" class="ml-2"/>
+            </template>
         </div>
         <div
             v-if="!!block&&!block.isTrunk"

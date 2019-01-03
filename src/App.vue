@@ -13,7 +13,9 @@
                     <span class="caption text-gray mt-2">Serverless VeChain Explorer</span>
                 </section>
                 <section class="navbar-section">
-                    <div class="input-group input-inline col-8">
+                    <VeForgeLink class="mx-2" style="color: white">VeForge</VeForgeLink>
+                    <a class="mx-2" style="color: white" href="https://github.com/vechain/insight-app">Github</a>
+                    <div class="ml-2 input-group input-inline col-8">
                         <input
                             v-model="searchString"
                             class="form-input input-sm"

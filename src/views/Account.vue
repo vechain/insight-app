@@ -2,7 +2,10 @@
     <div>
         <div>
             <span class="h5 mr-2">Account</span>
-            <span class="text-mono">{{address | checksum}}</span>
+            <template v-if="!!account">
+                <span class="text-mono">{{address | checksum}}</span>
+                <VeForgeLink btn type="acc" :arg="address" class="ml-2"/>
+            </template>
         </div>
         <div
             v-if="!!account"
