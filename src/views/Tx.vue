@@ -2,7 +2,10 @@
     <div>
         <div>
             <span class="h5 mr-2">Transaction</span>
-            <span class="text-mono">{{tx?tx.id:''}}</span>
+            <template v-if="!!tx">
+                <span class="text-mono">{{tx.id}}</span>
+                <VeForgeLink btn type="tx" :arg="tx.id" class="ml-2"/>
+            </template>
         </div>
         <div
             v-if="!!receipt && receipt.reverted"
