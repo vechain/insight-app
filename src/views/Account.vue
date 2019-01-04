@@ -75,7 +75,7 @@
         </div>
         <div v-else class="card my-2">
             <div class="card-body">
-                <Loading :error="error"/>
+                <Loading :error="error" @reload="reload"/>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-    <Loading :error="error"/>
+    <Loading :error="error" @reload="reload"/>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
@@ -7,9 +7,8 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 @Component
 export default class Search extends Vue {
     error: Error | null = null
-
-    @Watch('$route')
-    async routed() {
+    
+    async reload() {
         const str = ((this.$route.query.q as string) || '').trim()
         if (!str) {
             return this.$router.replace({ name: 'home' })
@@ -52,7 +51,7 @@ export default class Search extends Vue {
     }
 
     created() {
-        this.routed()
+        this.reload()
     }
 }
 </script>

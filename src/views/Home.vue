@@ -30,7 +30,7 @@
                 </div>
             </transition-group>
         </div>
-        <Loading v-else class="mx-2 my-2"/>
+        <Loading v-else class="mx-2 my-2" @reload="reload"/>
     </div>
 </template>        
 <script lang="ts">
