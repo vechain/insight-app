@@ -1,8 +1,7 @@
 $primary-color: #0068b5;
 $body-bg: #f8f8f8;
 $gray-color: #808080;
-$base-font-family: "Roboto";
-$mono-font-family: "Roboto Mono";
+$mono-font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
 $font-size: 0.7rem;
 $font-size-sm: 0.65rem;
 $font-size-lg: 0.8rem;
@@ -50,10 +49,10 @@ body {
         0px 1px 4px 0px rgba(0, 0, 0, 0.05);
 }
 .text-mono {
-    font-family: "Roboto Mono";
+    font-family: $mono-font-family;
 }
 .text-serif {
-    font-family: "Roboto Slab";
+    font-family: Cambria, "Hoefler Text", Utopia, "Liberation Serif", "Nimbus Roman No9 L Regular", Times, "Times New Roman", serif;
 }
 .fade-enter-active,
 .fade-leave-active {

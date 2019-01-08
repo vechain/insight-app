@@ -7,9 +7,8 @@
                 <VeForgeLink btn type="acc" :arg="address" class="ml-2"/>
             </template>
         </div>
-        <div>
-            <span
-                v-if="!!account"
+        <div v-if="!!account">
+            <span                
                 class="label my-2 caption text-bold"
                 :class="{'label-primary': account.hasCode}"
             >{{account.hasCode? 'Contract': 'Regular'}}</span>

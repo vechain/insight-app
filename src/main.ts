@@ -6,9 +6,6 @@ import './registerServiceWorker'
 import './filters'
 
 import './style.scss'
-import 'typeface-roboto'
-import 'typeface-roboto-mono'
-import 'typeface-roboto-slab'
 import 'spectre.css/dist/spectre-icons.css'
 
 import '@/components'
