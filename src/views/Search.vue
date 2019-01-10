@@ -7,7 +7,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 @Component
 export default class Search extends Vue {
     error: Error | null = null
-    
+
     async reload() {
         const str = ((this.$route.query.q as string) || '').trim()
         if (!str) {
@@ -47,7 +47,9 @@ export default class Search extends Vue {
                 }
             }
         }
-        this.error = new Error(`No result for '${str}'`)
+        if (!this.error) {
+            this.error = new Error(`No result for '${str}'`)
+        }
     }
 
     created() {
