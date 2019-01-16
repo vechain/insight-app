@@ -1,6 +1,6 @@
 module.exports = {
     lintOnSave: false,
-    baseUrl: process.env.NODE_ENV === 'production' ? '/insight/' : '/',
+    baseUrl: '/',
     pwa: {
         workboxOptions: {
             skipWaiting: true,
