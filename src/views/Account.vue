@@ -8,7 +8,7 @@
             </template>
         </div>
         <div v-if="!!account">
-            <span                
+            <span
                 class="label my-2 caption text-bold"
                 :class="{'label-primary': account.hasCode}"
             >{{account.hasCode? 'Contract': 'Regular'}}</span>
