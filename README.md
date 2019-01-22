@@ -1,8 +1,16 @@
 # VeChain Insight
-Serverless VeChain Explorer.
 
-It's deployed at https://vechain.github.io/insight.
+> Insight is a **serverless** VeChain explorer. It allows you to explore and search for blocks, transactions and accounts. 
 
+[Try it out!](https://insight.vecha.in/#/)
+
+## Screenshots
+
+![Homepage](./screenshots/homepage.png)
+
+![Block Info](./screenshots/blockinfo.png)
+
+![Transaction Details](./screenshots/txdetails.png)
 
 ## Project setup
 ```
