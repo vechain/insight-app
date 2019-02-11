@@ -89,7 +89,7 @@ export default class App extends Vue {
     }
 
     openWithSync() {
-        const vechainAppUrl = 'vechain-app:///' + encodeURIComponent(window.location.href)
+        const vechainAppUrl = 'vechain-app:///' + window.location.href
         const gotoDownload = () => {
             window.location.href = this.syncReleaseUrl
         }
