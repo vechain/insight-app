@@ -13,7 +13,7 @@
     <div id="app"></div>
     <script>
         if(!window.connex) {
-            location.href = 'https://env.vechain.org/#' + location.href
+            location.href = 'https://env.vechain.org/#' + encodeURIComponent(location.href)
         }
     </script>
     <!-- built files will be auto injected -->
