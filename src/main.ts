@@ -15,18 +15,17 @@ Vue.config.productionTip = false
 
 let store: Store | undefined
 
-if (window.connex) {
-    store = new Store();
-    (async () => {
-        const ticker = connex.thor.ticker()
-        for (; ;) {
-            await ticker.next()
-            store.commit(Store.UPDATE_CHAIN_STATUS)
-        }
-    })()
-}
+store = new Store()
 
 new App({
     router,
     store,
-}).$mount('#app')
+}).$mount('#app');
+
+(async () => {
+    const ticker = connex.thor.ticker()
+    for (; ;) {
+        await ticker.next()
+        store.commit(Store.UPDATE_CHAIN_STATUS)
+    }
+})()

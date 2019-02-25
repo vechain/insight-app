@@ -37,42 +37,19 @@
         </div>
         <div style="flex:1 1 auto;overflow:auto">
             <div class="container grid-lg py-2">
-                <template v-if="hasConnex">
-                    <transition name="fade" mode="out-in">
-                        <router-view :key="$route.fullPath"/>
-                    </transition>
-                </template>
-                <div v-else class="modal active" id="modal-id">
-                    <div class="modal-overlay" style="opacity:0.5"/>
-                    <div class="modal-container">
-                        <div class="modal-header">
-                            <div class="modal-title h6"><span class="text-serif">Connex</span> not detected</div>
-                        </div>
-                        <div class="modal-body">
-                            It's recommended to open in
-                            <span class="text-serif">VeChain Sync.</span>
-                        </div>
-                        <div class="modal-footer">
-                            <a class="btn btn-sm btn-primary" @click="openWithSync">Open in</a> or
-                            <a :href="syncReleaseUrl">Download</a>
-                            <span class="ml-1 text-serif">VeChain Sync</span>
-                        </div>
-                    </div>
-                </div>
+                <transition name="fade" mode="out-in">
+                    <router-view :key="$route.fullPath"/>
+                </transition>
             </div>
         </div>
     </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-const customProtocolDetection = require('custom-protocol-detection')
 
 @Component
 export default class App extends Vue {
-    hasConnex = !!window.connex
     searchString = ''
-
-    syncReleaseUrl = 'https://github.com/vechain/thor-sync.electron/releases'
 
     search() {
         const str = this.searchString.trim()
@@ -86,20 +63,6 @@ export default class App extends Vue {
     mounted() {
         this.$el.style.opacity = '0'
         setTimeout(() => this.$el.style.opacity = null, 0)
-    }
-
-    openWithSync() {
-        const vechainAppUrl = 'vechain-app:///' + window.location.href
-        const gotoDownload = () => {
-            window.location.href = this.syncReleaseUrl
-        }
-        customProtocolDetection(vechainAppUrl, () => {
-            gotoDownload()
-        }, () => {
-            console.log('opened with sync')
-        }, () => {
-            gotoDownload()
-        })
     }
 }
 </script>
