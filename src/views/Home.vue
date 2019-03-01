@@ -64,6 +64,7 @@ export default class Home extends Vue {
     }
 
     created() {
+        this.$ga.page('/insight/home')
         this.reload()
     }
 }

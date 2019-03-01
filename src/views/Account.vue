@@ -127,6 +127,7 @@ export default class Account extends Vue {
     }
 
     created() {
+        this.$ga.page('/insight/account')
         this.address = this.$route.params.address
         this.reload()
     }

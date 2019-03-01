@@ -7,11 +7,15 @@ import './filters'
 
 import './style.scss'
 import 'spectre.css/dist/spectre-icons.css'
+import VueAnalytics from 'vue-analytics'
 
 import '@/components'
 
 
 Vue.config.productionTip = false
+Vue.use(VueAnalytics, {
+    id: 'UA-132391998-2'
+})
 
 let store: Store | undefined
 

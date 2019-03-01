@@ -127,6 +127,7 @@ export default class Tx extends Vue {
     }
 
     created() {
+        this.$ga.page('/insight/tx')
         this.id = this.$route.params.id
         this.reload()
     }

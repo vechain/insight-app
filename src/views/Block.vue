@@ -113,6 +113,7 @@ export default class Block extends Vue {
     }
 
     created() {
+        this.$ga.page('/insight/block')
         this.id = this.$route.params.id
         this.reload()
     }
