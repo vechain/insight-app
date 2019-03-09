@@ -14,7 +14,8 @@ import '@/components'
 
 Vue.config.productionTip = false
 Vue.use(VueAnalytics, {
-    id: 'UA-132391998-2'
+    id: 'UA-132391998-2',
+    disabled: process.env.NODE_ENV !== 'production'
 })
 
 let store: Store | undefined
