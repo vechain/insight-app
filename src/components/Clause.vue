@@ -38,6 +38,7 @@
                         rows="2"
                         :value="clause.data"
                     />
+                    <DecodedData :data="clause.data"/>
                 </template>
                 <span v-else class="text-gray">- No data -</span>
             </div>

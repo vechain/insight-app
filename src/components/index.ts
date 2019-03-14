@@ -5,6 +5,7 @@ import Event from './Event.vue'
 import Transfer from './Transfer.vue'
 import AccountLink from './AccountLink.vue'
 import VeForgeLink from './VeForgeLink.vue'
+import DecodedData from './DecodedData.vue'
 
 import Vue from 'vue'
 
@@ -14,3 +15,4 @@ Vue.component('Event', Event)
 Vue.component('Transfer', Transfer)
 Vue.component('AccountLink', AccountLink)
 Vue.component('VeForgeLink', VeForgeLink)
+Vue.component('DecodedData', DecodedData)
