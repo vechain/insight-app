@@ -22,5 +22,8 @@ module.exports = {
             .options({
                 symbolId: 'icon-[name]'
             })
+        if (process.env.NODE_ENV === 'production') {
+            config.optimization.get('minimizer')[0].options.terserOptions.keep_fnames = true 
+        }
     }
 }
