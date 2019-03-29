@@ -1,87 +1,67 @@
 <template>
-    <div>
-        <div class="columns is-align-center">
-            <div class="column col-2">
-                <span
-                    class="label caption text-bold text-uppercase"
-                    :class="output?'label-success': 'label-error'"
-                >{{type}}</span>
-            </div>
-            <div class="column col-4">
-                <span class="mr-2 text-gray caption">{{type==='create' ? 'deployed':'to'}}:</span>
-                <AccountLink :address="clause.to || output.contractAddress" abbr/>
-            </div>
-            <div class="column col-4">
-                <span class="mr-2 text-gray caption">value:</span>
-                <span class="token-amount">{{clause.value | amount}}</span>
-                <span class="token-symbol">vet</span>
-            </div>
-            <div class="column text-right">
-                <div
-                    v-show="type!=='transfer'"
-                    class="btn btn-primary caption my-0 py-0"
-                    style="height:auto;line-height:inherit;"
-                    @click="expand=!expand"
-                >
-                    Detail
-                    <i class="icon" :class="expand?'icon-arrow-up':'icon-arrow-down'"/>
+    <b-card no-body>
+        <b-card-header class="border-bottom-0 pb-0">
+            <div class="d-flex">
+                <span style="width:10em;">
+                    <b-badge class="text-uppercase">{{type}}</b-badge>
+                </span>
+                <div style="width:15em;">
+                    <AccountLink v-if="clause.to" icon :address="clause.to" abbr/>
+                    <AccountLink v-else-if="output" icon :address="output.contractAddress" abbr/>
+                    <span v-else class="text-monospace">0x??????…????</span>
                 </div>
+                <Amount sym="VET">{{clause.value}}</Amount>
+                <b class="ml-auto">#{{index}}</b>
             </div>
-        </div>
-        <div v-if="expand">
-            <div class="divider" data-content="Input Data" style="margin-top:1.5rem"/>
-            <div class="caption">
-                <template v-if="type!=='transfer'">
-                    <textarea
-                        class="form-input caption text-mono"
-                        readonly
-                        rows="2"
-                        :value="clause.data"
+        </b-card-header>
+        <b-tabs
+            v-model="tab"
+            card
+            no-key-nav
+            v-if="type!=='transfer' || events.length || transfers.length"
+        >
+            <b-tab title="Input Data">
+                <InputData :clause="clause" v-if="type!=='transfer'"/>
+                <div v-else class="text-center">No Data</div>
+            </b-tab>
+
+            <b-tab title="Transfers">
+                <b-list-group flush v-if="transfers.length">
+                    <b-list-group-item v-for="(t, i) in transfers" :key="i">
+                        <Transfer :item="t" :index="i"/>
+                    </b-list-group-item>
+                </b-list-group>
+                <div v-else class="text-center">No Transfer</div>
+            </b-tab>
+            <b-tab title="Events">
+                <template v-if="events.length">
+                    <Event
+                        v-for="(ev,i) in events"
+                        :key="i"
+                        :item="ev"
+                        :index="i"
+                        :class="{'mt-2':i>0}"
                     />
-                    <DecodedData :data="clause.data"/>
                 </template>
-                <span v-else class="text-gray">- No data -</span>
-            </div>
-            <template v-if="!!output">
-                <div class="divider" data-content="Outputs" style="margin-top:1.5rem"/>
-                <div class="heading mt-2 mb-1">transfers</div>
-                <div class="indent caption">
-                    <template v-if="output.transfers.length>0">
-                        <Transfer
-                            v-for="(item,i) in output.transfers"
-                            :key="i"
-                            :item="item"
-                            :index="i+1"
-                        />
-                    </template>
-                    <span v-else class="text-gray">- None -</span>
-                </div>
-                <div class="heading mt-2 mb-1">events</div>
-                <div class="indent caption">
-                    <template v-if="output.events.length>0">
-                        <Event
-                            v-for="(item,i) in output.events"
-                            :key="i"
-                            :item="item"
-                            :index="i+1"
-                        />
-                    </template>
-                    <span v-else class="text-gray">- None -</span>
-                </div>
-            </template>
-        </div>
-    </div>
+                <div v-else class="text-center">No Event</div>
+            </b-tab>
+        </b-tabs>
+        <b-card-body v-else class="text-center">No Output</b-card-body>
+    </b-card>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component
 export default class Clause extends Vue {
-    @Prop(Object) clause !: Connex.Thor.Clause
-    @Prop(Object) output!: Connex.Thor.Receipt['outputs'][number]
+    @Prop(Number) private index !: number
+    @Prop(Object) private clause !: Connex.Thor.Clause
+    @Prop(Object) private output!: Connex.Thor.Receipt['outputs'][number]
 
-    expand = false
+    private tab = 0
 
+    get events() { return this.output ? this.output.events : [] }
+    get transfers() { return this.output ? this.output.transfers : [] }
     get type() {
         if (this.clause.to) {
             if (this.clause.data === '0x') {
@@ -95,4 +75,3 @@ export default class Clause extends Vue {
     }
 }
 </script>
-

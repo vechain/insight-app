@@ -1,109 +1,189 @@
 <template>
-    <div>
-        <div>
-            <span class="h5 mr-2">Transaction</span>
-            <template v-if="!!tx">
-                <span class="text-mono">{{tx.id}}</span>
-                <VeForgeLink btn type="tx" :arg="tx.id" class="ml-2"/>
-            </template>
-        </div>
-        <div
-            v-if="!!receipt && receipt.reverted"
-            class="label label-error my-2 caption text-bold"
-        >Reverted</div>
-        <template v-if="!!tx">
-            <div class="card my-2">
-                <div class="columns card-body is-align-center">
-                    <div class="field-name">Size</div>
-                    <div class="field-value">{{tx.size|locale}} B</div>
-                    <div class="field-name">Gas Used</div>
-                    <div class="field-value">{{receipt.gasUsed | locale}} / {{tx.gas | locale}}</div>
-                    <div class="field-name">Gas Price Coef</div>
-                    <div class="field-value">{{tx.gasPriceCoef}}</div>
-                    <div class="field-name">Fee</div>
-                    <div class="field-value">
-                        <span class="token-amount">{{receipt.paid | amount}}</span>
-                        <span class="token-symbol">VTHO</span>
+    <b-container>
+        <b-card no-body>
+            <b-card-header>
+                <span class="h4">Transaction</span>
+                <b-badge
+                    v-if="!!receipt && receipt.reverted"
+                    class="ml-3"
+                    variant="warning"
+                >Reverted</b-badge>
+                <VeForgeLink v-if="tx" btn type="tx" :arg="tx.id" class="float-right"/>
+            </b-card-header>
+            <b-card-body>
+                <template v-if="tx">
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>ID</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{tx.id}}</b-col>
+                    </b-row>
+                    <hr>
+
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Size</strong>
+                        </b-col>
+                        <b-col lg="10">{{tx.size|locale}} B</b-col>
+                    </b-row>
+                    <hr>
+
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Timestamp</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            {{tx.meta.blockTimestamp|date}}, @Block
+                            <router-link
+                                :to="{name:'block', params: {id: tx.meta.blockID}}"
+                            >#{{tx.meta.blockNumber}}</router-link>
+                        </b-col>
+                    </b-row>
+                    <hr>
+
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Total Transfer</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <Amount sym="VET">{{totalTransferAmount}}</Amount>
+                            <b-button
+                                v-if="clauses.length>0"
+                                size="sm"
+                                variant="primary"
+                                class="ml-3 py-0"
+                                v-b-toggle.clauses
+                            >{{clauses.length}} {{clauses.length>1?'clauses':'clause'}}</b-button>
+                        </b-col>
+                    </b-row>
+                    <b-collapse v-if="clauses.length>0" id="clauses">
+                        <div class="mt-3 small">
+                            <Clause
+                                v-for="(c, i) in clauses"
+                                :key="i"
+                                :clause="c"
+                                :index="i"
+                                :output="receipt.outputs?receipt.outputs[i]:null"
+                                class="mt-2"
+                            />
+                        </div>
+                    </b-collapse>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Gas Used</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            {{receipt.gasUsed | locale}} / {{tx.gas | locale}}
+                            <sup>price coef {{tx.gasPriceCoef}}</sup>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Fee</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <Amount sym="VTHO" :dec="null" class="mr-2">{{receipt.paid}}</Amount>paid by
+                            <strong v-if="tx.origin === receipt.gasPayer">Origin</strong>
+                            <AccountLink v-else :address="receipt.gasPayer" abbr icon/>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Origin</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <AccountLink :address="tx.origin" icon/>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Reward</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <Amount sym="VTHO" :dec="null">{{receipt.reward}}</Amount>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Block Ref</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{tx.blockRef}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Expiration</strong>
+                        </b-col>
+                        <b-col lg="10">{{tx.expiration}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Nonce</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{tx.nonce}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Depends On</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <router-link
+                                class="text-monospace"
+                                v-if="!!tx.dependsOn"
+                                :to="{name:'tx', params:{id:tx.dependsOn}}"
+                            >{{tx.dependsOn}}</router-link>
+                            <span v-else>-</span>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Chain Tag</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">0x{{tx.chainTag.toString(16)}}</b-col>
+                    </b-row>
+                </template>
+                <template v-else>
+                    <div v-if="error" class="text-center">
+                        <p>Oops</p>
+                        <p class="text-warning">Error: {{error.message}}</p>
+                        <b-button size="sm" @click="reload">Reload</b-button>
                     </div>
-                    <div class="field-name">Origin</div>
-                    <div class="field-value text-mono">
-                        <AccountLink :address="tx.origin"/>
-                    </div>
-                    <div class="field-name">Fee Payer</div>
-                    <div class="field-value">
-                        <span v-if="tx.origin === receipt.gasPayer">Origin</span>
-                        <AccountLink v-else :address="receipt.gasPayer"/>
-                    </div>
-                    <div class="field-name">Timestamp</div>
-                    <div class="field-value">{{tx.meta.blockTimestamp|date}}</div>
-                    <div class="field-name">Block</div>
-                    <div class="field-value">
-                        <router-link
-                            :to="{name:'block', params: {id: tx.meta.blockID}}"
-                        >#{{tx.meta.blockNumber}}</router-link>
-                    </div>
-                    <div class="field-name">Reward</div>
-                    <div class="field-value">
-                        <span class="token-amount">{{receipt.reward | amount}}</span>
-                        <span class="token-symbol">VTHO</span>
-                    </div>
-                    <div class="field-name">Block Ref</div>
-                    <div class="field-value text-mono">{{tx.blockRef}}</div>
-                    <div class="field-name">Expiration</div>
-                    <div class="field-value">{{tx.expiration}}</div>
-                    <div class="field-name">Nonce</div>
-                    <div class="field-value text-mono">{{tx.nonce}}</div>
-                    <div class="field-name">Depends On</div>
-                    <div class="field-value">
-                        <router-link
-                            class="text-mono"
-                            v-if="!!tx.dependsOn"
-                            :to="{name:'tx', params:{id:tx.dependsOn}}"
-                        >{{tx.dependsOn}}</router-link>
-                        <span v-else>-</span>
-                    </div>
-                    <div class="field-name">Chain Tag</div>
-                    <div class="field-value text-mono">0x{{tx.chainTag.toString(16)}}</div>
-                </div>
-            </div>
-            <div class="h6 text-gray">{{clauseCountText}}</div>
-            <div class="card my-2" v-for="(c,i) in clauses" :key="i">
-                <div class="card-body">
-                    <Clause :clause="c" :output="receipt.outputs?receipt.outputs[i]:null"/>
-                </div>
-            </div>
-        </template>
-        <div v-else class="card my-2">
-            <div class="card-body">
-                <Loading :error="error" @reload="reload"/>
-            </div>
-        </div>
-    </div>
+                    <Loading v-else class="my-3"/>
+                </template>
+            </b-card-body>
+        </b-card>
+    </b-container>
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import BigNumber from 'bignumber.js'
 
 
 @Component
 export default class Tx extends Vue {
-    error: Error | null = null
-    tx: Connex.Thor.Transaction | null = null
-    receipt: Connex.Thor.Receipt | null = null
-    id = ''
+    private error: Error | null = null
+    private tx: Connex.Thor.Transaction | null = null
+    private receipt: Connex.Thor.Receipt | null = null
+    private id = ''
 
     get clauses() { return this.tx!.clauses }
-
-    get clauseCountText() {
-        if (this.clauses.length === 0) {
-            return 'No Clause'
-        } else if (this.clauses.length === 1) {
-            return '1 Clause'
-        } else {
-            return `${this.clauses.length} Clauses`
-        }
+    get totalTransferAmount() {
+        let total = new BigNumber(0)
+        this.clauses.forEach(c => {
+            total = total.plus(c.value)
+        })
+        return total.toString()
     }
 
-    async reload() {
+    private async  reload() {
         this.error = null
         this.tx = null
         this.receipt = null
@@ -126,11 +206,11 @@ export default class Tx extends Vue {
         }
     }
 
-    created() {
+    private created() {
         this.$ga.page('/insight/tx')
         this.id = this.$route.params.id
         this.reload()
     }
-}   
+}
 </script>
 

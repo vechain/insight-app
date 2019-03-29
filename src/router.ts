@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
-
 import Account from './views/Account.vue'
 import Block from './views/Block.vue'
 import Tx from './views/Tx.vue'

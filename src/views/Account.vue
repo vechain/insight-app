@@ -1,104 +1,223 @@
 <template>
-    <div>
-        <div>
-            <span class="h5 mr-2">Account</span>
-            <template v-if="!!account">
-                <span class="text-mono">{{address | checksum}}</span>
-                <VeForgeLink btn type="acc" :arg="address" class="ml-2"/>
+    <b-container>
+        <b-card no-body>
+            <b-card-header :class="{'border-bottom-0':account,'pb-0':account}">
+                <span class="h4 mr-3">Account</span>
+
+                <AccountLink no-link icon :address="address"/>
+                <VeForgeLink btn type="acc" :arg="address" class="float-right"/>
+            </b-card-header>
+            <b-tabs v-if="account" card no-key-nav v-model="tab">
+                <b-tab title="Summary">
+                    <div>
+                        <b-badge
+                            :variant="account.hasCode? 'success':'secondary'"
+                        >{{account.hasCode? 'Contract': 'Regular'}}</b-badge>
+                    </div>
+                    <hr>
+                    <b-row>
+                        <b-col lg="3">
+                            <strong>Balance</strong>
+                        </b-col>
+                        <b-col lg="9">
+                            <Amount sym="VET">{{account.balance}}</Amount>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="3">
+                            <strong>Energy</strong>
+                        </b-col>
+                        <b-col lg="9">
+                            <Amount sym="VTHO">{{account.energy}}</Amount>
+                        </b-col>
+                    </b-row>
+                    <template v-if="account.hasCode">
+                        <hr>
+                        <b-row>
+                            <b-col lg="3">
+                                <strong>Runtime Bytecode</strong>
+                            </b-col>
+                            <b-col lg="9">
+                                <b-textarea
+                                    v-if="code"
+                                    class="text-monospace bg-light"
+                                    size="sm"
+                                    readonly
+                                    :value="code.code"
+                                />
+                                <template v-else>
+                                    <b-button size="sm" @click="loadCode" :disabled="loadingCode">
+                                        View Code
+                                        <b-spinner v-if="loadingCode" type="grow" small/>
+                                    </b-button>
+                                    <span
+                                        v-if="codeError"
+                                        class="text-warning ml-3"
+                                    >codeError.message</span>
+                                </template>
+                            </b-col>
+                        </b-row>
+                    </template>
+                </b-tab>
+                <b-tab title="Transfers" @click="loadTransfers">
+                    <p>
+                        <b-button
+                            class="px-3 mr-2"
+                            @click="loadTransfers"
+                            size="sm"
+                            :disabled="transfers.loading"
+                            variant="outline-secondary"
+                        >⟳</b-button>
+                        <b-button-group size="sm" :disabled="transfers.loading">
+                            <b-button
+                                class="px-3"
+                                :disabled="!transfers.canPrev"
+                                @click="transfersPrevPage"
+                                variant="outline-secondary"
+                            >&lsaquo;</b-button>
+                            <b-button
+                                class="px-3"
+                                :disabled="!transfers.canNext"
+                                @click="transfersNextPage"
+                                variant="outline-secondary"
+                            >&rsaquo;</b-button>
+                        </b-button-group>
+                        <span
+                            v-if="transfers.range"
+                            class="ml-3"
+                        >{{transfers.range[0]}} - {{transfers.range[1]}}</span>
+                    </p>
+                    <template v-if="transfers.created">
+                        <Loading v-if="transfers.loading" class="my-3"/>
+                        <div v-else-if="transfers.error" class="text-center">
+                            <p>Oops</p>
+                            <p class="text-warning">Error: {{transfers.error.message}}</p>
+                            <b-button size="sm" @click="reload">Reload</b-button>
+                        </div>
+                        <b-list-group flush v-else-if="transfers.items.length">
+                            <b-list-group-item
+                                v-for="(item,i) in transfers.items"
+                                :key="i"
+                                :to="{name: 'tx', params:{id: item.meta.txID}}"
+                            >
+                                <Transfer :item="item" :index="i" :owner="address"/>
+                            </b-list-group-item>
+                        </b-list-group>
+                        <div v-else class="text-center">No content</div>
+                    </template>
+                </b-tab>
+                <b-tab title="Events" @click="loadEvents">
+                    <p>
+                        <b-button
+                            class="px-3 mr-2"
+                            @click="loadEvents"
+                            size="sm"
+                            :disabled="events.loading"
+                            variant="outline-secondary"
+                        >⟳</b-button>
+                        <b-button-group size="sm" :disabled="events.loading">
+                            <b-button
+                                class="px-3"
+                                :disabled="!events.canPrev"
+                                @click="eventsPrevPage"
+                                variant="outline-secondary"
+                            >&lsaquo;</b-button>
+                            <b-button
+                                class="px-3"
+                                :disabled="!events.canNext"
+                                @click="eventsNextPage"
+                                variant="outline-secondary"
+                            >&rsaquo;</b-button>
+                        </b-button-group>
+                        <span
+                            v-if="events.range"
+                            class="ml-3"
+                        >{{events.range[0]}} - {{events.range[1]}}</span>
+                    </p>
+                    <template v-if="events.created">
+                        <Loading v-if="events.loading" class="my-3"/>
+                        <div v-else-if="events.error" class="text-center">
+                            <p>Oops</p>
+                            <p class="text-warning">Error: {{events.error.message}}</p>
+                            <b-button size="sm" @click="reload">Reload</b-button>
+                        </div>
+                        <template v-else-if="events.items.length">
+                            <Event
+                                v-for="(item,i) in events.items"
+                                :key="i"
+                                :item="item"
+                                :index="i + events.offset"
+                                :class="{'mt-3':i>0}"
+                                class="small"
+                            />
+                        </template>
+                        <div v-else class="text-center">No content</div>
+                    </template>
+                </b-tab>
+                <b-tab title="Deposit">
+                    <Deposit :address="address" style="width:30rem;" class="mx-auto"/>
+                </b-tab>
+            </b-tabs>
+            <template v-else>
+                <div v-if="error" class="text-center">
+                    <p>Oops</p>
+                    <p class="text-warning">Error: {{error.message}}</p>
+                    <b-button size="sm" @click="reload">Reload</b-button>
+                </div>
+                <Loading v-else class="my-3"/>
             </template>
-        </div>
-        <div v-if="!!account">
-            <span
-                class="label my-2 caption text-bold"
-                :class="{'label-primary': account.hasCode}"
-            >{{account.hasCode? 'Contract': 'Regular'}}</span>
-            <span
-                v-show="!depositFormOpen"
-                class="btn btn-sm btn-link ml-2"
-                style="line-height: normal;height:auto;"
-                @click="depositFormOpen=true"
-            >
-                <b>+</b>
-                Deposit
-            </span>
-        </div>
-        <div v-if="depositFormOpen" class="card col-6">
-            <div class="card-header">
-                <b>Deposit</b>
-                <span class="ml-2 text-error">{{depositError}}</span>
-            </div>
-            <div class="card-body form-group">
-                <label class="form-label caption">
-                    VET
-                    <span class="ml-2 text-error">{{vetAmountError}}</span>
-                </label>
-                <input
-                    v-model="vetAmount"
-                    class="form-input input-sm"
-                    type="number"
-                    step="any"
-                    placeholder="VET amount"
-                    @focus="vetAmountFocus"
-                >
-                <label class="form-label caption">
-                    VTHO
-                    <span class="ml-2 text-error">{{vthoAmountError}}</span>
-                </label>
-                <input
-                    v-model="vthoAmount"
-                    class="form-input input-sm"
-                    type="number"
-                    step="any"
-                    placeholder="VTHO amount"
-                    @focus="vthoAmountFocus"
-                >
-                <div class="text-right mt-2">
-                    <button class="btn btn-sm btn-link" @click="depositFormOpen=false">Cancel</button>
-                    <button class="btn btn-sm btn-primary ml-2" @click="confirmDeposit">Confirm</button>
-                </div>
-            </div>
-        </div>
-        <div v-if="!!account" class="card my-2">
-            <div class="columns card-body is-align-center">
-                <div class="field-name">Balance</div>
-                <div class="field-value">
-                    <span class="token-amount">{{account.balance |amount}}</span>
-                    <span class="token-symbol">vet</span>
-                </div>
-                <div class="field-name">Energy</div>
-                <div class="field-value">
-                    <span class="token-amount">{{account.energy |amount}}</span>
-                    <span class="token-symbol">vtho</span>
-                </div>
-            </div>
-        </div>
-        <div v-else class="card my-2">
-            <div class="card-body">
-                <Loading :error="error" @reload="reload"/>
-            </div>
-        </div>
-    </div>
+        </b-card>
+    </b-container>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class Account extends Vue {
-    account: Connex.Thor.Account | null = null
-    error: Error | null = null
+    private tab = 0
+    private address = ''
 
-    address = ''
-    depositFormOpen = false
+    private account: Connex.Thor.Account | null = null
+    private error: Error | null = null
 
-    vetAmount = ''
-    vthoAmount = ''
+    private code: Connex.Thor.Code | null = null
+    private codeError: Error | null = null
+    private loadingCode = false
 
-    vetAmountError = ''
-    vthoAmountError = ''
-    depositError = ''
+    private events = {
+        items: null as Connex.Thor.Event[] | null,
+        error: null as Error | null,
+        loading: false,
+        offset: 0,
+        created: false,
+        get canNext() { return this.items && this.items.length === 10 },
+        get canPrev() { return this.items && this.offset > 0 },
+        get range() {
+            if (!this.loading && this.items && this.items.length > 0) {
+                return [this.offset, this.offset + this.items.length]
+            }
+            return null
+        }
+    }
+    private transfers = {
+        items: null as Connex.Thor.Transfer[] | null,
+        error: null as Error | null,
+        loading: false,
+        offset: 0,
+        created: false,
+        get canNext() { return this.items && this.items.length === 10 },
+        get canPrev() { return this.items && this.offset > 0 },
+        get range() {
+            if (!this.loading && this.items && this.items.length > 0) {
+                return [this.offset, this.offset + this.items.length]
+            }
+            return null
+        }
+    }
 
     @Watch('$store.state.chainStatus')
-    async reload() {
+    private async reload() {
         try {
             const acc = await connex.thor.account(this.address).get()
             this.account = acc
@@ -107,101 +226,85 @@ export default class Account extends Vue {
         }
     }
 
-    vetAmountFocus() {
-        this.depositError = ''
-        this.vetAmountError = ''
-    }
-
-    vthoAmountFocus() {
-        this.depositError = ''
-        this.vthoAmountError = ''
-    }
-
-    @Watch('depositFormOpen')
-    depositFormOpenChanged() {
-        this.vetAmount = ''
-        this.vthoAmount = ''
-        this.vetAmountError = ''
-        this.vthoAmountError = ''
-        this.depositError = ''
-    }
-
-    created() {
-        this.$ga.page('/insight/account')
-        this.address = this.$route.params.address
-        this.reload()
-    }
-
-    async confirmDeposit() {
-        this.vetAmountError = ''
-        this.vthoAmountError = ''
-        this.depositError = ''
+    private async loadCode() {
         try {
-            const message: Connex.Vendor.SigningService.TxMessage = []
-            const vet = toWei(this.vetAmount)
-            const vtho = toWei(this.vthoAmount)
-            if (!/^[0-9]+$/.test(vet)) {
-                this.vetAmountError = 'Invalid amount'
-                return
-            }
-            if (!/^[0-9]+$/.test(vtho)) {
-                this.vthoAmountError = 'Invalid amount'
-            }
-            if (vet !== '0') {
-                message.push({
-                    to: this.address,
-                    value: vet,
-                    data: '0x'
-                })
-            }
-            if (vtho !== '0') {
-                const clause = connex.thor
-                    .account(energyContractAddress)
-                    .method(energyTransferJsonABI)
-                    .asClause(this.address, vtho)
-                message.push({
-                    ...clause,
-                    comment: `transfer ${this.vthoAmount} VTHO`
-                })
-            }
-            if (message.length > 0) {
-                await connex.vendor.sign('tx')
-                    .request(message)
-                this.depositFormOpen = false
-            }
+            this.loadingCode = true
+            const code = await connex.thor.account(this.address).getCode()
+            this.code = code
         } catch (err) {
-            this.depositError = err.message
+            this.codeError = err
+        } finally {
+            this.loadingCode = false
         }
     }
-}
 
-import BigNumber from 'bignumber.js'
-const e18 = new BigNumber('1' + '0'.repeat(18))
-function toWei(amount: string) {
-    return new BigNumber(amount || 0)
-        .times(e18)
-        .integerValue(0)
-        .toString(10)
-}
+    private async loadEvents() {
+        this.events.created = true
+        if (this.events.loading) {
+            return
+        }
+        try {
+            this.events.loading = true
+            this.events.error = null
+            this.events.items = await connex.thor.filter('event')
+                .criteria([{ address: this.address }])
+                .order('desc')
+                .apply(this.events.offset, 10)
+        } catch (err) {
+            this.events.error = err
+        } finally {
+            this.events.loading = false
+        }
+    }
+    private async loadTransfers() {
+        this.transfers.created = true
+        if (this.transfers.loading) {
+            return
+        }
+        this.transfers.error = null
+        this.transfers.loading = true
+        this.transfers.items = null
+        try {
+            this.transfers.items = await connex.thor.filter('transfer')
+                .criteria([{ sender: this.address }, { recipient: this.address }])
+                .order('desc')
+                .apply(this.transfers.offset, 10)
+        } catch (err) {
+            this.transfers.error = err
+        } finally {
+            this.transfers.loading = false
+        }
+    }
 
-const energyContractAddress = '0x0000000000000000000000000000456E65726779'
-const energyTransferJsonABI = {
-    "constant": false,
-    "inputs": [{
-        "name": "_to",
-        "type": "address"
-    }, {
-        "name": "_amount",
-        "type": "uint256"
-    }],
-    "name": "transfer",
-    "outputs": [{
-        "name": "success",
-        "type": "bool"
-    }],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
+    private async transfersNextPage() {
+        this.transfers.offset += 10
+        this.loadTransfers()
+    }
+
+    private async transfersPrevPage() {
+        if (this.transfers.offset >= 10) {
+            this.transfers.offset -= 10
+            this.loadTransfers()
+        }
+    }
+
+    private async eventsNextPage() {
+        this.events.offset += 10
+        this.loadEvents()
+    }
+
+    private async eventsPrevPage() {
+        if (this.events.offset >= 10) {
+            this.events.offset -= 10
+            this.loadEvents()
+        }
+    }
+
+    private created() {
+        this.$ga.page('/insight/account')
+        this.address = this.$route.params.address.toLowerCase()
+        this.reload()
+    }
 }
 
 </script>

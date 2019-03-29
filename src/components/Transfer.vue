@@ -1,25 +1,36 @@
 <template>
-    <div class="columns">
-        <div class="column col-3">
-            {{index}}.
-            <AccountLink class="ml-2" :address="item.sender" abbr/>
-        </div>
-        <b class="column col-1">➟</b>
-        <div class="column col-3">
-            <AccountLink :address="item.recipient" abbr/>
-        </div>
-        <div class="column">
-            <span class="token-amount">{{item.amount | amount}}</span>
-            <span class="token-symbol">VET</span>
-        </div>
-    </div>
+    <b-row>
+        <b-col cols="1">
+            <SvgIcon
+                style="transform: scale(1.6)"
+                :name="isIn?'arrow-left':'arrow-right'"
+                :class="isIn?'text-success':'text-danger'"
+            />
+        </b-col>
+        <b-col cols="4">
+            <AccountLink :address="opposite" abbr icon/>
+        </b-col>
+        <b-col cols="3" class="text-right">
+            {{isIn?'+':'-'}}
+            <Amount sym="VET">{{item.amount}}</Amount>
+        </b-col>
+        <b-col
+            cols="4"
+            class="text-right text-muted"
+            v-if="item.meta"
+        >{{item.meta.blockTimestamp|date}}</b-col>
+    </b-row>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
 
 @Component
 export default class Transfer extends Vue {
-    @Prop(Object) item!: Connex.Thor.Transfer
-    @Prop(Number) index !: number
+    @Prop(Object) private item!: Connex.Thor.Transfer
+    @Prop(Number) private index !: number
+    @Prop(String) private owner !: string
+
+    get isIn() { return this.owner === this.item.recipient }
+    get opposite() { return this.isIn ? this.item.sender : this.item.recipient }
 }
 </script>

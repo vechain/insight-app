@@ -1,18 +1,19 @@
 import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import router from './router'
 import Store from './store'
 import './registerServiceWorker'
 import './filters'
 
+
 import './style.scss'
-import 'spectre.css/dist/spectre-icons.css'
 import VueAnalytics from 'vue-analytics'
 
 import '@/components'
 
-
 Vue.config.productionTip = false
+Vue.use(BootstrapVue)
 Vue.use(VueAnalytics, {
     id: 'UA-132391998-2',
     disabled: process.env.NODE_ENV !== 'production'
