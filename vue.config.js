@@ -23,6 +23,12 @@ module.exports = {
                 symbolId: 'icon-[name]'
             })
 
-        config.optimization.get('minimizer')[0].options.terserOptions.keep_fnames = true
+        const minimizer = config.optimization.get('minimizer')
+        if (minimizer) {
+            minimizer[0]
+                .options
+                .terserOptions
+                .keep_fnames = true
+        }
     }
 }
