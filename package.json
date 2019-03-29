@@ -14,7 +14,7 @@
     "bootstrap-vue": "^2.0.0-rc.14",
     "register-service-worker": "^1.5.2",
     "spectre.css": "^0.5.8",
-    "thor-devkit": "^0.10.0",
+    "thor-devkit": "^0.10.1",
     "timeago.js": "^4.0.0-beta.1",
     "vue": "^2.5.17",
     "vue-analytics": "^5.16.2",
