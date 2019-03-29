@@ -1,69 +1,109 @@
 <template>
-    <div
-        style="display:flex;height:100%;width:100%;flex-direction:column;transition: opacity 0.35s"
-    >
-        <div
-            style="background-color:#383838;flex: 0 0 auto;position:relative;box-shadow:0px 0px 1px 1px rgba(0, 0, 0, 0.3);"
-        >
-            <header class="navbar container grid-lg py-2">
-                <section class="navbar-section">
-                    <router-link :to="{name:'home'}" class="navbar-brand mr-2 text-serif">
-                        <h4 class="my-0" style="color: white">Insight</h4>
-                    </router-link>
-                    <span class="caption text-gray mt-2">Serverless VeChain Explorer</span>
-                </section>
-                <section class="navbar-section">
-                    <VeForgeLink class="mx-2" style="color: white">VeForge</VeForgeLink>
-                    <a
-                        class="mx-2"
-                        style="color: white"
-                        href="https://github.com/vechain/insight-app"
-                    >Github</a>
-                    <div class="ml-2 input-group input-inline col-8">
-                        <input
-                            v-model="searchString"
-                            class="form-input input-sm"
-                            type="text"
-                            placeholder="block, tx or account"
-                            @keypress.enter="search"
-                        >
-                        <button
-                            class="btn btn-primary input-group-btn btn-sm"
-                            @click="search"
-                        >Search</button>
-                    </div>
-                </section>
-            </header>
-        </div>
-        <div style="flex:1 1 auto;overflow:auto">
-            <div class="container grid-lg py-2">
-                <transition name="fade" mode="out-in">
-                    <router-view :key="$route.fullPath"/>
-                </transition>
+    <div class="app">
+        <b-navbar toggleable="lg" variant="secondary" type="dark">
+            <div class="container">
+                <b-navbar-brand href="#/">
+                    <span class="text-serif h4">Insight</span>
+                </b-navbar-brand>
+                <b-navbar-toggle target="nav_collapse"/>
+                <b-collapse is-nav id="nav_collapse">
+                    <b-navbar-nav class="ml-auto">
+                        <b-nav-item href="https://github.com/vechain/" target="_blank">Code Repo</b-nav-item>
+                    </b-navbar-nav>
+
+                    <!-- Right aligned nav items -->
+                    <b-navbar-nav>
+                        <!-- 
+                    <b-nav-item-dropdown text="Lang" right>
+                        <b-dropdown-item href="#">EN</b-dropdown-item>
+                        <b-dropdown-item href="#">ES</b-dropdown-item>
+                        <b-dropdown-item href="#">RU</b-dropdown-item>
+                        <b-dropdown-item href="#">FA</b-dropdown-item>
+                        </b-nav-item-dropdown>-->
+
+                        <b-nav-item-dropdown class="mr-3">
+                            <!-- Using button-content slot -->
+                            <template slot="button-content">
+                                <span>Tools</span>
+                            </template>
+                            <b-dropdown-item
+                                :href="isMainnet?'https://explore.veforge.com/' : 'https://testnet.veforge.com/'"
+                                target="_blank"
+                            >VeForge</b-dropdown-item>
+                            <b-dropdown-item
+                                href="https://inspector.vecha.in"
+                                target="_blank"
+                            >Inspector</b-dropdown-item>
+                             <b-dropdown-item
+                                href="https://b32.vecha.in"
+                                target="_blank"
+                            >B32</b-dropdown-item>
+                        </b-nav-item-dropdown>
+                        <b-nav-form v-if="!isHome">
+                            <b-input-group>
+                                <b-form-input
+                                    class="border-0"
+                                    size="sm"
+                                    placeholder="block, tx or account"
+                                    style="min-width:15rem"
+                                    v-model="searchString"
+                                    @keydown.enter.prevent="search"
+                                />
+                                <b-input-group-append>
+                                    <b-button size="sm" variant="primary" @click="search">
+                                        <SvgIcon name="search"/>
+                                    </b-button>
+                                </b-input-group-append>
+                            </b-input-group>
+                        </b-nav-form>
+                    </b-navbar-nav>
+                </b-collapse>
             </div>
+        </b-navbar>
+        <div class="py-4">
+            <transition name="fade" mode="out-in">
+                <keep-alive exclude="Home,Search">
+                    <router-view :key="$route.fullPath"/>
+                </keep-alive>
+            </transition>
         </div>
     </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-
+import { isMainnet } from './utils'
 @Component
 export default class App extends Vue {
-    searchString = ''
+    private searchString = ''
 
-    search() {
+    get routeName() { return this.$route.name }
+    get isHome() { return this.routeName === 'home' }
+
+    private search() {
         const str = this.searchString.trim()
         this.searchString = ''
         if (!str) {
             return
         }
-
         this.$router.push({ name: 'search', query: { q: str } })
     }
-    mounted() {
-        this.$el.style.opacity = '0'
-        setTimeout(() => this.$el.style.opacity = null, 0)
-    }
+
+    get isMainnet() { return isMainnet() }
 }
 </script>
+<style lang="scss" scoped>
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.app {
+    animation: fade-in 0.4s;
+}
+</style>
+
 

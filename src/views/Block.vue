@@ -1,102 +1,143 @@
 <template>
-    <div>
-        <div>
-            <span class="h5 mr-2">Block</span>
-            <template v-if="block">
-                <span>#{{block.number}}</span>
-                <VeForgeLink btn type="block" :arg="block.id" class="ml-2"/>
-            </template>
-        </div>
-        <div
-            v-if="!!block&&!block.isTrunk"
-            class="label label-warning my-2 caption text-bold"
-        >Branch</div>
-        <template v-if="!!block">
-            <div class="card my-2">
-                <div class="columns card-body is-align-center">
-                    <div class="field-name">ID</div>
-                    <div class="field-value text-mono">{{block.id}}</div>
-                    <div class="field-name">Size</div>
-                    <div class="field-value">{{block.size|locale}}B</div>
-                    <div class="field-name">Timestamp</div>
-                    <div class="field-value">{{block.timestamp | date}}</div>
-                    <div class="field-name">Parent</div>
-                    <div class="field-value text-mono">
-                        <router-link
-                            :to="{name:'block', params: {id: block.parentID}}"
-                        >{{block.parentID}}</router-link>
+    <b-container>
+        <b-card no-body>
+            <b-card-header>
+                <span class="h4 mr-3">Block</span>
+                <template v-if="block">
+                    #{{block.number}}
+                    <b-badge v-if="!block.isTrunk" class="ml-3" variant="warning">Branch</b-badge>
+                    <VeForgeLink btn type="block" :arg="block.id" class="float-right"/>
+                </template>
+            </b-card-header>
+            <b-card-body>
+                <template v-if="block">
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>ID</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{block.id}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Size</strong>
+                        </b-col>
+                        <b-col lg="10">{{block.size|locale}} B</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Timestamp</strong>
+                        </b-col>
+                        <b-col lg="10">{{block.timestamp | date}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Gas Used</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            {{block.gasUsed | locale}}/{{block.gasLimit | locale}}
+                            <b-button
+                                v-if="txs.length"
+                                size="sm"
+                                variant="primary"
+                                class="ml-3 py-0"
+                                v-b-toggle.txs
+                            >{{txs.length}} {{txs.length>1?'transactions': 'transaction'}}</b-button>
+                        </b-col>
+                    </b-row>
+                    <b-collapse v-if="txs.length" id="txs">
+                        <ol class="text-monospace mt-3 small">
+                            <li v-for="(tx, i) in txs" :key="i" class="mt-2">
+                                <router-link :to="{name: 'tx', params:{id: tx}}">{{tx}}</router-link>
+                            </li>
+                        </ol>
+                    </b-collapse>
+                    <hr>
+
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Parent</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <router-link
+                                class="text-monospace"
+                                :to="{name:'block', params: {id: block.parentID}}"
+                            >{{block.parentID}}</router-link>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Total Score</strong>
+                        </b-col>
+                        <b-col lg="10">{{block.totalScore | locale}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Signer</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <AccountLink :address="block.signer"/>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Beneficiary</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <AccountLink :address="block.beneficiary"/>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>State Root</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{block.stateRoot}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Txs Root</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{block.txsRoot}}</b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Receipts Root</strong>
+                        </b-col>
+                        <b-col lg="10" class="text-monospace">{{block.receiptsRoot}}</b-col>
+                    </b-row>
+                </template>
+                <template v-else>
+                    <div v-if="error" class="text-center">
+                        <p>Oops</p>
+                        <p class="text-warning">Error: {{error.message}}</p>
+                        <b-button size="sm" @click="reload">Reload</b-button>
                     </div>
-                    <div class="field-name">Gas Used</div>
-                    <div class="field-value">{{block.gasUsed | locale}}/{{block.gasLimit | locale}}</div>
-                    <div class="field-name">Total Score</div>
-                    <div class="field-value">{{block.totalScore | locale}}</div>
-                    <div class="field-name">Signer</div>
-                    <div class="field-value">
-                        <AccountLink :address="block.signer"/>
-                    </div>
-                    <div class="field-name">Beneficiary</div>
-                    <div class="field-value">
-                        <AccountLink :address="block.beneficiary"/>
-                    </div>
-                    <div class="field-name">State Root</div>
-                    <div class="field-value text-mono">{{block.stateRoot}}</div>
-                    <div class="field-name">Transactions Root</div>
-                    <div class="field-value text-mono">{{block.txsRoot}}</div>
-                    <div class="field-name">Receipts Root</div>
-                    <div class="field-value text-mono">{{block.receiptsRoot}}</div>
-                </div>
-            </div>
-            <div class="h6 text-gray">{{txsCountText}}</div>
-            <div v-if="txs.length>0" class="card my-2">
-                <div class="card-body caption">
-                    <div class="my-1" v-for="(txid,i) in txs" :key="i">
-                        {{i+1}}.
-                        <router-link
-                            class="text-mono ml-2"
-                            :to="{name: 'tx', params:{id: txid}}"
-                        >{{txid}}</router-link>
-                    </div>
-                </div>
-            </div>
-        </template>
-        <div v-else class="card my-2">
-            <div class="card-body">
-                <Loading :error="error" @reload="reload"/>
-            </div>
-        </div>
-    </div>
+                    <Loading v-else class="my-3"/>
+                </template>
+            </b-card-body>
+        </b-card>
+    </b-container>
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 
-type Item = {
-    name: string
-    value: string | number
-    linkTo?: {
-        name: string,
-        params: { [name: string]: string }
-    }
-}
-
 @Component
 export default class Block extends Vue {
-    block: Connex.Thor.Block | null = null
-    error: Error | null = null
+    private block: Connex.Thor.Block | null = null
+    private error: Error | null = null
 
-    id = ''
-
+    private id = ''
     get txs() { return this.block!.transactions }
-    get txsCountText() {
-        if (this.txs.length === 0) {
-            return 'No Transaction'
-        } else if (this.txs.length === 1) {
-            return '1 Transaction'
-        } else {
-            return `${this.txs.length} Transactions`
-        }
-    }
 
-    async reload() {
+    private async reload() {
         this.block = null
         this.error = null
 
@@ -112,7 +153,7 @@ export default class Block extends Vue {
         }
     }
 
-    created() {
+    private created() {
         this.$ga.page('/insight/block')
         this.id = this.$route.params.id
         this.reload()

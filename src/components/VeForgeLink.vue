@@ -1,11 +1,9 @@
 <template>
-    <a v-bind="$attrs" v-on="$listeners" :href="href" :style="styleObject" :class="classes">
-        <slot/>
-        <template v-if="btn">
-            <i class="icon icon-search"/>
-            VeForge
-        </template>
-    </a>
+    <b-button size="sm" variant="primary" :href="href" target="_blank">
+        <div class="d-flex align-items-center">
+            <SvgIcon name="eye" class="mr-1"/>VeForge
+        </div>
+    </b-button>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
@@ -13,9 +11,8 @@ import { isMainnet } from '../utils'
 
 @Component
 export default class VeForgeLink extends Vue {
-    @Prop(String) type!: 'block' | 'tx' | 'acc' | ''
-    @Prop(String) arg!: string
-    @Prop(Boolean) btn!: boolean
+    @Prop(String) private type!: 'block' | 'tx' | 'acc' | ''
+    @Prop(String) private arg!: string
 
     get href() {
         const baseUrl = isMainnet() ? 'https://explore.veforge.com/' : 'https://testnet.veforge.com/'
@@ -28,16 +25,6 @@ export default class VeForgeLink extends Vue {
             return new URL(path + this.arg, baseUrl).href
         }
         return baseUrl
-    }
-    get styleObject() {
-        return this.btn ? {
-            height: 'auto',
-            'line-height': 'normal',
-            'vertical-align': 'baseline'
-        } : {}
-    }
-    get classes() {
-        return this.btn ? 'btn btn-sm btn-primary my-0' : ''
     }
 }
 </script>

@@ -13,11 +13,23 @@ Vue.filter('abbr', (id: string) => {
         return `${id.slice(0, 10)}…${id.slice(58)}`
     } else if (id.length === 42) {
         id = toChecksumAddress(id)
-        return `${id.slice(0, 8)}…${id.slice(36)}`
+        return `${id.slice(0, 8)}…${id.slice(38)}`
     }
     return id
 })
 Vue.filter('amount', (val: string) => new BigNumber(val).div('1' + '0'.repeat(18)).toFormat())
+Vue.filter('xamount', (val: string) => {
+    const bn = new BigNumber(val).div('1' + '0'.repeat(18))
+    if (bn.gte(1000 ** 3)) {
+        return bn.div(1000 ** 3).toFormat(2) + 'b'
+    } else if (bn.gte(1000 ** 2)) {
+        return bn.div(1000 ** 2).toFormat(2) + 'm'
+    } else if (bn.gte(1000)) {
+        return bn.div(1000).toFormat(2) + 'k'
+    }
+    return bn.toFormat(2)
+})
+
 Vue.filter('checksum', (val: string) => {
     try {
         return toChecksumAddress(val)

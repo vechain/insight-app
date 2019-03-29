@@ -5,7 +5,12 @@ import Event from './Event.vue'
 import Transfer from './Transfer.vue'
 import AccountLink from './AccountLink.vue'
 import VeForgeLink from './VeForgeLink.vue'
-import DecodedData from './DecodedData.vue'
+import InputData from './InputData.vue'
+import Ident from './Ident.vue'
+import SvgIcon from './SvgIcon.vue'
+import Deposit from './Deposit.vue'
+import Amount from './Amount.vue'
+import Decoded from './Decoded.vue'
 
 import Vue from 'vue'
 
@@ -15,4 +20,9 @@ Vue.component('Event', Event)
 Vue.component('Transfer', Transfer)
 Vue.component('AccountLink', AccountLink)
 Vue.component('VeForgeLink', VeForgeLink)
-Vue.component('DecodedData', DecodedData)
+Vue.component('InputData', InputData)
+Vue.component('Ident', Ident)
+Vue.component('SvgIcon', SvgIcon)
+Vue.component('Deposit', Deposit)
+Vue.component('Amount', Amount)
+Vue.component('Decoded', Decoded)

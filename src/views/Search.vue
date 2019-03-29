@@ -1,24 +1,32 @@
 <template>
-    <Loading :error="error" @reload="reload"/>
+    <div class="my-5 container">
+        <div v-if="error" class="text-center">
+            <h3>Oops</h3>
+            <p class="text-danger">{{error.message}}</p>
+            <b-button variant="primary" @click="reload">Reload</b-button>
+        </div>
+        <Loading v-else/>
+    </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class Search extends Vue {
-    error: Error | null = null
-
-    async reload() {
+    private error = null as Error | null
+    private async reload() {
+        this.error = null
+        await this.$nextTick()
         const str = ((this.$route.query.q as string) || '').trim()
         if (!str) {
             return this.$router.replace({ name: 'home' })
         }
 
         if (/^0x[0-9a-f]{40}$/i.test(str)) {
-            //address
+            // address
             return this.$router.replace({ name: 'account', params: { address: str } })
         } else if (/^0x[0-9-a-f]{64}$/i.test(str)) {
-            //bytes32
+            // bytes32
             try {
                 const [block, tx] = await Promise.all([
                     connex.thor.block(str).get(),
@@ -35,7 +43,7 @@ export default class Search extends Vue {
                 this.error = err
             }
         } else if (/^[0-9]+$/.test(str)) {
-            const num = parseInt(str)
+            const num = parseInt(str, 10)
             if (num < 2 ** 32) {
                 try {
                     const block = await connex.thor.block(num).get()
@@ -43,7 +51,7 @@ export default class Search extends Vue {
                         return this.$router.replace({ name: 'block', params: { id: block.id } })
                     }
                 } catch (err) {
-                    this.error
+                    this.error = err
                 }
             }
         }
@@ -52,7 +60,7 @@ export default class Search extends Vue {
         }
     }
 
-    created() {
+    private created() {
         this.reload()
     }
 }
