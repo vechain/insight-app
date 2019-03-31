@@ -1,25 +1,25 @@
 <template>
-    <b-row>
-        <b-col cols="1">
-            <SvgIcon
-                style="transform: scale(1.6)"
-                :name="isIn?'arrow-left':'arrow-right'"
-                :class="isIn?'text-success':'text-danger'"
-            />
-        </b-col>
-        <b-col cols="4">
-            <AccountLink :address="opposite" abbr icon/>
-        </b-col>
-        <b-col cols="3" class="text-right">
+    <div v-if="owner" class="d-flex align-items-center">
+        <SvgIcon
+            style="transform: scale(1.4)"
+            :name="isIn?'arrow-left':'arrow-right'"
+            :class="isIn?'text-success':'text-danger'"
+        />
+        <AccountLink :address="opposite" abbr icon class="mx-4"/>
+        <div style="width:11rem;" class="text-right">
             {{isIn?'+':'-'}}
             <Amount sym="VET">{{item.amount}}</Amount>
-        </b-col>
-        <b-col
-            cols="4"
-            class="text-right text-muted"
-            v-if="item.meta"
-        >{{item.meta.blockTimestamp|date}}</b-col>
-    </b-row>
+        </div>
+        <div class="flex-grow-1 text-right text-muted small">{{item.meta.blockTimestamp|date}}</div>
+    </div>
+    <div v-else class="d-flex align-items-center">
+        <AccountLink :address="item.sender" abbr icon/>
+        <SvgIcon name="arrow-right" class="mx-3"/>
+        <AccountLink :address="item.recipient" abbr icon/>
+        <div style="width:10rem;" class="text-right">
+            <Amount sym="VET">{{item.amount}}</Amount>
+        </div>
+    </div>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'

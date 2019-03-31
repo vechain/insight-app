@@ -16,19 +16,19 @@
                     </div>
                     <hr>
                     <b-row>
-                        <b-col lg="3">
+                        <b-col lg="2">
                             <strong>Balance</strong>
                         </b-col>
-                        <b-col lg="9">
-                            <Amount sym="VET">{{account.balance}}</Amount>
+                        <b-col lg="4" class="text-right">
+                            <Amount sym="VET ">{{account.balance}}</Amount>
                         </b-col>
                     </b-row>
                     <hr>
                     <b-row>
-                        <b-col lg="3">
+                        <b-col lg="2">
                             <strong>Energy</strong>
                         </b-col>
-                        <b-col lg="9">
+                        <b-col lg="4" class="text-right">
                             <Amount sym="VTHO">{{account.energy}}</Amount>
                         </b-col>
                     </b-row>
@@ -67,20 +67,17 @@
                             @click="loadTransfers"
                             size="sm"
                             :disabled="transfers.loading"
-                            variant="outline-secondary"
                         >⟳</b-button>
                         <b-button-group size="sm" :disabled="transfers.loading">
                             <b-button
                                 class="px-3"
                                 :disabled="!transfers.canPrev"
                                 @click="transfersPrevPage"
-                                variant="outline-secondary"
                             >&lsaquo;</b-button>
                             <b-button
                                 class="px-3"
                                 :disabled="!transfers.canNext"
                                 @click="transfersNextPage"
-                                variant="outline-secondary"
                             >&rsaquo;</b-button>
                         </b-button-group>
                         <span
@@ -114,20 +111,17 @@
                             @click="loadEvents"
                             size="sm"
                             :disabled="events.loading"
-                            variant="outline-secondary"
                         >⟳</b-button>
                         <b-button-group size="sm" :disabled="events.loading">
                             <b-button
                                 class="px-3"
                                 :disabled="!events.canPrev"
                                 @click="eventsPrevPage"
-                                variant="outline-secondary"
                             >&lsaquo;</b-button>
                             <b-button
                                 class="px-3"
                                 :disabled="!events.canNext"
                                 @click="eventsNextPage"
-                                variant="outline-secondary"
                             >&rsaquo;</b-button>
                         </b-button-group>
                         <span
@@ -191,7 +185,7 @@ export default class Account extends Vue {
         loading: false,
         offset: 0,
         created: false,
-        get canNext() { return this.items && this.items.length === 10 },
+        get canNext() { return this.items && this.items.length === 5 },
         get canPrev() { return this.items && this.offset > 0 },
         get range() {
             if (!this.loading && this.items && this.items.length > 0) {
@@ -206,7 +200,7 @@ export default class Account extends Vue {
         loading: false,
         offset: 0,
         created: false,
-        get canNext() { return this.items && this.items.length === 10 },
+        get canNext() { return this.items && this.items.length === 5 },
         get canPrev() { return this.items && this.offset > 0 },
         get range() {
             if (!this.loading && this.items && this.items.length > 0) {
@@ -249,7 +243,7 @@ export default class Account extends Vue {
             this.events.items = await connex.thor.filter('event')
                 .criteria([{ address: this.address }])
                 .order('desc')
-                .apply(this.events.offset, 10)
+                .apply(this.events.offset, 5)
         } catch (err) {
             this.events.error = err
         } finally {
@@ -268,7 +262,7 @@ export default class Account extends Vue {
             this.transfers.items = await connex.thor.filter('transfer')
                 .criteria([{ sender: this.address }, { recipient: this.address }])
                 .order('desc')
-                .apply(this.transfers.offset, 10)
+                .apply(this.transfers.offset, 5)
         } catch (err) {
             this.transfers.error = err
         } finally {
@@ -277,25 +271,25 @@ export default class Account extends Vue {
     }
 
     private async transfersNextPage() {
-        this.transfers.offset += 10
+        this.transfers.offset += 5
         this.loadTransfers()
     }
 
     private async transfersPrevPage() {
-        if (this.transfers.offset >= 10) {
-            this.transfers.offset -= 10
+        if (this.transfers.offset >= 5) {
+            this.transfers.offset -= 5
             this.loadTransfers()
         }
     }
 
     private async eventsNextPage() {
-        this.events.offset += 10
+        this.events.offset += 5
         this.loadEvents()
     }
 
     private async eventsPrevPage() {
-        if (this.events.offset >= 10) {
-            this.events.offset -= 10
+        if (this.events.offset >= 5) {
+            this.events.offset -= 5
             this.loadEvents()
         }
     }

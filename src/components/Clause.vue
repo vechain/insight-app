@@ -1,16 +1,18 @@
 <template>
     <b-card no-body>
         <b-card-header class="border-bottom-0 pb-0">
-            <div class="d-flex">
+            <div class="d-flex align-items-center">
                 <span style="width:10em;">
                     <b-badge class="text-uppercase">{{type}}</b-badge>
                 </span>
-                <div style="width:15em;">
+                <div>
                     <AccountLink v-if="clause.to" icon :address="clause.to" abbr/>
                     <AccountLink v-else-if="output" icon :address="output.contractAddress" abbr/>
                     <span v-else class="text-monospace">0x??????…????</span>
                 </div>
-                <Amount sym="VET">{{clause.value}}</Amount>
+                <div style="width:10rem;" class="text-right">
+                    <Amount sym="VET">{{clause.value}}</Amount>
+                </div>
                 <b class="ml-auto">#{{index}}</b>
             </div>
         </b-card-header>

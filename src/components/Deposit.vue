@@ -4,14 +4,14 @@
         <hr>
         <b-input-group>
             <b-input-group-prepend>
-                <b-input-group-text style="width:5rem">VET</b-input-group-text>
+                <b-input-group-text style="width:4rem" class="small">VET</b-input-group-text>
             </b-input-group-prepend>
             <b-form-input type="number" v-model="vetAmount.value"/>
         </b-input-group>
         <p class="small text-danger">{{vetAmount.error || '&nbsp;'}}</p>
         <b-input-group class="mt-3">
             <b-input-group-prepend>
-                <b-input-group-text style="width:5rem">VTHO</b-input-group-text>
+                <b-input-group-text style="width:4rem" class="small">VTHO</b-input-group-text>
             </b-input-group-prepend>
             <b-form-input type="number" v-model="vthoAmount.value"/>
         </b-input-group>

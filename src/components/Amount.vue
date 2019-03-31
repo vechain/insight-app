@@ -1,9 +1,9 @@
 <template>
     <span :title="amount +' '+ sym" class="text-monospace">
-        {{pretty}}
+        {{noPretty? amount: pretty}}
         <span
-            class="text-secondary small px-1"
-            style="border-radius:3px;border:1px solid;"
+            class="text-secondary small ml-1"
+            style="white-space: pre"
         >{{sym}}</span>
     </span>
 </template>
@@ -15,6 +15,7 @@ import BigNumber from 'bignumber.js'
 export default class Amount extends Vue {
     @Prop(String) private sym !: string
     @Prop({ type: Number, default: 2 }) private dec !: number
+    @Prop(Boolean) private noPretty!: boolean
     private content = ''
 
     get pretty() {
