@@ -27,17 +27,11 @@
                                 <span>Tools</span>
                             </template>
                             <b-dropdown-item
-                                :href="isMainnet?'https://explore.veforge.com/' : 'https://testnet.veforge.com/'"
+                                v-for="(item,i) in tools"
+                                :key="i"
+                                :href="item.href"
                                 target="_blank"
-                            >VeForge</b-dropdown-item>
-                            <b-dropdown-item
-                                href="https://inspector.vecha.in"
-                                target="_blank"
-                            >Inspector</b-dropdown-item>
-                             <b-dropdown-item
-                                href="https://b32.vecha.in"
-                                target="_blank"
-                            >B32</b-dropdown-item>
+                            >{{item.title}}</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-form v-if="!isHome">
                             <b-input-group>
@@ -89,6 +83,16 @@ export default class App extends Vue {
     }
 
     get isMainnet() { return isMainnet() }
+
+    get tools() {
+        return [
+            { title: 'VeForge', href: isMainnet ? 'https://explore.veforge.com/' : 'https://testnet.veforge.com/' },
+            { title: 'Inspector', href: 'https://inspector.vecha.in' },
+            { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
+            { title: 'B32', href: 'https://b32.vecha.in' }
+
+        ]
+    }
 }
 </script>
 <style lang="scss" scoped>
