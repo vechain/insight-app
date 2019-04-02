@@ -15,8 +15,14 @@
                     <tr class="text-monospace" v-for="(param, i) in decoded.params" :key="i">
                         <td>{{i}}</td>
                         <td>{{param.name}}</td>
-                        <td>{{param.type}}<sup v-if="param.indexed">indexed</sup></td>
-                        <td>{{param.value}}</td>
+                        <td>
+                            {{param.type}}
+                            <sup v-if="param.indexed">indexed</sup>
+                        </td>
+                        <td>
+                            <AccountLink v-if="param.type==='address'" :address="param.value"/>
+                            <template v-else>{{param.value}}</template>
+                        </td>
                     </tr>
                 </template>
                 <tr v-else class="table-borderless">
