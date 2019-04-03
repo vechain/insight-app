@@ -22,6 +22,11 @@
                         <b-col lg="4" class="text-right">
                             <Amount sym="VET ">{{account.balance}}</Amount>
                         </b-col>
+                        <b-col
+                            lg="4"
+                            v-if="price"
+                            class="text-monospace text-muted small"
+                        >≈ ${{account.balance | usd(price.vet)}}</b-col>
                     </b-row>
                     <hr>
                     <b-row>
@@ -31,6 +36,11 @@
                         <b-col lg="4" class="text-right">
                             <Amount sym="VTHO">{{account.energy}}</Amount>
                         </b-col>
+                        <b-col
+                            lg="4"
+                            v-if="price"
+                            class="text-monospace text-muted small"
+                        >≈ ${{account.energy | usd(price.vtho)}}</b-col>
                     </b-row>
                     <template v-if="account.hasCode">
                         <hr>
@@ -208,6 +218,9 @@ export default class Account extends Vue {
             }
             return null
         }
+    }
+    get price() {
+        return this.$store.state.price
     }
 
     @Watch('$store.state.chainStatus')

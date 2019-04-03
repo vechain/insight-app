@@ -38,3 +38,8 @@ Vue.filter('checksum', (val: string) => {
     }
 })
 
+Vue.filter('usd', (price: number, wei: string) => {
+    return new BigNumber(wei).times(price).div('1' + '0'.repeat(18))
+        .toFormat(2)
+})
+

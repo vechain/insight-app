@@ -24,6 +24,19 @@
                     </b-button>
                 </b-input-group-append>
             </b-input-group>
+            <div
+                v-if="price"
+                class="small d-flex justify-content-center mt-4 mb-n5 text-monospace font-weight-bold"
+            >
+                <div class="mr-5">
+                    1 VET ≈
+                    <span>${{price.vet.toFixed(5)}}</span>
+                </div>
+                <div>
+                    1 VTHO ≈
+                    <span>${{price.vtho.toFixed(5)}}</span>
+                </div>
+            </div>
         </b-jumbotron>
         <b-container>
             <b-row>
@@ -74,21 +87,13 @@
                             >
                                 <b-row class="align-items-center">
                                     <b-col cols="5">
-                                        <AccountLink
-                                            icon
-                                            :address="t.sender"
-                                            abbr
-                                        />
+                                        <AccountLink icon :address="t.sender" abbr/>
                                     </b-col>
                                     <b-col cols="2">
                                         <SvgIcon name="arrow-right" class="flex-fill"/>
                                     </b-col>
                                     <b-col cols="5">
-                                        <AccountLink
-                                            icon
-                                            :address="t.recipient"
-                                            abbr
-                                        />
+                                        <AccountLink icon :address="t.recipient" abbr/>
                                     </b-col>
                                 </b-row>
                                 <div>
@@ -117,6 +122,10 @@ export default class Home extends Vue {
 
     get head(): Connex.Thor.Status['head'] {
         return this.$store.state.chainStatus.head
+    }
+
+    get price() {
+        return this.$store.state.price
     }
 
     @Watch('head')
