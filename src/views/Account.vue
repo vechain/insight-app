@@ -219,9 +219,7 @@ export default class Account extends Vue {
             return null
         }
     }
-    get price() {
-        return this.$store.state.price
-    }
+    get price() { return this.$store.state.price }
 
     @Watch('$store.state.chainStatus')
     private async reload() {

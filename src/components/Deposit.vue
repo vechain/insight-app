@@ -6,17 +6,20 @@
             <b-input-group-prepend>
                 <b-input-group-text style="width:4rem" class="small">VET</b-input-group-text>
             </b-input-group-prepend>
-            <b-form-input type="number" v-model="vetAmount.value"/>
+            <b-form-input type="number" v-model="vet.value"/>
         </b-input-group>
-        <p class="small text-danger">{{vetAmount.error || '&nbsp;'}}</p>
+        <p class="small text-muted" v-if="vet.wei && price">≈ ${{vet.wei | usd(price.vet)}}</p>
+        <p class="small text-muted" v-else-if="vet.wei">≈ $--</p>
+        <p class="small text-danger" v-else>Invalid amount</p>
         <b-input-group class="mt-3">
             <b-input-group-prepend>
                 <b-input-group-text style="width:4rem" class="small">VTHO</b-input-group-text>
             </b-input-group-prepend>
-            <b-form-input type="number" v-model="vthoAmount.value"/>
+            <b-form-input type="number" v-model="vtho.value"/>
         </b-input-group>
-        <div class="small text-danger">{{vthoAmount.error || '&nbsp;'}}</div>
-
+        <p class="small text-muted" v-if="vtho.wei && price">≈ ${{vtho.wei | usd(price.vtho)}}</p>
+        <p class="small text-muted" v-else-if="vtho.wei">≈ $--</p>
+        <p class="small text-danger" v-else>Invalid amount</p>
         <hr>
         <div class="text-right">
             <span class="small text-danger text-right mr-3">{{error ? error.message : ''}}</span>
@@ -29,65 +32,68 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
+import BigNumber from 'bignumber.js'
+
+const e18 = new BigNumber('1' + '0'.repeat(18))
+
+class Value {
+    public value = ''
+    get wei() {
+        const str = new BigNumber(this.value || 0)
+            .times(e18)
+            .integerValue(0)
+            .toString(10)
+
+        if (/^[0-9]+$/.test(str)) {
+            return str
+        }
+        return null
+    }
+}
 
 @Component
 export default class Deposit extends Vue {
     @Prop(String) private address!: string
 
-    private vetAmount = {
-        value: '',
-        error: ''
-    }
-    private vthoAmount = {
-        value: '',
-        error: ''
-    }
+    private vet = new Value()
+    private vtho = new Value()
 
     private error = null as Error | null
 
+    get price() { return this.$store.state.price }
+
     private async send() {
-        this.vetAmount.error = ''
-        this.vthoAmount.error = ''
         this.error = null
 
         try {
+            if (!this.vet.wei || !this.vtho.wei) {
+                return
+            }
+
             const message: Connex.Vendor.SigningService.TxMessage = []
-            const vet = toWei(this.vetAmount.value)
-            const vtho = toWei(this.vthoAmount.value)
-            if (!/^[0-9]+$/.test(vet)) {
-                this.vetAmount.error = 'Invalid amount'
-                return
-            }
-            if (!/^[0-9]+$/.test(vtho)) {
-                this.vthoAmount.error = 'Invalid amount'
-                return
-            }
-            if (vet !== '0') {
+            if (this.vet.wei !== '0') {
                 message.push({
                     to: this.address,
-                    value: vet,
+                    value: this.vet.wei,
                     data: '0x'
                 })
             }
-            if (vtho !== '0') {
+            if (this.vtho.wei !== '0') {
                 const clause = connex.thor
                     .account(energyContractAddress)
                     .method(energyTransferJsonABI)
-                    .asClause(this.address, vtho)
+                    .asClause(this.address, this.vtho.wei)
                 message.push({
                     ...clause,
-                    comment: `Transfer ${this.vthoAmount.value} VTHO`
+                    comment: `Transfer ${this.vtho.value} VTHO`
                 })
             }
             if (message.length > 0) {
                 await connex.vendor.sign('tx')
                     .request(message)
 
-                this.vetAmount.value = ''
-                this.vetAmount.error = ''
-
-                this.vthoAmount.value = ''
-                this.vthoAmount.error = ''
+                this.vet.value = ''
+                this.vtho.value = ''
                 this.error = null;
 
                 (this.$refs.popover as any).show()
@@ -96,16 +102,6 @@ export default class Deposit extends Vue {
             this.error = err
         }
     }
-}
-
-
-import BigNumber from 'bignumber.js'
-const e18 = new BigNumber('1' + '0'.repeat(18))
-function toWei(amount: string) {
-    return new BigNumber(amount || 0)
-        .times(e18)
-        .integerValue(0)
-        .toString(10)
 }
 
 const energyContractAddress = '0x0000000000000000000000000000456E65726779'
