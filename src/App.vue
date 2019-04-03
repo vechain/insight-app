@@ -5,6 +5,19 @@
                 <b-navbar-brand href="#/">
                     <span class="text-serif h4">Insight</span>
                 </b-navbar-brand>
+                <b-navbar-nav class="small text-monospace ml-5 mr-auto">
+                    <b-nav-text v-if="price" class="small py-0">
+                        <div>
+                            &nbsp;VET
+                            <span class="text-light">${{price.vet.toFixed(5)}}</span>
+                        </div>
+                        <div>
+                            VTHO
+                            <span class="text-light">${{price.vtho.toFixed(5)}}</span>
+                        </div>
+                    </b-nav-text>
+                </b-navbar-nav>
+
                 <b-navbar-toggle target="nav_collapse"/>
                 <b-collapse is-nav id="nav_collapse">
                     <b-navbar-nav class="ml-auto">
@@ -72,6 +85,7 @@ export default class App extends Vue {
 
     get routeName() { return this.$route.name }
     get isHome() { return this.routeName === 'home' }
+    get price() { return this.$store.state.price }
 
     private search() {
         const str = this.searchString.trim()
