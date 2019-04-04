@@ -30,6 +30,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 
+const pageSize = 5
+
 @Component
 export default class AccountEvents extends Vue {
 
@@ -39,7 +41,7 @@ export default class AccountEvents extends Vue {
     private loading = false
     private offset = 0
 
-    get canNext() { return this.items && this.items.length === 5 }
+    get canNext() { return this.items && this.items.length === pageSize }
     get canPrev() { return this.items && this.offset > 0 }
     get range() {
         if (!this.loading && this.items && this.items.length > 0) {
@@ -49,13 +51,13 @@ export default class AccountEvents extends Vue {
     }
 
     private nextPage() {
-        this.offset += 5
+        this.offset += pageSize
         this.reload()
     }
 
     private prevPage() {
-        if (this.offset >= 5) {
-            this.offset -= 5
+        if (this.offset >= pageSize) {
+            this.offset -= pageSize
             this.reload()
         }
     }
@@ -70,7 +72,7 @@ export default class AccountEvents extends Vue {
             this.items = await connex.thor.filter('event')
                 .criteria([{ address: this.address }])
                 .order('desc')
-                .apply(this.offset, 5)
+                .apply(this.offset, pageSize)
         } catch (err) {
             this.error = err
         } finally {

@@ -28,6 +28,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 
+const pageSize = 10
+
 @Component
 export default class AccountTransfers extends Vue {
     get address() { return this.$route.params.address.toLowerCase() }
@@ -36,7 +38,7 @@ export default class AccountTransfers extends Vue {
     private error = null as Error | null
     private loading = false
     private offset = 0
-    get canNext() { return this.items && this.items.length === 5 }
+    get canNext() { return this.items && this.items.length === pageSize }
     get canPrev() { return this.items && this.offset > 0 }
     get range() {
         if (!this.loading && this.items && this.items.length > 0) {
@@ -46,12 +48,12 @@ export default class AccountTransfers extends Vue {
     }
 
     private nextPage() {
-        this.offset += 5
+        this.offset += pageSize
         this.reload()
     }
     private prevPage() {
-        if (this.offset >= 5) {
-            this.offset -= 5
+        if (this.offset >= pageSize) {
+            this.offset -= pageSize
             this.reload()
         }
     }
@@ -66,7 +68,7 @@ export default class AccountTransfers extends Vue {
             this.items = await connex.thor.filter('transfer')
                 .criteria([{ sender: this.address }, { recipient: this.address }])
                 .order('desc')
-                .apply(this.offset, 5)
+                .apply(this.offset, pageSize)
         } catch (err) {
             this.error = err
         } finally {
