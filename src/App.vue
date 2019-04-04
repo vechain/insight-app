@@ -69,8 +69,8 @@
         </b-navbar>
         <div class="py-4">
             <transition name="fade" mode="out-in">
-                <keep-alive exclude="Home,Search">
-                    <router-view :key="$route.fullPath"/>
+                <keep-alive exclude="Home,Search,Account">
+                    <router-view :key="routeViewKey"/>
                 </keep-alive>
             </transition>
         </div>
@@ -106,6 +106,13 @@ export default class App extends Vue {
             { title: 'B32', href: 'https://b32.vecha.in' }
 
         ]
+    }
+
+    get routeViewKey() {
+        if (this.$route.path.startsWith('/accounts/')) {
+            return `accounts-${this.$route.params.address.toLowerCase()}`
+        }
+        return this.$route.fullPath
     }
 }
 </script>

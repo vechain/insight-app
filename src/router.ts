@@ -6,6 +6,11 @@ import Block from './views/Block.vue'
 import Tx from './views/Tx.vue'
 import Search from './views/Search.vue'
 
+import AccountSummary from './views/AccountSummary.vue'
+import AccountEvents from './views/AccountEvents.vue'
+import AccountTransfers from './views/AccountTransfers.vue'
+import AccountDeposit from './views/AccountDeposit.vue'
+
 Vue.use(Router)
 
 export default new Router({
@@ -28,8 +33,21 @@ export default new Router({
         },
         {
             path: '/accounts/:address',
-            name: 'account',
-            component: Account
+            component: Account,
+            children: [{
+                name: 'account',
+                path: '',
+                component: AccountSummary
+            }, {
+                path: 'transfers',
+                component: AccountTransfers
+            }, {
+                path: 'events',
+                component: AccountEvents
+            }, {
+                path: 'deposit',
+                component: AccountDeposit
+            }]
         },
         {
             path: '/search',
