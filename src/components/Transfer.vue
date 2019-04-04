@@ -1,25 +1,38 @@
 <template>
-    <div v-if="owner" class="d-flex align-items-center">
-        <SvgIcon
-            style="transform: scale(1.4)"
-            :name="isIn?'arrow-left':'arrow-right'"
-            :class="isIn?'text-success':'text-danger'"
-        />
-        <AccountLink :address="opposite" abbr icon class="mx-4"/>
-        <div style="width:11rem;" class="text-right">
+    <b-row v-if="owner">
+        <b-col lg="4">
+            <SvgIcon
+                style="transform: scale(1.4)"
+                :name="isIn?'arrow-left':'arrow-right'"
+                :class="isIn?'text-success':'text-danger'"
+                class="mr-4"
+            />
+            <AccountLink :address="opposite" abbr icon/>
+        </b-col>
+        <b-col lg="3" class="text-right">
             {{isIn?'+':'-'}}
             <Amount sym="VET">{{item.amount}}</Amount>
-        </div>
-        <div class="flex-grow-1 text-right text-muted small">{{item.meta.blockTimestamp|date}}</div>
-    </div>
-    <div v-else class="d-flex align-items-center">
-        <AccountLink :address="item.sender" abbr icon/>
-        <SvgIcon name="arrow-right" class="mx-3"/>
-        <AccountLink :address="item.recipient" abbr icon/>
-        <div style="width:10rem;" class="text-right">
+        </b-col>
+        <b-col lg="5" class="text-right text-muted small">{{item.meta.blockTimestamp|date}}</b-col>
+    </b-row>
+    <b-row v-else>
+        <b-col lg="8">
+            <b-row>
+                <b-col cols="5">
+                    <AccountLink :address="item.sender" abbr icon/>
+                </b-col>
+                <b-col cols="2">
+                    <SvgIcon name="arrow-right" style="font-size:130%"/>
+                </b-col>
+                <b-col cols="5">
+                    <AccountLink :address="item.recipient" abbr icon/>
+                </b-col>
+            </b-row>
+        </b-col>
+        <b-col lg="4" class="text-right">
             <Amount sym="VET">{{item.amount}}</Amount>
-        </div>
-    </div>
+        </b-col>
+    </b-row>
 </template>
 <script lang="ts">
 import { Vue, Component, Prop } from 'vue-property-decorator'
