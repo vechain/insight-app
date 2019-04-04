@@ -9,7 +9,7 @@
             <b-form-input type="number" v-model="vet.value"/>
         </b-input-group>
         <p class="small text-muted" v-if="vet.wei && price">≈ ${{vet.wei | usd(price.vet)}}</p>
-        <p class="small text-muted" v-else-if="vet.wei">≈ $--</p>
+        <p class="small text-muted" v-else-if="vet.wei">&nbsp;</p>
         <p class="small text-danger" v-else>Invalid amount</p>
         <b-input-group class="mt-3">
             <b-input-group-prepend>
@@ -18,12 +18,16 @@
             <b-form-input type="number" v-model="vtho.value"/>
         </b-input-group>
         <p class="small text-muted" v-if="vtho.wei && price">≈ ${{vtho.wei | usd(price.vtho)}}</p>
-        <p class="small text-muted" v-else-if="vtho.wei">≈ $--</p>
+        <p class="small text-muted" v-else-if="vtho.wei">&nbsp;</p>
         <p class="small text-danger" v-else>Invalid amount</p>
         <hr>
         <div class="text-right">
             <span class="small text-danger text-right mr-3">{{error ? error.message : ''}}</span>
-            <b-button variant="primary" @click="send">Send</b-button>
+            <b-button
+                variant="success"
+                @click="send"
+                :disabled="(!vet.wei || vet.wei==='0') && (!vtho.wei || vtho.wei==='0')"
+            >Send</b-button>
         </div>
         <b-modal ok-only ref="popover">
             <p>Successfully sent!</p>
