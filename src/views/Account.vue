@@ -69,6 +69,23 @@
                             </b-col>
                         </b-row>
                     </template>
+                    <hr>
+                    <b-row class="small">
+                        <b-col lg="2">
+                            <em>Master</em>
+                        </b-col>
+                        <b-col lg="4" v-if="master">
+                            <span v-if="master.error" class="text-warning">{{master.error}}</span>
+                            <AccountLink v-else :address="master.addr" abbr/>
+                        </b-col>
+                        <b-col lg="2" class="border-left">
+                            <em>Sponsor</em>
+                        </b-col>
+                        <b-col lg="4" v-if="sponsor">
+                            <span v-if="sponsor.error" class="text-warning">{{sponsor.error}}</span>
+                            <AccountLink v-else :address="sponsor.addr" abbr/>
+                        </b-col>
+                    </b-row>
                 </b-tab>
                 <b-tab title="Transfers" @click="loadTransfers">
                     <p>
@@ -181,6 +198,14 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 export default class Account extends Vue {
     private tab = 0
     private address = ''
+    private sponsor = null as {
+        addr?: string,
+        error?: string
+    } | null
+    private master = null as {
+        addr?: string,
+        error?: string
+    } | null
 
     private account: Connex.Thor.Account | null = null
     private error: Error | null = null
@@ -223,11 +248,45 @@ export default class Account extends Vue {
 
     @Watch('$store.state.chainStatus')
     private async reload() {
+        this.loadBalance()
+        this.loadMaster()
+        this.loadSponsor()
+    }
+
+    private async loadBalance() {
+        const acc = connex.thor.account(this.address)
         try {
-            const acc = await connex.thor.account(this.address).get()
-            this.account = acc
+            this.account = await acc.get()
         } catch (err) {
             this.error = err
+        }
+    }
+    private async loadMaster() {
+        try {
+            const out = await connex.thor
+                .account(prototypeAddress)
+                .method(masterJsonABI)
+                .cache([this.address])
+                .call(this.address)
+
+            const addr = out.decoded![0]
+            this.master = { addr: addr === zeroAddress ? 'N/A' : addr }
+        } catch (err) {
+            this.master = { error: err.message }
+        }
+    }
+    private async loadSponsor() {
+        try {
+            const out = await connex.thor
+                .account(prototypeAddress)
+                .method(currentSponsorJsonABI)
+                .cache([this.address])
+                .call(this.address)
+
+            const addr = out.decoded![0]
+            this.sponsor = { addr: addr === zeroAddress ? 'N/A' : addr }
+        } catch (err) {
+            this.sponsor = { error: err.message }
         }
     }
 
@@ -312,4 +371,46 @@ export default class Account extends Vue {
     }
 }
 
+const prototypeAddress = '0x000000000000000000000050726f746f74797065'
+const zeroAddress = '0x0000000000000000000000000000000000000000'
+
+const masterJsonABI = {
+    constant: true,
+    inputs: [
+        {
+            name: '_self',
+            type: 'address'
+        }
+    ],
+    name: 'master',
+    outputs: [
+        {
+            name: '',
+            type: 'address'
+        }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+}
+
+const currentSponsorJsonABI = {
+    constant: true,
+    inputs: [
+        {
+            name: '_self',
+            type: 'address'
+        }
+    ],
+    name: 'currentSponsor',
+    outputs: [
+        {
+            name: '',
+            type: 'address'
+        }
+    ],
+    payable: false,
+    stateMutability: 'view',
+    type: 'function'
+}
 </script>
