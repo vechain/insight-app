@@ -63,14 +63,14 @@
                 <em>Master</em>
             </b-col>
             <b-col lg="4" v-if="master">
-                <span v-if="master.error" class="text-warning">{{master.error}}</span>
+                <span v-if="master.error" class="text-warning">{{master.error.message}}</span>
                 <AccountLink v-else :address="master.addr" abbr/>
             </b-col>
             <b-col lg="2" class="border-left">
                 <em>Sponsor</em>
             </b-col>
             <b-col lg="4" v-if="sponsor">
-                <span v-if="sponsor.error" class="text-warning">{{sponsor.error}}</span>
+                <span v-if="sponsor.error" class="text-warning">{{sponsor.error.message}}</span>
                 <AccountLink v-else :address="sponsor.addr" abbr/>
             </b-col>
         </b-row>
