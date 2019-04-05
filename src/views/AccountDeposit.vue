@@ -57,6 +57,7 @@ class Value {
 
 @Component
 export default class AccountDeposit extends Vue {
+    private viewName = 'deposit'
 
     get address() { return this.$route.params.address.toLowerCase() }
     private vet = new Value()

@@ -32,6 +32,8 @@ const pageSize = 10
 
 @Component
 export default class AccountTransfers extends Vue {
+    private viewName = 'transfers'
+
     get address() { return this.$route.params.address.toLowerCase() }
 
     private items = null as Connex.Thor.Transfer[] | null

@@ -8,7 +8,6 @@ import VeForgeLink from './VeForgeLink.vue'
 import InputData from './InputData.vue'
 import Ident from './Ident.vue'
 import SvgIcon from './SvgIcon.vue'
-import Deposit from './Deposit.vue'
 import Amount from './Amount.vue'
 import Decoded from './Decoded.vue'
 
@@ -23,6 +22,5 @@ Vue.component('VeForgeLink', VeForgeLink)
 Vue.component('InputData', InputData)
 Vue.component('Ident', Ident)
 Vue.component('SvgIcon', SvgIcon)
-Vue.component('Deposit', Deposit)
 Vue.component('Amount', Amount)
 Vue.component('Decoded', Decoded)

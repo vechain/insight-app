@@ -8,15 +8,15 @@
                 <VeForgeLink btn type="acc" :arg="address" class="float-right"/>
             </b-card-header>
             <b-tabs card v-model="tab">
-                <b-tab title="Summary" no-body @click="clickTab('./')"/>
-                <b-tab title="Transfers" no-body @click="clickTab('transfers')"/>
-                <b-tab title="Events" no-body @click="clickTab('events')"/>
-                <b-tab title="Deposit" no-body @click="clickTab('deposit')"/>
+                <b-tab title="Summary" no-body/>
+                <b-tab title="Transfers" no-body/>
+                <b-tab title="Events" no-body/>
+                <b-tab title="Deposit" no-body/>
             </b-tabs>
             <b-card-body>
                 <transition name="fade" mode="out-in">
                     <keep-alive>
-                        <router-view :key="$route.fullPath"/>
+                        <router-view :key="$route.fullPath" ref="view"/>
                     </keep-alive>
                 </transition>
             </b-card-body>
@@ -31,22 +31,31 @@ export default class Account extends Vue {
     private tab = 0
     get address() { return this.$route.params.address.toLowerCase() }
 
-    private clickTab(tab: string) {
+    @Watch('tab')
+    private tabChanged() {
+        let tabName = ''
+        switch (this.tab) {
+            case 1: tabName = 'transfers'; break
+            case 2: tabName = 'events'; break
+            case 3: tabName = 'deposit'; break
+        }
         this.$router.replace({
-            path: tab
+            path: `/accounts/${this.address}/${tabName}`
         })
     }
 
     private created() {
         this.$ga.page('/insight/account')
 
-        const path = this.$route.path
-        if (path.endsWith('/transfers')) {
-            this.tab = 1
-        } else if (path.endsWith('/events')) {
-            this.tab = 2
-        } else if (path.endsWith('/deposit')) {
-            this.tab = 3
+    }
+    private mounted() {
+        const viewName = (this.$refs.view as any).viewName
+
+        switch (viewName) {
+            case 'transfers': this.tab = 1; break
+            case 'events': this.tab = 2; break
+            case 'deposit': this.tab = 3; break
+            default: this.tab = 0; break
         }
     }
 }

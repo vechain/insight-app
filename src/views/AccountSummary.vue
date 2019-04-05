@@ -89,6 +89,8 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 
 @Component
 export default class AccountSummary extends Vue {
+    private viewName = 'summary'
+
     get address() { return this.$route.params.address.toLowerCase() }
     get price() { return this.$store.state.price }
     private account = {
