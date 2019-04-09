@@ -28,14 +28,16 @@ export default class Search extends Vue {
         } else if (/^0x[0-9-a-f]{64}$/i.test(str)) {
             // bytes32
             try {
-                const [block, tx] = await Promise.all([
-                    connex.thor.block(str).get(),
-                    connex.thor.transaction(str).get()
-                ])
-
+                const block = await connex.thor.block(str).get()
                 if (block) {
                     return this.$router.replace({ name: 'block', params: { id: block.id } })
                 }
+            } catch (err) {
+                this.error = err
+            }
+            this.error = null
+            try {
+                const tx = await connex.thor.transaction(str).get()
                 if (tx) {
                     return this.$router.replace({ name: 'tx', params: { id: tx.id } })
                 }
