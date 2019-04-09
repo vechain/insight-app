@@ -1,5 +1,9 @@
 <template>
-    <div v-if="isValid" class="d-inline-flex align-items-center" :title="owned?'Owned Account':''">
+    <div
+        v-if="isValid"
+        class="d-inline-flex align-items-center text-break"
+        :title="owned?'Owned Account':''"
+    >
         <Ident
             v-if="icon"
             class="mr-2"
