@@ -129,10 +129,14 @@ export default class AccountSummary extends Vue {
     }
     private async loadMaster() {
         try {
-            const out = await connex.thor
+            const method = connex.thor
                 .account(prototypeAddress)
                 .method(masterJsonABI)
-                .cache([this.address])
+
+            if (method.cache) {
+                method.cache([this.address])
+            }
+            const out = await method
                 .call(this.address)
 
             const addr = out.decoded![0]
@@ -144,10 +148,15 @@ export default class AccountSummary extends Vue {
     }
     private async loadSponsor() {
         try {
-            const out = await connex.thor
+            const method = connex.thor
                 .account(prototypeAddress)
                 .method(currentSponsorJsonABI)
-                .cache([this.address])
+
+            if (method.cache) {
+                method.cache([this.address])
+            }
+
+            const out = await method
                 .call(this.address)
 
             const addr = out.decoded![0]
