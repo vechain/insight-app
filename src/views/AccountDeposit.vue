@@ -1,5 +1,5 @@
 <template>
-    <div style="width:30rem;" class="mx-auto">
+    <div style="max-width:30rem;" class="mx-auto">
         <p>Send VET and VTHO to this account</p>
         <hr>
         <b-input-group>
