@@ -114,6 +114,27 @@ export default class App extends Vue {
         }
         return this.$route.fullPath
     }
+
+    @Watch('$route.path')
+    private routed() {
+        const name = this.$route.name
+        const params = this.$route.params
+
+        let subTitle
+        if (this.$route.path.startsWith('/accounts/')) {
+            subTitle = 'Account ' + this.$options.filters!.checksum(params.address)
+        } else if (name === 'tx') {
+            subTitle = 'Tx ' + params.id
+        } else if (name === 'block') {
+            subTitle = 'Block ' + params.id
+        } else if (name === 'search') {
+            subTitle = 'Search'
+        }
+        document.title = subTitle ? `Insight | ${subTitle}` : 'Insight'
+    }
+    private created() {
+        this.routed()
+    }
 }
 </script>
 <style lang="scss" scoped>
