@@ -11,7 +11,7 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
-@Component
+@Component({ name: 'Search' })
 export default class Search extends Vue {
     private error = null as Error | null
     private async reload() {

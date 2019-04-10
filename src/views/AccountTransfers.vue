@@ -30,10 +30,8 @@ import { Vue, Component } from 'vue-property-decorator'
 
 const pageSize = 10
 
-@Component
+@Component({ name: 'AccountTransfers' })
 export default class AccountTransfers extends Vue {
-    private viewName = 'transfers'
-
     private address = ''
 
     private items = null as Connex.Thor.Transfer[] | null

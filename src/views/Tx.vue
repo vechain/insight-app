@@ -167,7 +167,7 @@ import { Vue, Component } from 'vue-property-decorator'
 import BigNumber from 'bignumber.js'
 
 
-@Component
+@Component({ name: 'Tx' })
 export default class Tx extends Vue {
     private error: Error | null = null
     private tx: Connex.Thor.Transaction | null = null

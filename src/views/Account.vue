@@ -26,15 +26,15 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
-@Component
+@Component({ name: 'Account' })
 export default class Account extends Vue {
     private tab = 0
     private address = ''
 
     @Watch('tab')
-    private tabChanged() {
+    private tabChanged(newTab: number) {
         let tabName = ''
-        switch (this.tab) {
+        switch (newTab) {
             case 1: tabName = 'transfers'; break
             case 2: tabName = 'events'; break
             case 3: tabName = 'deposit'; break
@@ -47,17 +47,18 @@ export default class Account extends Vue {
     private created() {
         this.$ga.page('/insight/account')
         this.address = this.$route.params.address.toLowerCase()
-
     }
     private mounted() {
-        const viewName = (this.$refs.view as any).viewName
-
-        switch (viewName) {
-            case 'transfers': this.tab = 1; break
-            case 'events': this.tab = 2; break
-            case 'deposit': this.tab = 3; break
-            default: this.tab = 0; break
-        }
+        // setTimeout is needed: weird bug that this moment tabs is not fully loaded
+        setTimeout(() => {
+            const name = (this.$refs.view as any).$options.name
+            switch (name) {
+                case 'AccountTransfers': this.tab = 1; break
+                case 'AccountEvents': this.tab = 2; break
+                case 'AccountDeposit': this.tab = 3; break
+                default: this.tab = 0; break
+            }
+        }, 0)
     }
 }
 </script>

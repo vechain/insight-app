@@ -129,7 +129,7 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 
-@Component
+@Component({ name: 'Block' })
 export default class Block extends Vue {
     private block: Connex.Thor.Block | null = null
     private error: Error | null = null

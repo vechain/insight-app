@@ -32,10 +32,8 @@ import { Vue, Component } from 'vue-property-decorator'
 
 const pageSize = 5
 
-@Component
+@Component({ name: 'AccountEvents' })
 export default class AccountEvents extends Vue {
-    private viewName = 'events'
-
     private address = ''
     private items = null as Connex.Thor.Event[] | null
     private error = null as Error | null

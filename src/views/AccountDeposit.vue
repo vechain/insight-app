@@ -55,10 +55,8 @@ class Value {
     }
 }
 
-@Component
+@Component({ name: 'AccountDeposit' })
 export default class AccountDeposit extends Vue {
-    private viewName = 'deposit'
-
     private address = ''
     private vet = new Value()
     private vtho = new Value()

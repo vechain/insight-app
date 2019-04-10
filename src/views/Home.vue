@@ -99,7 +99,8 @@
 
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-@Component
+
+@Component({ name: 'Home' })
 export default class Home extends Vue {
     private recentBlocks: Connex.Thor.Block[] | null = null
     private recentTransfers: Connex.Thor.Transfer[] | null = null
