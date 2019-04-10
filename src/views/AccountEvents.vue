@@ -36,7 +36,7 @@ const pageSize = 5
 export default class AccountEvents extends Vue {
     private viewName = 'events'
 
-    get address() { return this.$route.params.address.toLowerCase() }
+    private address = ''
     private items = null as Connex.Thor.Event[] | null
     private error = null as Error | null
     private loading = false
@@ -82,6 +82,7 @@ export default class AccountEvents extends Vue {
     }
 
     private created() {
+        this.address = this.$route.params.address.toLowerCase()
         this.reload()
     }
 

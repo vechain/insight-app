@@ -69,7 +69,7 @@
         </b-navbar>
         <div class="py-4">
             <transition name="fade" mode="out-in">
-                <keep-alive exclude="Home,Search,Account">
+                <keep-alive include="Block,Tx">
                     <router-view :key="routeViewKey"/>
                 </keep-alive>
             </transition>

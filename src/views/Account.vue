@@ -29,7 +29,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 @Component
 export default class Account extends Vue {
     private tab = 0
-    get address() { return this.$route.params.address.toLowerCase() }
+    private address = ''
 
     @Watch('tab')
     private tabChanged() {
@@ -46,6 +46,7 @@ export default class Account extends Vue {
 
     private created() {
         this.$ga.page('/insight/account')
+        this.address = this.$route.params.address.toLowerCase()
 
     }
     private mounted() {

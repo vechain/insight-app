@@ -59,13 +59,17 @@ class Value {
 export default class AccountDeposit extends Vue {
     private viewName = 'deposit'
 
-    get address() { return this.$route.params.address.toLowerCase() }
+    private address = ''
     private vet = new Value()
     private vtho = new Value()
 
     private error = null as Error | null
 
     get price() { return this.$store.state.price }
+
+    private created() {
+        this.address = this.$route.params.address.toLowerCase()
+    }
 
     private async send() {
         this.error = null

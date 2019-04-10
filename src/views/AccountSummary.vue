@@ -91,7 +91,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 export default class AccountSummary extends Vue {
     private viewName = 'summary'
 
-    get address() { return this.$route.params.address.toLowerCase() }
+    private address = ''
     get price() { return this.$store.state.price }
     private account = {
         entity: null as Connex.Thor.Account | null,
@@ -179,6 +179,7 @@ export default class AccountSummary extends Vue {
         }
     }
     private created() {
+        this.address = this.$route.params.address.toLowerCase()
         this.reload()
     }
 }
