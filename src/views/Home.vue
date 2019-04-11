@@ -34,7 +34,7 @@
                     </h5>
                     <transition-group tag="div" name="stack" v-if="recentBlocks">
                         <b-card v-for="b in recentBlocks" :key="b.id" class="stack-item mb-3">
-                            <b-row>
+                            <b-row no-gutters>
                                 <b-col cols="4">
                                     <div>
                                         <router-link :to="{name:'block', params: {id: b.id}}">
@@ -50,7 +50,7 @@
                                     <div>{{b.transactions.length}} Txs</div>
                                     <div class="small text-truncate">{{b.gasUsed | locale}} Gas</div>
                                 </b-col>
-                                <b-col cols="4" title="Signer">
+                                <b-col cols="4" title="Signer" class="text-right">
                                     <SvgIcon class="text-secondary mr-2" name="shield"/>
                                     <AccountLink :address="b.signer" abbr class="text-truncate"/>
                                 </b-col>
@@ -63,7 +63,7 @@
                         Recent Transfers
                         <b-spinner v-if="!recentTransfers" type="grow" small class="ml-3"/>
                     </h5>
-                    <b-list-group v-if="recentTransfers">
+                    <b-list-group v-if="recentTransfers" style="font-size:90%">
                         <transition-group tag="div" name="stack">
                             <b-list-group-item
                                 style="font-size:95%"
@@ -72,12 +72,12 @@
                                 :to="{name: 'tx', params:{id: t.meta.txID}}"
                                 class="stack-item"
                             >
-                                <b-row class="align-items-center">
+                                <b-row class="align-items-center" no-gutters>
                                     <b-col cols="5">
                                         <AccountLink icon :address="t.sender" abbr/>
                                     </b-col>
                                     <b-col cols="2">
-                                        <SvgIcon name="arrow-right" class="flex-fill"/>
+                                        <SvgIcon name="arrow-right"/>
                                     </b-col>
                                     <b-col cols="5">
                                         <AccountLink icon :address="t.recipient" abbr/>
