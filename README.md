@@ -12,6 +12,8 @@
 
 ![Transaction Details](./screenshots/txdetails.png)
 
+![Account View](./screenshots/account.png)
+
 ## Project setup
 ```
 npm install
