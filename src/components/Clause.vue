@@ -1,6 +1,6 @@
 <template>
     <b-card no-body>
-        <b-card-header class="border-bottom-0 pb-0">
+        <b-card-header class="border-bottom-0" :class="showTabs?'pb-0':''">
             <div class="d-flex align-items-center">
                 <span style="width:10em;">
                     <b-badge class="text-uppercase">{{type}}</b-badge>
@@ -16,12 +16,7 @@
                 <b class="ml-auto">#{{index}}</b>
             </div>
         </b-card-header>
-        <b-tabs
-            v-model="tab"
-            card
-            no-key-nav
-            v-if="type!=='transfer' || events.length || transfers.length"
-        >
+        <b-tabs v-model="tab" card no-key-nav v-if="showTabs">
             <b-tab title="Input Data">
                 <InputData :clause="clause" v-if="type!=='transfer'"/>
                 <div v-else class="text-center">No Data</div>
@@ -64,6 +59,7 @@ export default class Clause extends Vue {
 
     get events() { return this.output ? this.output.events : [] }
     get transfers() { return this.output ? this.output.transfers : [] }
+    get showTabs() { return this.type !== 'transfer' || this.events.length || this.transfers.length }
     get type() {
         if (this.clause.to) {
             if (this.clause.data === '0x') {

@@ -77,6 +77,16 @@
                     <hr>
                     <b-row>
                         <b-col lg="2">
+                            <strong>Features</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <b-badge v-if="vip191Supported" variant="info">VIP-191</b-badge>
+                            <div v-else>None</div>
+                        </b-col>
+                    </b-row>
+                    <hr>
+                    <b-row>
+                        <b-col lg="2">
                             <strong>Signer</strong>
                         </b-col>
                         <b-col lg="10">
@@ -136,6 +146,8 @@ export default class Block extends Vue {
 
     private id = ''
     get txs() { return this.block!.transactions }
+    // tslint:disable-next-line:no-bitwise
+    get vip191Supported() { return !!(((this.block as any).txsFeatures || 0) & 1) }
 
     private async reload() {
         this.block = null

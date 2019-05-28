@@ -40,7 +40,15 @@
                         </b-col>
                     </b-row>
                     <hr>
-
+                    <b-row>
+                        <b-col lg="2">
+                            <strong>Origin</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <AccountLink :address="tx.origin" icon/>
+                        </b-col>
+                    </b-row>
+                    <hr>
                     <b-row>
                         <b-col lg="2">
                             <strong>Total Transfer</strong>
@@ -87,15 +95,7 @@
                             <Amount sym="VTHO" :dec="null" class="mr-2">{{receipt.paid}}</Amount>paid by
                             <strong v-if="tx.origin === receipt.gasPayer">Origin</strong>
                             <AccountLink v-else :address="receipt.gasPayer" abbr icon/>
-                        </b-col>
-                    </b-row>
-                    <hr>
-                    <b-row>
-                        <b-col lg="2">
-                            <strong>Origin</strong>
-                        </b-col>
-                        <b-col lg="10">
-                            <AccountLink :address="tx.origin" icon/>
+                            <b-badge v-if="vip191" variant="info" class="ml-3">VIP-191</b-badge>
                         </b-col>
                     </b-row>
                     <hr>
@@ -182,6 +182,7 @@ export default class Tx extends Vue {
         })
         return total.toString()
     }
+    get vip191() { return !!(this.tx as any).delegator }
 
     private async  reload() {
         this.error = null
