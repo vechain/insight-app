@@ -11,7 +11,7 @@
                 <span class="text-serif">Insight</span>
             </div>
             <div slot="lead">Serverless Explorer</div>
-            <b-input-group class="mx-auto w-50">
+            <b-input-group class="mx-auto col-lg-6">
                 <b-form-input
                     placeholder="block, tx or account"
                     class="border-0"
