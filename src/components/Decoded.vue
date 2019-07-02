@@ -20,7 +20,7 @@
                             <sup v-if="param.indexed">indexed</sup>
                         </td>
                         <td>
-                            <AccountLink v-if="param.type==='address'" :address="param.value"/>
+                            <AccountLink v-if="param.type==='address'" :address="param.value" />
                             <template v-else>{{param.value}}</template>
                         </td>
                     </tr>
@@ -32,7 +32,7 @@
         </div>
     </div>
     <b-card-body v-else>
-        <Loading v-if="abi.loading"/>
+        <Loading v-if="abi.loading" />
         <div v-else-if="abi.error" class="text-center">
             <p class="h5">Oops</p>
             <p class="text-warning">{{abi.error.name}}: {{abi.error.message}}</p>
@@ -105,17 +105,21 @@ export default class Decoded extends Vue {
 
     @Watch('value')
     private async reload() {
+        if (this.abi.loading) {
+            return
+        }
+
+        this.abi.json = null
+        this.abi.error = null
         if (this.value.topics) {
-            this.abi.json = abiCache.get(this.value.topics[0])
+            this.abi.json = abiCache.get(this.value.topics[0]) || null
         } else {
             this.abi.json = abiCache.get(this.value.data.slice(0, 10)) || null
         }
 
-        if (this.abi.loading) {
+        if (this.abi.json) {
             return
         }
-        this.abi.json = null
-        this.abi.error = null
 
         try {
             this.abi.loading = true
