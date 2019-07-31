@@ -77,7 +77,7 @@ export default class AccountDeposit extends Vue {
                 return
             }
 
-            const message: Connex.Vendor.SigningService.TxMessage = []
+            const message: Connex.Vendor.TxMessage = []
             if (this.vet.wei !== '0') {
                 message.push({
                     to: this.address,

@@ -12,6 +12,15 @@ import VueAnalytics from 'vue-analytics'
 
 import '@/components'
 
+import { createConnex } from './external-connex'
+
+if (!window.connex) {
+    Object.defineProperty(window, 'connex', {
+        value: createConnex(),
+        enumerable: true
+    })
+}
+
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueAnalytics, {

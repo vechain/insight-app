@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import TimeAgo from 'timeago.js'
-import { toChecksumAddress } from 'thor-devkit/es6/cry'
+import { toChecksumAddress } from 'thor-devkit/dist/cry/address'
 import BigNumber from 'bignumber.js'
 
 const timeAgo = TimeAgo()

@@ -24,7 +24,7 @@
 </template>
 <script lang="ts">
 import { Vue, Prop, Component } from 'vue-property-decorator'
-import { isAddress } from 'thor-devkit/es6/cry'
+import { isAddress } from 'thor-devkit/dist/cry/address'
 
 @Component
 export default class AccountLink extends Vue {

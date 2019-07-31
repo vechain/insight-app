@@ -20,7 +20,7 @@
                 />
                 <b-input-group-append>
                     <b-button variant="primary" @click="search">
-                        <SvgIcon name="search"/>
+                        <SvgIcon name="search" />
                     </b-button>
                 </b-input-group-append>
             </b-input-group>
@@ -30,7 +30,7 @@
                 <b-col lg="7">
                     <h5 class="ml-3">
                         Recent Blocks
-                        <b-spinner v-if="!recentBlocks" type="grow" small class="ml-3"/>
+                        <b-spinner v-if="!recentBlocks" type="grow" small class="ml-3" />
                     </h5>
                     <transition-group tag="div" name="stack" v-if="recentBlocks">
                         <b-card v-for="b in recentBlocks" :key="b.id" class="stack-item mb-3">
@@ -38,7 +38,7 @@
                                 <b-col cols="4">
                                     <div>
                                         <router-link :to="{name:'block', params: {id: b.id}}">
-                                            <SvgIcon name="package" class="mr-1"/>
+                                            <SvgIcon name="package" class="mr-1" />
                                             {{b.number}}
                                         </router-link>
                                     </div>
@@ -51,8 +51,8 @@
                                     <div class="small text-truncate">{{b.gasUsed | locale}} Gas</div>
                                 </b-col>
                                 <b-col cols="4" title="Signer" class="text-right">
-                                    <SvgIcon class="text-secondary mr-2" name="shield"/>
-                                    <AccountLink :address="b.signer" abbr class="text-truncate"/>
+                                    <SvgIcon class="text-secondary mr-2" name="shield" />
+                                    <AccountLink :address="b.signer" abbr class="text-truncate" />
                                 </b-col>
                             </b-row>
                         </b-card>
@@ -61,7 +61,7 @@
                 <b-col lg="5">
                     <h5 class="ml-3">
                         Recent Transfers
-                        <b-spinner v-if="!recentTransfers" type="grow" small class="ml-3"/>
+                        <b-spinner v-if="!recentTransfers" type="grow" small class="ml-3" />
                     </h5>
                     <b-list-group v-if="recentTransfers" style="font-size:90%">
                         <transition-group tag="div" name="stack">
@@ -74,13 +74,13 @@
                             >
                                 <b-row class="align-items-center" no-gutters>
                                     <b-col cols="5">
-                                        <AccountLink icon :address="t.sender" abbr/>
+                                        <AccountLink icon :address="t.sender" abbr />
                                     </b-col>
                                     <b-col cols="2">
-                                        <SvgIcon name="arrow-right"/>
+                                        <SvgIcon name="arrow-right" />
                                     </b-col>
                                     <b-col cols="5">
-                                        <AccountLink icon :address="t.recipient" abbr/>
+                                        <AccountLink icon :address="t.recipient" abbr />
                                     </b-col>
                                 </b-row>
                                 <div>
@@ -114,8 +114,10 @@ export default class Home extends Vue {
 
     @Watch('head')
     private reload() {
-        this.loadRecentBlocks()
-        this.loadRecentTransfers()
+        if (this.head.number > 0) {
+            this.loadRecentBlocks()
+            this.loadRecentTransfers()
+        }
     }
 
     private async loadRecentBlocks() {

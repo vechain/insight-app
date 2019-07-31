@@ -51,7 +51,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
-import { abi } from 'thor-devkit/es6/abi'
+import { abi } from 'thor-devkit/dist/abi'
 
 @Component
 export default class Decoded extends Vue {

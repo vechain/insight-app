@@ -28,7 +28,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component
 export default class InputData extends Vue {
-    @Prop(Object) private clause!: Connex.Thor.Clause
+    @Prop(Object) private clause!: Connex.Thor.Transaction['clauses'][number]
 
     private view = 'raw' as 'raw' | 'decoded'
     private decodedViewCreated = false
