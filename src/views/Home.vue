@@ -114,10 +114,8 @@ export default class Home extends Vue {
 
     @Watch('head')
     private reload() {
-        if (this.head.number > 0) {
-            this.loadRecentBlocks()
-            this.loadRecentTransfers()
-        }
+        this.loadRecentBlocks()
+        this.loadRecentTransfers()
     }
 
     private async loadRecentBlocks() {

@@ -18,7 +18,7 @@
                     </b-nav-text>
                 </b-navbar-nav>
 
-                <b-navbar-toggle target="nav_collapse"/>
+                <b-navbar-toggle target="nav_collapse" />
                 <b-collapse is-nav id="nav_collapse">
                     <b-navbar-nav class="ml-auto">
                         <b-nav-item href="https://github.com/vechain/" target="_blank">Code Repo</b-nav-item>
@@ -58,7 +58,7 @@
                                 />
                                 <b-input-group-append>
                                     <b-button size="sm" variant="primary" @click="search">
-                                        <SvgIcon name="search"/>
+                                        <SvgIcon name="search" />
                                     </b-button>
                                 </b-input-group-append>
                             </b-input-group>
@@ -67,12 +67,16 @@
                 </b-collapse>
             </div>
         </b-navbar>
-        <div class="py-4">
+        <div class="py-4" v-if="isHeadReady">
             <transition name="fade" mode="out-in">
                 <keep-alive include="Block,Tx">
-                    <router-view :key="routeViewKey"/>
+                    <router-view :key="routeViewKey" />
                 </keep-alive>
             </transition>
+        </div>
+        <div v-else class="py-4 d-flex align-items-center justify-content-center">
+            <b-spinner type="grow" />
+            <div>Checking status...</div>
         </div>
     </div>
 </template>
@@ -86,6 +90,7 @@ export default class App extends Vue {
     get routeName() { return this.$route.name }
     get isHome() { return this.routeName === 'home' }
     get price() { return this.$store.state.price }
+    get isHeadReady() { return this.$store.state.chainStatus.head.number > 0 }
 
     private search() {
         const str = this.searchString.trim()
