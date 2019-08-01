@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@vechain/connex-framework": "^1.0.0-beta-12",
-    "@vechain/connex.driver-nodejs": "^1.0.0-beta-12",
+    "@vechain/connex.driver-nodejs": "^1.0.0-beta-13",
     "@vechain/picasso": "^1.0.4",
     "bignumber.js": "^8.0.1",
     "bootstrap": "^4.3.1",
