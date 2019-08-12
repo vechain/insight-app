@@ -45,7 +45,6 @@ export default class BandwidthChart extends Vue<Line> {
             pointRadius: 0,
             pointHoverRadius: 0,
             pointHitRadius: 0,
-            borderDash: [3, 3],
         }
 
         this.renderChart({
@@ -54,6 +53,7 @@ export default class BandwidthChart extends Vue<Line> {
                 ...refLineStyle,
                 label: 'Average',
                 data: newVal.map(() => averageBandwidth),
+                borderDash: [3, 3],
             }, {
                 ...refLineStyle,
                 label: 'Top',
