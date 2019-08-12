@@ -22,7 +22,7 @@ class SimpleDriver extends DriverNoVendor {
             isTrunk: true
         })
     }
-    public buildTx(): any {
+    public signTx(): any {
         throw new Error('Method not implemented.')
     }
 

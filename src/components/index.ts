@@ -10,6 +10,7 @@ import Ident from './Ident.vue'
 import SvgIcon from './SvgIcon.vue'
 import Amount from './Amount.vue'
 import Decoded from './Decoded.vue'
+import BandwidthChart from './BandwidthChart'
 
 import Vue from 'vue'
 
@@ -24,3 +25,4 @@ Vue.component('Ident', Ident)
 Vue.component('SvgIcon', SvgIcon)
 Vue.component('Amount', Amount)
 Vue.component('Decoded', Decoded)
+Vue.component('BandwidthChart', BandwidthChart)

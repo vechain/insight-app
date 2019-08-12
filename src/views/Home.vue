@@ -29,6 +29,13 @@
             <b-row>
                 <b-col lg="7">
                     <h5 class="ml-3">
+                        Bandwidth
+                        <b-spinner v-if="!bandwidthChartLoaded" type="grow" small class="ml-3" />
+                    </h5>
+                    <div class="px-1 py-2" v-show="bandwidthChartLoaded">
+                        <BandwidthChart :height="100" @loaded="bandwidthChartLoaded=true" />
+                    </div>
+                    <h5 class="ml-3">
                         Recent Blocks
                         <b-spinner v-if="!recentBlocks" type="grow" small class="ml-3" />
                     </h5>
@@ -107,6 +114,7 @@ export default class Home extends Vue {
     private loadingBlocks = false
     private loadingTransfers = false
     private searchString = ''
+    private bandwidthChartLoaded = false
 
     get head(): Connex.Thor.Status['head'] {
         return this.$store.state.chainStatus.head
