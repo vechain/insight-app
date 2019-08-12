@@ -1,4 +1,5 @@
 const Path = require('path')
+const webpack = require('webpack')
 
 module.exports = {
     lintOnSave: false,
@@ -25,5 +26,6 @@ module.exports = {
             .options({
                 symbolId: 'icon-[name]'
             })
+        config.plugin('ignore').use(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/))
     }
 }
