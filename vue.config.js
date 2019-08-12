@@ -10,7 +10,7 @@ module.exports = {
         },
         name: 'Insight',
         appleMobileWebAppCapable: 'yes',
-        appleMobileWebAppStatusBarStyle: 'black-translucent'
+        themeColor: '#6c757d'
     },
     chainWebpack: config => {
         config.module.rules.delete("svg")
