@@ -7,7 +7,10 @@ module.exports = {
         workboxOptions: {
             skipWaiting: true,
             clientsClaim: true
-        }
+        },
+        name: 'Insight',
+        appleMobileWebAppCapable: 'yes',
+        appleMobileWebAppStatusBarStyle: 'black-translucent'
     },
     chainWebpack: config => {
         config.module.rules.delete("svg")
