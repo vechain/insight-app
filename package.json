@@ -8,8 +8,8 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@vechain/connex-framework": "^1.0.1",
-    "@vechain/connex.driver-nodejs": "^1.0.0",
+    "@vechain/connex-framework": "^1.1.0",
+    "@vechain/connex.driver-nodejs": "^1.1.1",
     "@vechain/picasso": "^1.0.4",
     "bignumber.js": "^8.0.1",
     "bootstrap": "^4.3.1",

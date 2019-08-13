@@ -30,8 +30,8 @@ class SimpleDriver extends DriverNoVendor {
         throw new Error('Method not implemented.')
     }
 
-    public isAddressOwned(addr: string): boolean {
-        return false
+    public isAddressOwned(addr: string) {
+        return Promise.resolve(false)
     }
 }
 

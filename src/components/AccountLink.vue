@@ -18,12 +18,12 @@
             <template v-if="abbr">{{address | abbr}}</template>
             <template v-else>{{address | checksum}}</template>
         </router-link>
-        <SvgIcon v-if="owned" name="key" class="ml-1"/>
+        <SvgIcon v-if="owned" name="key" class="ml-1" />
     </div>
     <span v-else>{{this.address}}</span>
 </template>
 <script lang="ts">
-import { Vue, Prop, Component } from 'vue-property-decorator'
+import { Vue, Prop, Component, Watch } from 'vue-property-decorator'
 import { isAddress } from 'thor-devkit/dist/cry/address'
 
 @Component
@@ -33,8 +33,20 @@ export default class AccountLink extends Vue {
     @Prop(Boolean) private icon!: boolean
     @Prop(Boolean) private noLink!: boolean
 
-    get owned() { return connex.vendor.owned && connex.vendor.owned(this.address) }
+    private owned = false
+
     get isValid() { return isAddress(this.address) }
+
+    @Watch('address')
+    private async addressChanged() {
+        const addr = this.address
+        if (connex.vendor.owned) {
+            const owned = await connex.vendor.owned(addr)
+            if (addr === this.address) {
+                this.owned = owned
+            }
+        }
+    }
 }
 </script>
 
