@@ -27,17 +27,15 @@ export default class BandwidthChart extends Vue<Line> {
             const date = new Date(s.ts * 1000)
             return `${date.getHours()}`
         })
-        const averageBandwidth = Math.round(newVal.reduce((sum, s) => {
-            return sum + s.gl
-        }, 0) / newVal.length / 10)
 
-        const bias = newVal.reduce((v, s) => {
-            const b = Math.abs(s.gl / 10 - averageBandwidth)
-            return b > v ? b : v
+        const high = newVal.reduce((v, s) => {
+            return s.gl > v ? s.gl : v
         }, 0)
+        const low = newVal.reduce((v, s) => {
+            return s.gl < v ? s.gl : v
+        }, high)
 
-        const top = averageBandwidth + bias
-        const bottom = averageBandwidth - bias
+        const mid = (high + low) / 2
 
         const refLineStyle = {
             fill: false,
@@ -51,18 +49,20 @@ export default class BandwidthChart extends Vue<Line> {
             labels,
             datasets: [{
                 ...refLineStyle,
-                label: 'Average',
-                data: newVal.map(() => averageBandwidth),
+                label: 'Mid',
+                data: newVal.map(() => mid / 10),
                 borderDash: [3, 3],
             }, {
                 ...refLineStyle,
-                label: 'Top',
-                data: newVal.map(() => top),
+                label: 'High',
+                data: newVal.map(() => high / 10),
+                borderDash: [6, 2],
             },
             {
                 ...refLineStyle,
-                label: 'Bottom',
-                data: newVal.map(() => bottom),
+                label: 'Low',
+                data: newVal.map(() => low / 10),
+                borderDash: [6, 2],
             }, {
                 label: 'Bandwidth',
                 data: newVal.map(s => s.gl / 10),
@@ -100,9 +100,9 @@ export default class BandwidthChart extends Vue<Line> {
                             callback: (value: number) => {
                                 return prettyN(value) + 'gps'
                             },
-                            max: top,
-                            min: bottom,
-                            stepSize: (top - bottom) / 2
+                            max: high / 10,
+                            min: low / 10,
+                            stepSize: mid / 10
                         },
                         scaleLabel: {
                             display: true,
