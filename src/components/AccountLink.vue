@@ -37,6 +37,10 @@ export default class AccountLink extends Vue {
 
     get isValid() { return isAddress(this.address) }
 
+    private created() {
+        this.addressChanged()
+    }
+
     @Watch('address')
     private async addressChanged() {
         const addr = this.address
