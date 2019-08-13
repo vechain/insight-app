@@ -1,17 +1,19 @@
-import { Line } from 'vue-chartjs'
+<template>
+    <canvas ref="canvas" />
+</template>
+<script lang="ts">
 import { Vue, Component, Watch, Emit } from 'vue-property-decorator'
+import { Chart } from 'chart.js'
 
-@Component({
-    extends: Line
-} as any)
-export default class BandwidthChart extends Vue<Line> {
+@Component
+export default class BandwidthChart extends Vue {
     private samples = null as GasLimitSample[] | null
     private created() {
         this.reload()
     }
-
     @Emit('loaded')
     private emitLoaded(v: boolean) { }
+
     @Watch('samples')
     private renderSamples(newVal: GasLimitSample[], oldVal: GasLimitSample[]) {
         if (!newVal) {
@@ -46,34 +48,37 @@ export default class BandwidthChart extends Vue<Line> {
             pointHitRadius: 0,
         }
 
-        this.renderChart({
-            labels,
-            datasets: [{
-                ...refLineStyle,
-                label: 'Mid',
-                data: newVal.map(() => mid / 10),
-                borderDash: [3, 3],
-            }, {
-                ...refLineStyle,
-                label: 'High',
-                data: newVal.map(() => high / 10),
-                borderDash: [6, 2],
+        const chart = new Chart(this.$refs.canvas as any, {
+            type: 'line',
+            data: {
+                labels,
+                datasets: [{
+                    ...refLineStyle,
+                    label: 'Mid',
+                    data: newVal.map(() => mid / 10),
+                    borderDash: [3, 3],
+                }, {
+                    ...refLineStyle,
+                    label: 'High',
+                    data: newVal.map(() => high / 10),
+                    borderDash: [6, 2],
+                },
+                {
+                    ...refLineStyle,
+                    label: 'Low',
+                    data: newVal.map(() => low / 10),
+                    borderDash: [6, 2],
+                }, {
+                    label: 'Bandwidth',
+                    data: newVal.map(s => s.gl / 10),
+                    fill: false,
+                    pointRadius: 0,
+                    borderColor: '#007bff',
+                    pointHitRadius: 8,
+                    borderWidth: 2,
+                }]
             },
-            {
-                ...refLineStyle,
-                label: 'Low',
-                data: newVal.map(() => low / 10),
-                borderDash: [6, 2],
-            }, {
-                label: 'Bandwidth',
-                data: newVal.map(s => s.gl / 10),
-                fill: false,
-                pointRadius: 0,
-                borderColor: '#007bff',
-                pointHitRadius: 8,
-                borderWidth: 2,
-            }]
-        }, {
+            options: {
                 maintainAspectRatio: false,
                 scales: {
                     xAxes: [{
@@ -125,7 +130,8 @@ export default class BandwidthChart extends Vue<Line> {
                         }
                     }
                 }
-            })
+            }
+        })
     }
 
     @Watch('$store.state.chainStatus')
@@ -192,3 +198,5 @@ type GasLimitSample = {
     ts: number
     gl: number
 }
+
+</script>
