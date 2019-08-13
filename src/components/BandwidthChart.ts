@@ -30,10 +30,11 @@ export default class BandwidthChart extends Vue<Line> {
 
         const high = newVal.reduce((v, s) => {
             return s.gl > v ? s.gl : v
-        }, 0)
+        }, 0) * 1.05
+
         const low = newVal.reduce((v, s) => {
             return s.gl < v ? s.gl : v
-        }, high)
+        }, high) * 0.95
 
         const mid = (high + low) / 2
 
@@ -102,7 +103,7 @@ export default class BandwidthChart extends Vue<Line> {
                             },
                             max: high / 10,
                             min: low / 10,
-                            stepSize: mid / 10
+                            stepSize: (high - low) / 2 / 10
                         },
                         scaleLabel: {
                             display: true,
