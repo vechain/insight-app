@@ -6,13 +6,7 @@
 
 ## Screenshots
 
-![Homepage](./screenshots/homepage.png)
-
-![Block Info](./screenshots/blockinfo.png)
-
-![Transaction Details](./screenshots/txdetails.png)
-
-![Account View](./screenshots/account.png)
+![Homepage](./screenshots/homepage-chrome-app.png)
 
 ## Project setup
 ```
