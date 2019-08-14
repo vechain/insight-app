@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { isMainnet } from './utils'
+import { network } from './utils'
 
 Vue.use(Vuex)
 
@@ -34,7 +34,7 @@ class Store extends Vuex.Store<Store.State> {
             actions: {}
         })
 
-        if (isMainnet()) {
+        if (network() === 'main') {
             (async () => {
                 for (; ;) {
                     const p = await this.fetchPrice()

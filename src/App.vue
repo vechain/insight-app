@@ -5,6 +5,10 @@
                 <b-navbar-brand href="#/">
                     <span class="text-serif h4">Insight</span>
                 </b-navbar-brand>
+                <b-badge
+                    class="text-uppercase ml-n2"
+                    :variant="networkBadgeVariant"
+                >{{'⨳︎'+network}}</b-badge>
                 <b-navbar-nav class="small text-monospace ml-5 mr-auto">
                     <b-nav-text v-if="price" class="small py-0">
                         <div>
@@ -82,7 +86,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { isMainnet } from './utils'
+import { veForgeBaseUrl, network } from './utils'
 @Component
 export default class App extends Vue {
     private searchString = ''
@@ -91,6 +95,14 @@ export default class App extends Vue {
     get isHome() { return this.routeName === 'home' }
     get price() { return this.$store.state.price }
     get isHeadReady() { return this.$store.state.chainStatus.head.number > 0 }
+
+    get network() {
+        return network()
+    }
+
+    get networkBadgeVariant() {
+        return this.network === 'main' ? 'light' : 'warning'
+    }
 
     private search() {
         const str = this.searchString.trim()
@@ -101,16 +113,13 @@ export default class App extends Vue {
         this.$router.push({ name: 'search', query: { q: str } })
     }
 
-    get isMainnet() { return isMainnet() }
-
     get tools() {
         return [
-            { title: 'VeForge', href: isMainnet ? 'https://explore.veforge.com/' : 'https://testnet.veforge.com/' },
+            { title: 'VeForge', href: veForgeBaseUrl() },
             { title: 'Inspector', href: 'https://inspector.vecha.in' },
             { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
             { title: 'B32', href: 'https://b32.vecha.in' }
-
-        ]
+        ].filter(i => !!i.href)
     }
 
     get routeViewKey() {
