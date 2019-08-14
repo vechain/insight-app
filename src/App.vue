@@ -144,7 +144,7 @@ export default class App extends Vue {
         } else if (name === 'search') {
             subTitle = 'Search'
         }
-        document.title = subTitle ? `Insight | ${subTitle}` : 'Insight'
+        document.title = subTitle ? `Insight | ${subTitle}` : 'Insight - VeChain Explorer'
     }
     private created() {
         this.routed()
