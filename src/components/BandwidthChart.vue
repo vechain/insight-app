@@ -8,6 +8,7 @@ import { Chart } from 'chart.js'
 @Component
 export default class BandwidthChart extends Vue {
     private samples = null as GasLimitSample[] | null
+    private chart?: Chart
     private created() {
         this.reload()
     }
@@ -48,90 +49,96 @@ export default class BandwidthChart extends Vue {
             pointHitRadius: 0,
         }
 
-        const chart = new Chart(this.$refs.canvas as any, {
-            type: 'line',
-            data: {
-                labels,
-                datasets: [{
-                    ...refLineStyle,
-                    label: 'Mid',
-                    data: newVal.map(() => mid / 10),
-                    borderDash: [3, 3],
-                }, {
-                    ...refLineStyle,
-                    label: 'High',
-                    data: newVal.map(() => high / 10),
-                    borderDash: [6, 2],
-                },
-                {
-                    ...refLineStyle,
-                    label: 'Low',
-                    data: newVal.map(() => low / 10),
-                    borderDash: [6, 2],
-                }, {
-                    label: 'Bandwidth',
-                    data: newVal.map(s => s.gl / 10),
-                    fill: false,
-                    pointRadius: 0,
-                    borderColor: '#007bff',
-                    pointHitRadius: 8,
-                    borderWidth: 2,
+        const data: Chart.ChartData = {
+            labels,
+            datasets: [{
+                ...refLineStyle,
+                label: 'Mid',
+                data: newVal.map(() => mid / 10),
+                borderDash: [3, 3],
+            }, {
+                ...refLineStyle,
+                label: 'High',
+                data: newVal.map(() => high / 10),
+                borderDash: [6, 2],
+            },
+            {
+                ...refLineStyle,
+                label: 'Low',
+                data: newVal.map(() => low / 10),
+                borderDash: [6, 2],
+            }, {
+                label: 'Bandwidth',
+                data: newVal.map(s => s.gl / 10),
+                fill: false,
+                pointRadius: 0,
+                borderColor: '#007bff',
+                pointHitRadius: 8,
+                borderWidth: 2,
+            }]
+        }
+
+        const options: Chart.ChartOptions = {
+            maintainAspectRatio: false,
+            scales: {
+                xAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        fontSize: 8,
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Hours',
+                        fontSize: 8,
+                    },
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        fontSize: 8,
+                        // Include a dollar sign in the ticks
+                        callback: (value: number) => {
+                            return prettyN(value) + 'gps'
+                        },
+                        max: high / 10,
+                        min: low / 10,
+                        stepSize: (high - low) / 2 / 10
+                    },
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Bandwidth',
+                        fontSize: 8,
+                    }
                 }]
             },
-            options: {
-                maintainAspectRatio: false,
-                scales: {
-                    xAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            fontSize: 8,
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Hours',
-                            fontSize: 8,
-                        },
-                    }],
-                    yAxes: [{
-                        gridLines: {
-                            display: false,
-                            drawBorder: false
-                        },
-                        ticks: {
-                            fontSize: 8,
-                            // Include a dollar sign in the ticks
-                            callback: (value: number) => {
-                                return prettyN(value) + 'gps'
-                            },
-                            max: high / 10,
-                            min: low / 10,
-                            stepSize: (high - low) / 2 / 10
-                        },
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Bandwidth',
-                            fontSize: 8,
-                        }
-                    }]
-                },
-                legend: {
-                    display: false
-                },
-                tooltips: {
-                    callbacks: {
-                        label: (tooltipItem: any) => {
-                            return prettyN(tooltipItem.yLabel) + 'gps'
-                        },
-                        title: (tooltipItem: any) => {
-                            return `${tooltipItem[0].xLabel}:00`
-                        }
+            legend: {
+                display: false
+            },
+            tooltips: {
+                callbacks: {
+                    label: (tooltipItem: any) => {
+                        return prettyN(tooltipItem.yLabel) + 'gps'
+                    },
+                    title: (tooltipItem: any) => {
+                        return `${tooltipItem[0].xLabel}:00`
                     }
                 }
             }
-        })
+        }
+
+        if (this.chart) {
+            this.chart.data = data
+            this.chart.options = options
+            this.chart.update()
+        } else {
+            this.chart = new Chart(this.$refs.canvas as any, { type: 'line', data, options })
+        }
     }
 
     @Watch('$store.state.chainStatus')
