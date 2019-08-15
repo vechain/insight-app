@@ -169,7 +169,7 @@ function samplePoints() {
 async function getGasLimits() {
     let savedSamples: GasLimitSample[]
     try {
-        savedSamples = JSON.parse(localStorage.getItem(gasLimitSamplesKey) || '[]')
+        savedSamples = JSON.parse(localStorage.getItem(connex.thor.genesis.id + gasLimitSamplesKey) || '[]')
     } catch (err) {
         console.warn('load saved gas limit samples')
         savedSamples = []
@@ -187,7 +187,7 @@ async function getGasLimits() {
             }))
         }
     }))
-    localStorage.setItem(gasLimitSamplesKey, JSON.stringify(samples))
+    localStorage.setItem(connex.thor.genesis.id + gasLimitSamplesKey, JSON.stringify(samples))
     return samples
 }
 
