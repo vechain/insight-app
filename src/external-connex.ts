@@ -4,7 +4,10 @@ import { Framework } from '@vechain/connex-framework'
 
 class SimpleDriver extends DriverNoVendor {
     constructor() {
-        super(new SimpleNet('https://sync-mainnet.vechain.org'), {
+        const url = process.env.NODE_ENV === 'production' ?
+            'https://sync-mainnet.vechain.org' : 'http://localhost:8669'
+
+        super(new SimpleNet(url), {
             number: 0,
             id: '0x00000000851caf3cfdb6e899cf5958bfb1ac3413d346d43539627e6be7ec1b4a',
             size: 170,
