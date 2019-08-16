@@ -1,9 +1,6 @@
 <template>
-    <div
-        class="d-inline-block overflow-hidden"
-        style="background-color:rgba(0,0,0,0.1);"
-    >
-        <div style="height:65%;filter:saturate(140%)" :style="styleObject" />
+    <div class="d-inline-block overflow-hidden" style="background-color:rgba(0,0,0,0.1);">
+        <div style="height:70%;filter:saturate(140%)" :style="styleObject" />
     </div>
 </template>
 <script lang="ts">

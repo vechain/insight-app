@@ -8,7 +8,7 @@
             v-if="icon"
             class="mr-2"
             :value="address"
-            style="width:1.5em;height:1em;border-radius:0.2em"
+            style="width:1.4em;height:1em;border-radius:0.2em"
         />
         <span v-if="noLink" class="text-monospace">
             <template v-if="abbr">{{address | abbr}}</template>
