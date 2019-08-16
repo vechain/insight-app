@@ -4,11 +4,12 @@
             <div class="container">
                 <b-navbar-brand href="#/">
                     <span class="text-serif h4">Insight</span>
+                    <b-badge
+                        class="ml-1 mt-1"
+                        :variant="networkBadgeVariant"
+                        style="font-size:8px;vertical-align:top;"
+                    >{{network}}</b-badge>
                 </b-navbar-brand>
-                <b-badge
-                    class="text-uppercase ml-n2"
-                    :variant="networkBadgeVariant"
-                >{{'⨳︎'+network}}</b-badge>
                 <b-navbar-nav class="small text-monospace ml-5 mr-auto">
                     <b-nav-text v-if="price" class="small py-0">
                         <div>
@@ -97,11 +98,16 @@ export default class App extends Vue {
     get isHeadReady() { return this.$store.state.chainStatus.head.number > 0 }
 
     get network() {
-        return network()
+        switch (network()) {
+            case 'main': return 'MainNet'
+            case 'test': return 'TestNet'
+            case 'solo': return 'Solo'
+            case 'custom': return 'Custom'
+        }
     }
 
     get networkBadgeVariant() {
-        return this.network === 'main' ? 'light' : 'warning'
+        return network() === 'main' ? 'light' : 'warning'
     }
 
     private search() {
