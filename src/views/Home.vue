@@ -39,7 +39,12 @@
                         Recent Blocks
                         <b-spinner v-if="!recentBlocks" type="grow" small class="ml-3" />
                     </h5>
-                    <transition-group tag="div" name="stack" v-if="recentBlocks">
+                    <transition-group
+                        tag="div"
+                        name="stack"
+                        class="position-relative"
+                        v-if="recentBlocks"
+                    >
                         <b-card v-for="b in recentBlocks" :key="b.id" class="stack-item mb-3">
                             <b-row no-gutters>
                                 <b-col cols="4">
@@ -71,7 +76,7 @@
                         <b-spinner v-if="!recentTransfers" type="grow" small class="ml-3" />
                     </h5>
                     <b-list-group v-if="recentTransfers" style="font-size:90%">
-                        <transition-group tag="div" name="stack">
+                        <transition-group tag="div" class="position-relative" name="stack">
                             <b-list-group-item
                                 style="font-size:95%"
                                 v-for="(t) in recentTransfers"
@@ -206,6 +211,11 @@ export default class Home extends Vue {
     transform: scale(0.5, 0);
     transform-origin: 50% 0%;
     opacity: 0;
+}
+.stack-leave-active {
+    position: absolute;
+    left: 0px;
+    right: 0px;
 }
 .stack-leave-to {
     opacity: 0;
