@@ -32,7 +32,7 @@
                         Bandwidth
                         <b-spinner v-if="!bandwidthChartLoaded" type="grow" small class="ml-3" />
                     </h5>
-                    <div class="px-1 py-2" v-show="bandwidthChartLoaded">
+                    <div class="px-1 py-2 mb-3" v-show="bandwidthChartLoaded">
                         <BandwidthChart :height="100" @loaded="bandwidthChartLoaded=true" />
                     </div>
                     <h5 class="ml-3">

@@ -27,8 +27,8 @@ export default class BandwidthChart extends Vue {
         }
 
         const labels = newVal.map(s => {
-            const date = new Date(s.ts * 1000)
-            return `${date.getHours()}`
+            const date = new Date((s.ts) * 1000)
+            return `${date.toLocaleTimeString(undefined, { hour12: false, hour: '2-digit', minute: '2-digit' })}`
         })
 
         const high = newVal.reduce((v, s) => {
@@ -90,8 +90,7 @@ export default class BandwidthChart extends Vue {
                         fontSize: 8,
                     },
                     scaleLabel: {
-                        display: true,
-                        labelString: 'Hours',
+                        display: false,
                         fontSize: 8,
                     },
                 }],
@@ -126,7 +125,7 @@ export default class BandwidthChart extends Vue {
                         return prettyN(tooltipItem.yLabel) + 'gps'
                     },
                     title: (tooltipItem: any) => {
-                        return `${tooltipItem[0].xLabel}:00`
+                        return `${tooltipItem[0].xLabel}`
                     }
                 }
             }
@@ -164,10 +163,12 @@ function prettyN(n: number) {
 
 function samplePoints() {
     const points = [] as number[]
-    const gap = 360
-    const headNumber = connex.thor.status.head.number
-    const p = headNumber - headNumber % gap
-    for (let i = 0; i < 24; i++) {
+    const gap = 720
+    const head = connex.thor.status.head
+
+    const p = head.number - Math.floor((head.timestamp % 600) / 10) // every 10 min
+
+    for (let i = 0; i < 12; i++) {
         points.unshift(p - i * gap)
     }
     return points
