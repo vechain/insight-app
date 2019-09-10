@@ -37,7 +37,14 @@ class SimpleDriver extends DriverNoVendor {
         return Promise.resolve(false)
     }
 }
-
-export function createConnex() {
-    return new Framework(new SimpleDriver())
+import { connect } from '@vechain/connex.driver-nodejs/dist/virtual-driver'
+export async function createConnex() {
+    try {
+        const vd = await connect('wss://local.vecha.in:8888')
+        return new Framework(vd)
+    } catch (err) {
+        // tslint:disable-next-line: no-console
+        console.warn('failed to connect virtual driver', err)
+        return new Framework(new SimpleDriver())
+    }
 }

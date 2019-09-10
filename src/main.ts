@@ -15,32 +15,38 @@ import '@/components'
 import { createConnex } from './external-connex'
 
 if (!window.connex) {
-    Object.defineProperty(window, 'connex', {
-        value: createConnex(),
-        enumerable: true
+    createConnex().then(c => {
+        Object.defineProperty(window, 'connex', {
+            value: c,
+            enumerable: true
+        })
+        start()
     })
 }
 
-Vue.config.productionTip = false
-Vue.use(BootstrapVue)
-Vue.use(VueAnalytics, {
-    id: 'UA-132391998-2',
-    disabled: process.env.NODE_ENV !== 'production'
-})
 
-let store: Store | undefined
+function start() {
+    Vue.config.productionTip = false
+    Vue.use(BootstrapVue)
+    Vue.use(VueAnalytics, {
+        id: 'UA-132391998-2',
+        disabled: process.env.NODE_ENV !== 'production'
+    })
 
-store = new Store()
+    let store: Store | undefined
 
-new App({
-    router,
-    store,
-}).$mount('#app');
+    store = new Store()
 
-(async () => {
-    const ticker = connex.thor.ticker()
-    for (; ;) {
-        await ticker.next()
-        store.commit(Store.UPDATE_CHAIN_STATUS)
-    }
-})()
+    new App({
+        router,
+        store,
+    }).$mount('#app');
+
+    (async () => {
+        const ticker = connex.thor.ticker()
+        for (; ;) {
+            await ticker.next()
+            store.commit(Store.UPDATE_CHAIN_STATUS)
+        }
+    })()
+}
