@@ -14,7 +14,9 @@ import '@/components'
 
 import { createConnex } from './external-connex'
 
-if (!window.connex) {
+if (window.connex) {
+    start()
+} else {
     createConnex().then(c => {
         Object.defineProperty(window, 'connex', {
             value: c,
