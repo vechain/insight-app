@@ -5,7 +5,6 @@
                 <span class="h4 mr-3">Account</span>
 
                 <AccountLink no-link icon :address="address"/>
-                <VeForgeLink btn type="acc" :arg="address" class="float-right"/>
             </b-card-header>
             <b-tabs card v-model="tab">
                 <b-tab title="Summary" no-body/>

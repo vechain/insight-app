@@ -6,7 +6,6 @@
                 <template v-if="block">
                     #{{block.number}}
                     <b-badge v-if="!block.isTrunk" class="ml-3" variant="warning">Branch</b-badge>
-                    <VeForgeLink btn type="block" :arg="block.id" class="float-right"/>
                 </template>
             </b-card-header>
             <b-card-body>
