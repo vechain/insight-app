@@ -8,7 +8,6 @@
                     class="ml-3"
                     variant="warning"
                 >Reverted</b-badge>
-                <VeForgeLink v-if="tx" btn type="tx" :arg="tx.id" class="float-right"/>
             </b-card-header>
             <b-card-body>
                 <template v-if="tx">

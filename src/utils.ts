@@ -11,10 +11,3 @@ export function network() {
     }
     return 'custom'
 }
-
-export function veForgeBaseUrl() {
-    switch (network()) {
-        case 'main': return 'https://explore.veforge.com/'
-        case 'test': return 'https://testnet.veforge.com/'
-    }
-}

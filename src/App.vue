@@ -86,7 +86,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
-import { veForgeBaseUrl, network } from './utils'
+import { network } from './utils'
 @Component
 export default class App extends Vue {
     private searchString = ''
@@ -115,7 +115,6 @@ export default class App extends Vue {
 
     get tools() {
         return [
-            { title: 'VeForge', href: veForgeBaseUrl() },
             { title: 'Inspector', href: 'https://inspector.vecha.in' },
             { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
             { title: 'B32', href: 'https://b32.vecha.in' }
