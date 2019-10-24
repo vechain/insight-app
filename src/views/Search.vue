@@ -28,7 +28,7 @@ export default class Search extends Vue {
         } else if (/^0x[0-9-a-f]{64}$/i.test(str)) {
             // bytes32
             try {
-                const block = await connex.thor.block(str).get()
+                const block = await this.$connex.thor.block(str).get()
                 if (block) {
                     return this.$router.replace({ name: 'block', params: { id: block.id } })
                 }
@@ -37,7 +37,7 @@ export default class Search extends Vue {
             }
             this.error = null
             try {
-                const tx = await connex.thor.transaction(str).get()
+                const tx = await this.$connex.thor.transaction(str).get()
                 if (tx) {
                     return this.$router.replace({ name: 'tx', params: { id: tx.id } })
                 }
@@ -48,7 +48,7 @@ export default class Search extends Vue {
             const num = parseInt(str, 10)
             if (num < 2 ** 32) {
                 try {
-                    const block = await connex.thor.block(num).get()
+                    const block = await this.$connex.thor.block(num).get()
                     if (block) {
                         return this.$router.replace({ name: 'block', params: { id: block.id } })
                     }

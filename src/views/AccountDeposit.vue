@@ -86,7 +86,7 @@ export default class AccountDeposit extends Vue {
                 })
             }
             if (this.vtho.wei !== '0') {
-                const clause = connex.thor
+                const clause = this.$connex.thor
                     .account(energyContractAddress)
                     .method(energyTransferJsonABI)
                     .asClause(this.address, this.vtho.wei)
@@ -96,7 +96,7 @@ export default class AccountDeposit extends Vue {
                 })
             }
             if (message.length > 0) {
-                await connex.vendor.sign('tx')
+                await this.$connex.vendor.sign('tx')
                     .request(message)
 
                 this.vet.value = ''

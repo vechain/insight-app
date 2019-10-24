@@ -44,11 +44,15 @@ export default class AccountLink extends Vue {
     @Watch('address')
     private async addressChanged() {
         const addr = this.address
-        if (addr && connex.vendor.owned) {
-            const owned = await connex.vendor.owned(addr)
-            if (addr === this.address) {
-                this.owned = owned
+        if (isAddress(addr)) {
+            if (addr && this.$connex.vendor.owned) {
+                const owned = await this.$connex.vendor.owned(addr)
+                if (addr === this.address) {
+                    this.owned = owned
+                }
             }
+        } else {
+            this.owned = false
         }
     }
 }

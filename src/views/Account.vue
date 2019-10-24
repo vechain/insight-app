@@ -4,18 +4,15 @@
             <b-card-header class="border-bottom-0 pb-0">
                 <span class="h4 mr-3">Account</span>
 
-                <AccountLink no-link icon :address="address"/>
+                <AccountLink no-link icon :address="address" />
             </b-card-header>
-            <b-tabs card v-model="tab">
-                <b-tab title="Summary" no-body/>
-                <b-tab title="Transfers" no-body/>
-                <b-tab title="Events" no-body/>
-                <b-tab title="Deposit" no-body/>
+            <b-tabs card v-model="tab" class="text-capitalize">
+                <b-tab v-for="n in tabNames" :title="n" :key="n" no-body />
             </b-tabs>
             <b-card-body>
                 <transition name="fade" mode="out-in">
                     <keep-alive>
-                        <router-view :key="$route.fullPath" ref="view"/>
+                        <router-view :key="$route.fullPath" ref="view" />
                     </keep-alive>
                 </transition>
             </b-card-body>
@@ -25,22 +22,17 @@
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
 
+const tabNames = ['summary', 'transfers', 'events', 'deposit']
+
 @Component({ name: 'Account' })
 export default class Account extends Vue {
     private tab = 0
     private address = ''
+    private tabNames = ['summary', 'transfers', 'events', 'deposit']
 
     @Watch('tab')
     private tabChanged(newTab: number) {
-        let tabName = ''
-        switch (newTab) {
-            case 1: tabName = 'transfers'; break
-            case 2: tabName = 'events'; break
-            case 3: tabName = 'deposit'; break
-        }
-        this.$router.replace({
-            path: `/accounts/${this.address}/${tabName}`
-        })
+        this.$router.replace({ name: this.tabNames[newTab] })
     }
 
     private created() {
@@ -48,16 +40,7 @@ export default class Account extends Vue {
         this.address = this.$route.params.address.toLowerCase()
     }
     private mounted() {
-        // setTimeout is needed: weird bug that this moment tabs is not fully loaded
-        setTimeout(() => {
-            const name = (this.$refs.view as any).$options.name
-            switch (name) {
-                case 'AccountTransfers': this.tab = 1; break
-                case 'AccountEvents': this.tab = 2; break
-                case 'AccountDeposit': this.tab = 3; break
-                default: this.tab = 0; break
-            }
-        }, 0)
+        this.tab = this.tabNames.indexOf(this.$route.name!) || 0
     }
 }
 </script>

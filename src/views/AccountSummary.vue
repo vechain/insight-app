@@ -5,7 +5,7 @@
                 :variant="account.entity.hasCode? 'success':'secondary'"
             >{{account.entity.hasCode? 'Contract': 'Regular'}}</b-badge>
         </div>
-        <hr>
+        <hr />
         <b-row>
             <b-col lg="2">
                 <strong>Balance</strong>
@@ -19,7 +19,7 @@
                 class="text-monospace text-muted small"
             >≈ ${{account.entity.balance | usd(price.vet)}}</b-col>
         </b-row>
-        <hr>
+        <hr />
         <b-row>
             <b-col lg="2">
                 <strong>Energy</strong>
@@ -34,7 +34,7 @@
             >≈ ${{account.entity.energy | usd(price.vtho)}}</b-col>
         </b-row>
         <template v-if="account.entity.hasCode">
-            <hr>
+            <hr />
             <b-row>
                 <b-col lg="3">
                     <strong>Runtime Bytecode</strong>
@@ -50,28 +50,28 @@
                     <template v-else>
                         <b-button size="sm" @click="loadCode" :disabled="code.loading">
                             View Code
-                            <b-spinner v-if="code.loading" type="grow" small/>
+                            <b-spinner v-if="code.loading" type="grow" small />
                         </b-button>
                         <span v-if="code.error" class="text-warning ml-3">code.error.message</span>
                     </template>
                 </b-col>
             </b-row>
         </template>
-        <hr>
+        <hr />
         <b-row class="small">
             <b-col lg="2">
                 <em>Master</em>
             </b-col>
             <b-col lg="4" v-if="master">
                 <span v-if="master.error" class="text-warning">{{master.error.message}}</span>
-                <AccountLink v-else :address="master.addr" abbr/>
+                <AccountLink v-else :address="master.addr" abbr />
             </b-col>
             <b-col lg="2" class="border-left">
                 <em>Sponsor</em>
             </b-col>
             <b-col lg="4" v-if="sponsor">
                 <span v-if="sponsor.error" class="text-warning">{{sponsor.error.message}}</span>
-                <AccountLink v-else :address="sponsor.addr" abbr/>
+                <AccountLink v-else :address="sponsor.addr" abbr />
             </b-col>
         </b-row>
     </div>
@@ -81,7 +81,7 @@
             <p class="text-warning">Error: {{account.error.message}}</p>
             <b-button size="sm" @click="reload">Reload</b-button>
         </div>
-        <Loading v-else class="my-3"/>
+        <Loading v-else class="my-3" />
     </div>
 </template>
 <script lang="ts">
@@ -117,7 +117,7 @@ export default class AccountSummary extends Vue {
         this.loadSponsor()
     }
     private async loadBalance() {
-        const acc = connex.thor.account(this.address)
+        const acc = this.$connex.thor.account(this.address)
         try {
             this.account.entity = await acc.get()
             this.account.error = null
@@ -127,7 +127,7 @@ export default class AccountSummary extends Vue {
     }
     private async loadMaster() {
         try {
-            const method = connex.thor
+            const method = this.$connex.thor
                 .account(prototypeAddress)
                 .method(masterJsonABI)
 
@@ -146,7 +146,7 @@ export default class AccountSummary extends Vue {
     }
     private async loadSponsor() {
         try {
-            const method = connex.thor
+            const method = this.$connex.thor
                 .account(prototypeAddress)
                 .method(currentSponsorJsonABI)
 
@@ -168,7 +168,7 @@ export default class AccountSummary extends Vue {
     private async loadCode() {
         try {
             this.code.loading = true
-            this.code.entity = await connex.thor.account(this.address).getCode()
+            this.code.entity = await this.$connex.thor.account(this.address).getCode()
             this.code.error = null
         } catch (err) {
             this.code.error = err

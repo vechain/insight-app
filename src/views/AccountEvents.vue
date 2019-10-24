@@ -68,7 +68,7 @@ export default class AccountEvents extends Vue {
         try {
             this.loading = true
             this.error = null
-            this.items = await connex.thor.filter('event')
+            this.items = await this.$connex.thor.filter('event')
                 .criteria([{ address: this.address }])
                 .order('desc')
                 .apply(this.offset, pageSize)

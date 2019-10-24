@@ -140,7 +140,7 @@ export default class Home extends Vue {
             const headNum = this.head.number
             const requests: Array<Promise<Connex.Thor.Block | null>> = []
             for (let i = headNum; i >= Math.max(headNum - 4, 0); i--) {
-                requests.push(connex.thor.block(i).get())
+                requests.push(this.$connex.thor.block(i).get())
             }
 
             const blocks = await Promise.all(requests)
@@ -160,7 +160,7 @@ export default class Home extends Vue {
         }
         try {
             this.loadingTransfers = true
-            const result = await connex.thor
+            const result = await this.$connex.thor
                 .filter('transfer')
                 .order('desc')
                 .apply(0, 10)

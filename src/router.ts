@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Frame from './views/Frame.vue'
 import Home from './views/Home.vue'
 import Account from './views/Account.vue'
 import Block from './views/Block.vue'
@@ -17,46 +18,57 @@ export default new Router({
     mode: 'hash',
     routes: [
         {
-            path: '/',
-            name: 'home',
-            component: Home,
-        },
-        {
-            path: '/blocks/:id',
-            name: 'block',
-            component: Block
-        },
-        {
-            path: '/txs/:id',
-            name: 'tx',
-            component: Tx
-        },
-        {
-            path: '/accounts/:address',
-            component: Account,
-            children: [{
-                name: 'account',
-                path: '',
-                component: AccountSummary
-            }, {
-                path: 'transfers',
-                component: AccountTransfers
-            }, {
-                path: 'events',
-                component: AccountEvents
-            }, {
-                path: 'deposit',
-                component: AccountDeposit
-            }]
-        },
-        {
-            path: '/search',
-            name: 'search',
-            component: Search
+            path: '/:net?',
+            children: [
+                {
+                    path: '/',
+                    name: 'home',
+                    component: Home,
+                },
+                {
+                    path: 'blocks/:id',
+                    name: 'block',
+                    component: Block
+                },
+                {
+                    path: 'txs/:id',
+                    name: 'tx',
+                    component: Tx
+                },
+                {
+                    path: 'accounts/:address',
+                    component: Account,
+                    name: 'account',
+                    redirect: { name: 'summary' },
+                    children: [{
+                        name: 'summary',
+                        path: '',
+                        component: AccountSummary
+                    }, {
+                        name: 'transfers',
+                        path: 'transfers',
+                        component: AccountTransfers
+                    }, {
+                        name: 'events',
+                        path: 'events',
+                        component: AccountEvents
+                    }, {
+                        name: 'deposit',
+                        path: 'deposit',
+                        component: AccountDeposit,
+                    }]
+                },
+                {
+                    path: '/search',
+                    name: 'search',
+                    component: Search
+                }
+            ],
+            component: Frame
         },
         {
             path: '*',
             redirect: '/'
         }
-    ],
+    ]
 })

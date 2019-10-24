@@ -65,7 +65,7 @@ export default class AccountTransfers extends Vue {
         this.loading = true
         this.items = null
         try {
-            this.items = await connex.thor.filter('transfer')
+            this.items = await this.$connex.thor.filter('transfer')
                 .criteria([{ sender: this.address }, { recipient: this.address }])
                 .order('desc')
                 .apply(this.offset, pageSize)

@@ -143,12 +143,51 @@ export default class BandwidthChart extends Vue {
     @Watch('$store.state.chainStatus')
     private async reload() {
         try {
-            this.samples = await getGasLimits()
+            this.samples = await this.getGasLimits()
             this.emitLoaded(true)
         } catch (err) {
             console.warn(err)
         }
     }
+
+    private samplePoints() {
+        const points = [] as number[]
+        const gap = 720
+        const head = this.$connex.thor.status.head
+
+        const p = head.number - Math.floor((head.timestamp % 600) / 10) // every 10 min
+
+        for (let i = 0; i < 12; i++) {
+            points.unshift(p - i * gap)
+        }
+        return points
+    }
+
+    private async  getGasLimits() {
+        let savedSamples: GasLimitSample[]
+        try {
+            savedSamples = JSON.parse(localStorage.getItem(this.$connex.thor.genesis.id + gasLimitSamplesKey) || '[]')
+        } catch (err) {
+            console.warn('load saved gas limit samples')
+            savedSamples = []
+        }
+
+        const samples = await Promise.all(this.samplePoints().map(n => {
+            const i = savedSamples.find(s => s.n === n)
+            if (i) {
+                return i
+            } else {
+                return this.$connex.thor.block(n).get().then(b => ({
+                    n: b!.number,
+                    ts: b!.timestamp,
+                    gl: b!.gasLimit
+                }))
+            }
+        }))
+        localStorage.setItem(this.$connex.thor.genesis.id + gasLimitSamplesKey, JSON.stringify(samples))
+        return samples
+    }
+
 }
 
 function prettyN(n: number) {
@@ -159,44 +198,6 @@ function prettyN(n: number) {
         return `${(n / 1000).toFixed(2)}K`
     }
     return `${n}`
-}
-
-function samplePoints() {
-    const points = [] as number[]
-    const gap = 720
-    const head = connex.thor.status.head
-
-    const p = head.number - Math.floor((head.timestamp % 600) / 10) // every 10 min
-
-    for (let i = 0; i < 12; i++) {
-        points.unshift(p - i * gap)
-    }
-    return points
-}
-
-async function getGasLimits() {
-    let savedSamples: GasLimitSample[]
-    try {
-        savedSamples = JSON.parse(localStorage.getItem(connex.thor.genesis.id + gasLimitSamplesKey) || '[]')
-    } catch (err) {
-        console.warn('load saved gas limit samples')
-        savedSamples = []
-    }
-
-    const samples = await Promise.all(samplePoints().map(n => {
-        const i = savedSamples.find(s => s.n === n)
-        if (i) {
-            return i
-        } else {
-            return connex.thor.block(n).get().then(b => ({
-                n: b!.number,
-                ts: b!.timestamp,
-                gl: b!.gasLimit
-            }))
-        }
-    }))
-    localStorage.setItem(connex.thor.genesis.id + gasLimitSamplesKey, JSON.stringify(samples))
-    return samples
 }
 
 const gasLimitSamplesKey = 'gasLimitSamples'

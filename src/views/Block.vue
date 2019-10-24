@@ -153,7 +153,7 @@ export default class Block extends Vue {
         this.error = null
 
         try {
-            const block = await connex.thor.block(this.id).get()
+            const block = await this.$connex.thor.block(this.id).get()
             if (!block) {
                 this.error = new Error('block not found')
             } else {

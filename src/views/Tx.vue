@@ -189,7 +189,7 @@ export default class Tx extends Vue {
         this.receipt = null
 
         try {
-            const tv = connex.thor.transaction(this.id)
+            const tv = this.$connex.thor.transaction(this.id)
             const [tx, receipt] = await Promise.all([
                 tv.get(),
                 tv.getReceipt()
