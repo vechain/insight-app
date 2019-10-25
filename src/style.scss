@@ -24,3 +24,15 @@ body {
   font-family: Constantia, "Lucida Bright", Lucidabright, "Lucida Serif", Lucida, "DejaVu Serif", "Bitstream Vera Serif",
     "Liberation Serif", Georgia, serif;
 }
+
+.nav-tabs {
+  flex-wrap: nowrap;
+}
+
+.nav-tabs .nav-item {
+  min-width: 0px;
+}
+
+.nav-tabs .nav-item .nav-link {
+  @extend .text-truncate;
+}
