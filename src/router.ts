@@ -21,7 +21,7 @@ export default new Router({
             path: '/:net?',
             children: [
                 {
-                    path: '/',
+                    path: '',
                     name: 'home',
                     component: Home,
                 },
@@ -59,7 +59,7 @@ export default new Router({
                     }]
                 },
                 {
-                    path: '/search',
+                    path: 'search',
                     name: 'search',
                     component: Search
                 }
@@ -68,7 +68,7 @@ export default new Router({
         },
         {
             path: '*',
-            redirect: '/'
+            redirect: { name: 'home' }
         }
     ]
 })
