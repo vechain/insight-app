@@ -21,35 +21,32 @@
                         >{{n.name}}</b-dropdown-item>
                     </b-dropdown>
                 </b-navbar-brand>
-                <b-navbar-nav class="small text-monospace ml-5 mr-auto">
-                    <b-nav-text v-if="price" class="small py-0">
-                        <div>
-                            &nbsp;VET
-                            <span class="text-light">${{price.vet.toFixed(5)}}</span>
-                        </div>
-                        <div>
-                            VTHO
-                            <span class="text-light">${{price.vtho.toFixed(5)}}</span>
-                        </div>
-                    </b-nav-text>
-                </b-navbar-nav>
-
                 <b-navbar-toggle target="nav_collapse" />
                 <b-collapse is-nav id="nav_collapse">
                     <b-navbar-nav class="ml-auto">
+                        <template v-if="price">
+                            <b-nav-item
+                                class="text-monospace small"
+                                href="https://www.coingecko.com/en/coins/vechain"
+                                target="_blank"
+                            >
+                                <div class="small">
+                                    &nbsp;VET
+                                    <span class="text-light">${{price.vet.toFixed(5)}}</span>
+                                </div>
+                            </b-nav-item>
+                            <b-nav-item
+                                class="text-monospace small mr-3"
+                                href="https://www.coingecko.com/en/coins/vethor-token"
+                                target="_blank"
+                            >
+                                <div class="small">
+                                    VTHO
+                                    <span class="text-light">${{price.vtho.toFixed(5)}}</span>
+                                </div>
+                            </b-nav-item>
+                        </template>
                         <b-nav-item href="https://github.com/vechain/" target="_blank">Code Repo</b-nav-item>
-                    </b-navbar-nav>
-
-                    <!-- Right aligned nav items -->
-                    <b-navbar-nav>
-                        <!-- 
-                    <b-nav-item-dropdown text="Lang" right>
-                        <b-dropdown-item href="#">EN</b-dropdown-item>
-                        <b-dropdown-item href="#">ES</b-dropdown-item>
-                        <b-dropdown-item href="#">RU</b-dropdown-item>
-                        <b-dropdown-item href="#">FA</b-dropdown-item>
-                        </b-nav-item-dropdown>-->
-
                         <b-nav-item-dropdown class="mr-3">
                             <!-- Using button-content slot -->
                             <template slot="button-content">
