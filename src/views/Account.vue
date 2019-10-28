@@ -3,8 +3,10 @@
         <b-card no-body>
             <b-card-header class="border-bottom-0 pb-0">
                 <span class="h4 mr-3">Account</span>
-
-                <AccountLink no-link icon :address="address" />
+                <div class="d-flex">
+                    <AccountLink no-link icon :address="address" style="min-width:0px" />
+                    <Copy :value="address|checksum" class="ml-2" />
+                </div>
             </b-card-header>
             <b-tabs card v-model="tab" class="text-capitalize">
                 <b-tab v-for="n in tabNames" :title="n" :key="n" no-body />

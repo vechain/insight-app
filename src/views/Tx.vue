@@ -15,9 +15,12 @@
                         <b-col lg="2">
                             <strong>ID</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace">{{tx.id}}</b-col>
+                        <b-col lg="10" class="d-flex">
+                            <span class="text-monospace text-truncate">{{tx.id}}</span>
+                            <Copy :value="tx.id" class="ml-2" />
+                        </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
 
                     <b-row>
                         <b-col lg="2">
@@ -25,29 +28,29 @@
                         </b-col>
                         <b-col lg="10">{{tx.size|locale}} B</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
 
                     <b-row>
                         <b-col lg="2">
                             <strong>Timestamp</strong>
                         </b-col>
                         <b-col lg="10">
-                            {{tx.meta.blockTimestamp|date}}, @Block
+                            {{tx.meta.blockTimestamp|date}}
                             <router-link
                                 :to="{name:'block', params: {id: tx.meta.blockID}}"
                             >#{{tx.meta.blockNumber}}</router-link>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Origin</strong>
                         </b-col>
                         <b-col lg="10">
-                            <AccountLink :address="tx.origin" icon/>
+                            <AccountLink :address="tx.origin" icon />
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Total Transfer</strong>
@@ -75,7 +78,7 @@
                             />
                         </div>
                     </b-collapse>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Gas Used</strong>
@@ -85,7 +88,7 @@
                             <sup>price coef {{tx.gasPriceCoef}}</sup>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Fee</strong>
@@ -93,11 +96,11 @@
                         <b-col lg="10">
                             <Amount sym="VTHO" :dec="null" class="mr-2">{{receipt.paid}}</Amount>paid by
                             <strong v-if="tx.origin === receipt.gasPayer">Origin</strong>
-                            <AccountLink v-else :address="receipt.gasPayer" abbr icon/>
+                            <AccountLink v-else :address="receipt.gasPayer" abbr icon />
                             <b-badge v-if="vip191" variant="info" class="ml-3">VIP-191</b-badge>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Reward</strong>
@@ -106,28 +109,28 @@
                             <Amount sym="VTHO" :dec="null">{{receipt.reward}}</Amount>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Block Ref</strong>
                         </b-col>
                         <b-col lg="10" class="text-monospace">{{tx.blockRef}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Expiration</strong>
                         </b-col>
                         <b-col lg="10">{{tx.expiration}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Nonce</strong>
                         </b-col>
                         <b-col lg="10" class="text-monospace">{{tx.nonce}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Depends On</strong>
@@ -141,7 +144,7 @@
                             <span v-else>-</span>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Chain Tag</strong>
@@ -155,7 +158,7 @@
                         <p class="text-warning">Error: {{error.message}}</p>
                         <b-button size="sm" @click="reload">Reload</b-button>
                     </div>
-                    <Loading v-else class="my-3"/>
+                    <Loading v-else class="my-3" />
                 </template>
             </b-card-body>
         </b-card>

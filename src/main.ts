@@ -5,7 +5,7 @@ import Router from './router'
 import Store from './store'
 import './registerServiceWorker'
 import './filters'
-
+import VueClipboard from 'vue-clipboard2'
 
 import './style.scss'
 import VueAnalytics from 'vue-analytics'
@@ -18,6 +18,9 @@ Vue.use(VueAnalytics, {
     id: 'UA-132391998-2',
     disabled: process.env.NODE_ENV !== 'production'
 })
+
+VueClipboard.config.autoSetContainer = true
+Vue.use(VueClipboard)
 
 new App({
     router: Router,

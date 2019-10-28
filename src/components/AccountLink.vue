@@ -1,26 +1,30 @@
 <template>
     <div
         v-if="isValid"
-        class="d-inline-flex align-items-center text-break"
+        class="d-inline-flex align-items-center mw-100"
         :title="owned?'Owned Account':''"
     >
         <Ident
             v-if="icon"
-            class="mr-2"
+            class="mr-2 flex-shrink-0"
             :value="address"
             style="width:1.4em;height:1em;border-radius:0.2em"
         />
-        <span v-if="noLink" class="text-monospace">
+        <span v-if="noLink" class="text-monospace text-truncate">
             <template v-if="abbr">{{address | abbr}}</template>
             <template v-else>{{address | checksum}}</template>
         </span>
-        <router-link v-else class="text-monospace" :to="{name:'account',params:{address:address}}">
+        <router-link
+            class="text-monospace text-truncate"
+            v-else
+            :to="{name:'account',params:{address:address}}"
+        >
             <template v-if="abbr">{{address | abbr}}</template>
             <template v-else>{{address | checksum}}</template>
         </router-link>
-        <SvgIcon v-if="owned" name="key" class="ml-1" />
+        <SvgIcon v-if="owned" name="key" class="ml-1 flex-shrink-0" />
     </div>
-    <span v-else>{{this.address}}</span>
+    <span v-else class="text-truncate">{{this.address}}</span>
 </template>
 <script lang="ts">
 import { Vue, Prop, Component, Watch } from 'vue-property-decorator'

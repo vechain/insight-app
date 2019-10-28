@@ -9,6 +9,7 @@ import Ident from './Ident.vue'
 import SvgIcon from './SvgIcon.vue'
 import Amount from './Amount.vue'
 import Decoded from './Decoded.vue'
+import Copy from './Copy.vue'
 
 import Vue from 'vue'
 
@@ -23,3 +24,4 @@ Vue.component('SvgIcon', SvgIcon)
 Vue.component('Amount', Amount)
 Vue.component('Decoded', Decoded)
 Vue.component('BandwidthChart', () => import('./BandwidthChart.vue'))
+Vue.component('Copy', Copy)

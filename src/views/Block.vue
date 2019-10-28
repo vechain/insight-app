@@ -14,23 +14,26 @@
                         <b-col lg="2">
                             <strong>ID</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace">{{block.id}}</b-col>
+                        <b-col lg="10" class="d-flex">
+                            <span class="text-monospace text-truncate">{{block.id}}</span>
+                            <Copy :value="block.id" class="ml-2" />
+                        </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Size</strong>
                         </b-col>
                         <b-col lg="10">{{block.size|locale}} B</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Timestamp</strong>
                         </b-col>
                         <b-col lg="10">{{block.timestamp | date}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Gas Used</strong>
@@ -49,31 +52,35 @@
                     <b-collapse v-if="txs.length" id="txs">
                         <ol start="0" class="text-monospace mb-0 mt-3 small">
                             <li v-for="(tx, i) in txs" :key="i" class="mt-2">
-                                <router-link :to="{name: 'tx', params:{id: tx}}">{{tx}}</router-link>
+                                <div class="text-truncate">
+                                    <router-link :to="{name: 'tx', params:{id: tx}}">{{tx}}</router-link>
+                                </div>
                             </li>
                         </ol>
                     </b-collapse>
-                    <hr>
+                    <hr />
 
                     <b-row>
                         <b-col lg="2">
                             <strong>Parent</strong>
                         </b-col>
-                        <b-col lg="10">
+                        <b-col lg="10" class="text-truncate">
                             <router-link
+                                v-if="block.number>0"
                                 class="text-monospace"
                                 :to="{name:'block', params: {id: block.parentID}}"
-                            >{{block.parentID}}</router-link>
+                            >#{{block.number-1}}</router-link>
+                            <span v-else>N/A</span>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Total Score</strong>
                         </b-col>
                         <b-col lg="10">{{block.totalScore | locale}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Features</strong>
@@ -83,44 +90,44 @@
                             <div v-else>None</div>
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Signer</strong>
                         </b-col>
                         <b-col lg="10">
-                            <AccountLink :address="block.signer"/>
+                            <AccountLink :address="block.signer" />
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Beneficiary</strong>
                         </b-col>
                         <b-col lg="10">
-                            <AccountLink :address="block.beneficiary"/>
+                            <AccountLink :address="block.beneficiary" />
                         </b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>State Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace">{{block.stateRoot}}</b-col>
+                        <b-col lg="10" class="text-monospace text-truncate">{{block.stateRoot}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Txs Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace">{{block.txsRoot}}</b-col>
+                        <b-col lg="10" class="text-monospace text-truncate">{{block.txsRoot}}</b-col>
                     </b-row>
-                    <hr>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Receipts Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace">{{block.receiptsRoot}}</b-col>
+                        <b-col lg="10" class="text-monospace text-truncate">{{block.receiptsRoot}}</b-col>
                     </b-row>
                 </template>
                 <template v-else>
@@ -129,7 +136,7 @@
                         <p class="text-warning">Error: {{error.message}}</p>
                         <b-button size="sm" @click="reload">Reload</b-button>
                     </div>
-                    <Loading v-else class="my-3"/>
+                    <Loading v-else class="my-3" />
                 </template>
             </b-card-body>
         </b-card>
