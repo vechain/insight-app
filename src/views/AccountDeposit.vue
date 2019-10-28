@@ -2,6 +2,7 @@
     <div style="max-width:30rem;" class="mx-auto">
         <p>Send VET and VTHO to this account</p>
         <hr>
+        <template v-if="!$isConnexShuffle">
         <b-input-group>
             <b-input-group-prepend>
                 <b-input-group-text style="width:4rem" class="small">VET</b-input-group-text>
@@ -32,6 +33,10 @@
         <b-modal ok-only ref="popover">
             <p>Successfully sent!</p>
         </b-modal>
+        </template>
+        <div v-else>
+            <i>Unsupported in shuffle mode</i>
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -64,6 +69,7 @@ export default class AccountDeposit extends Vue {
     private error = null as Error | null
 
     get price() { return this.$store.state.price }
+
 
     private created() {
         this.address = this.$route.params.address.toLowerCase()
