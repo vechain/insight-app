@@ -28,11 +28,10 @@ body {
 .nav-tabs {
   flex-wrap: nowrap;
 }
-
-.nav-tabs .nav-item {
-  min-width: 0px;
+.tabs {
+  overflow-x: auto;
 }
 
-.nav-tabs .nav-item .nav-link {
-  @extend .text-truncate;
+.tabs .card-header {
+  min-width: max-content;
 }
