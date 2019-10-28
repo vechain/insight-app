@@ -40,9 +40,10 @@ export default class Account extends Vue {
     private created() {
         this.$ga.page('/insight/account')
         this.address = this.$route.params.address.toLowerCase()
-    }
-    private mounted() {
-        this.tab = this.tabNames.indexOf(this.$route.name!) || 0
+        this.tab = this.tabNames.indexOf(this.$route.name!)
+        if (this.tab < 0) {
+            this.tab = 0
+        }
     }
 }
 </script>
