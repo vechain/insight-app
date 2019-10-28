@@ -18,7 +18,10 @@ export default class App extends Vue {
         if (!['main', 'test'].includes(net!)) {
             net = undefined
         }
-        Vue.prototype.$connex = createConnex(net)
+
+        const {connex, shuffle} = createConnex(net)
+        Vue.prototype.$connex = connex
+        Vue.prototype.$isConnexShuffle = shuffle
 
         this.routed()
 

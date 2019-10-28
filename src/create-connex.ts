@@ -61,21 +61,21 @@ class SimpleDriver extends DriverNoVendor {
 }
 
 import { genesisIdToNetwork } from './utils'
-export function createConnex(net?: 'main' | 'test') {
+export function createConnex(net?: 'main' | 'test'): { connex: Connex, shuffle: boolean } {
     if (net) { // net specified
         if (window.connex && genesisIdToNetwork(window.connex.thor.genesis.id) === net) {
             // window.connex satisfied
-            return window.connex
+            return { connex: window.connex, shuffle: false }
         }
         // or create a shuffle one
-        return new Framework(new SimpleDriver(net))
+        return { connex: new Framework(new SimpleDriver(net)), shuffle: true }
     } else {
         // net unspecified
         if (window.connex) {
-            return window.connex
+            return { connex: window.connex, shuffle: false }
         } else {
             // defaults to main net
-            return new Framework(new SimpleDriver('main'))
+            return { connex: new Framework(new SimpleDriver('main')), shuffle: true }
         }
     }
 }
