@@ -1,31 +1,31 @@
 <template>
     <b-card no-body>
         <b-card-header class="border-bottom-0" :class="showTabs?'pb-0':''">
-            <div class="d-flex align-items-center">
-                <span style="width:10em;">
+            <b-row>
+                <b-col cols="auto" class="px-1">#{{index}}</b-col>
+                <b-col cols="auto">
                     <b-badge class="text-uppercase">{{type}}</b-badge>
-                </span>
-                <div>
-                    <AccountLink v-if="clause.to" icon :address="clause.to" abbr/>
-                    <AccountLink v-else-if="output" icon :address="output.contractAddress" abbr/>
+                </b-col>
+                <b-col>
+                    <AccountLink v-if="clause.to" icon :address="clause.to" abbr />
+                    <AccountLink v-else-if="output" icon :address="output.contractAddress" abbr />
                     <span v-else class="text-monospace">0x??????…????</span>
-                </div>
-                <div style="width:10rem;" class="text-right">
+                </b-col>
+                <b-col class="text-right">
                     <Amount sym="VET">{{clause.value}}</Amount>
-                </div>
-                <b class="ml-auto">#{{index}}</b>
-            </div>
+                </b-col>
+            </b-row>
         </b-card-header>
         <b-tabs v-model="tab" card no-key-nav v-if="showTabs">
             <b-tab title="Input Data">
-                <InputData :clause="clause" v-if="type!=='transfer'"/>
+                <InputData :clause="clause" v-if="type!=='transfer'" />
                 <div v-else class="text-center">No Data</div>
             </b-tab>
 
             <b-tab title="Transfers">
                 <b-list-group flush v-if="transfers.length">
                     <b-list-group-item v-for="(t, i) in transfers" :key="i">
-                        <Transfer :item="t" :index="i"/>
+                        <Transfer :item="t" :index="i" />
                     </b-list-group-item>
                 </b-list-group>
                 <div v-else class="text-center">No Transfer</div>
