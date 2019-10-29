@@ -18,7 +18,7 @@ export default new Router({
     mode: 'hash',
     routes: [
         {
-            path: '/:net?',
+            path: '/:net(main|test)?',
             children: [
                 {
                     path: '',
