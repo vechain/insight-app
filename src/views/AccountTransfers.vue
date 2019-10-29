@@ -1,84 +1,95 @@
 <template>
     <div>
-        <p>
-            <b-button class="px-3 mr-2" @click="reload" size="sm" :disabled="loading">⟳</b-button>
-            <b-button-group size="sm" :disabled="loading">
-                <b-button class="px-3" :disabled="!canPrev" @click="prevPage">&lsaquo;</b-button>
-                <b-button class="px-3" :disabled="!canNext" @click="nextPage">&rsaquo;</b-button>
-            </b-button-group>
-            <span v-if="range" class="ml-3">{{range[0]}} - {{range[1]}}</span>
-        </p>
-        <Loading v-if="loading" class="my-3"/>
-        <div v-else-if="error" class="text-center">
-            <p>Oops</p>
-            <p class="text-warning">Error: {{error.message}}</p>
-        </div>
-        <b-list-group flush v-else-if="items.length">
-            <b-list-group-item
-                v-for="(item,i) in items"
-                :key="i"
-                :to="{name: 'tx', params:{id: item.meta.txID}}"
-            >
-                <Transfer :item="item" :index="i" :owner="address"/>
-            </b-list-group-item>
-        </b-list-group>
-        <div v-else class="text-center">No content</div>
+        <b-tabs pills small no-key-nav no-body v-model="tab" align="center">
+            <b-tab v-for="item in tabs" :key="item.title" :title="item.title" />
+        </b-tabs>
+        <transition name="fade" mode="out-in">
+            <keep-alive>
+                <TransferItemList :loader="tabs[tab].loader" :sym="tabs[tab].sym" :key="tab" />
+            </keep-alive>
+        </transition>
     </div>
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
+import { abi } from 'thor-devkit/dist/abi'
 
-const pageSize = 10
+interface TabItem {
+    title: string
+    sym: string
+    loader: (offset: number, pageSize: number) => Promise<TransferItemData[]>
+}
 
 @Component({ name: 'AccountTransfers' })
 export default class AccountTransfers extends Vue {
     private address = ''
+    private tab = 0
+    private get tabs(): TabItem[] {
+        return [{
+            title: 'VET',
+            sym: 'VET',
+            loader: async (offset, pageSize) => {
+                const items = await this.$connex.thor.filter('transfer')
+                    .criteria([{ sender: this.address }, { recipient: this.address }])
+                    .order('desc')
+                    .apply(offset, pageSize)
+                return items.map(i => ({
+                    from: i.sender,
+                    to: i.recipient,
+                    amount: i.amount,
+                    timestamp: i.meta!.blockTimestamp,
+                    owner: this.address,
+                    txid: i.meta!.txID,
+                }))
+            }
+        }, {
+            title: 'VTHO',
+            sym: 'VTHO',
+            loader: async (offset, pageSize) => {
+                const items = await this.$connex.thor
+                    .account('0x0000000000000000000000000000456E65726779')
+                    .event(vip180TransferEventABI)
+                    .filter([{ from: this.address }, { to: this.address }])
+                    .order('desc')
+                    .apply(offset, pageSize)
 
-    private items = null as Connex.Thor.Transfer[] | null
-    private error = null as Error | null
-    private loading = false
-    private offset = 0
-    get canNext() { return this.items && this.items.length === pageSize }
-    get canPrev() { return this.items && this.offset > 0 }
-    get range() {
-        if (!this.loading && this.items && this.items.length > 0) {
-            return [this.offset, this.offset + this.items.length]
-        }
-        return null
+                return items.map(i => ({
+                    from: i.decoded!.from,
+                    to: i.decoded!.to,
+                    amount: i.decoded!.value,
+                    timestamp: i.meta!.blockTimestamp,
+                    owner: this.address,
+                    txid: i.meta!.txID,
+                }))
+            }
+        }]
     }
 
-    private nextPage() {
-        this.offset += pageSize
-        this.reload()
-    }
-    private prevPage() {
-        if (this.offset >= pageSize) {
-            this.offset -= pageSize
-            this.reload()
-        }
-    }
-    private async reload() {
-        if (this.loading) {
-            return
-        }
-        this.error = null
-        this.loading = true
-        this.items = null
-        try {
-            this.items = await this.$connex.thor.filter('transfer')
-                .criteria([{ sender: this.address }, { recipient: this.address }])
-                .order('desc')
-                .apply(this.offset, pageSize)
-        } catch (err) {
-            this.error = err
-        } finally {
-            this.loading = false
-        }
-    }
     private created() {
         this.address = this.$route.params.address.toLowerCase()
-        this.reload()
     }
 }
-</script>
 
+const vip180TransferEventABI = {
+    anonymous: false,
+    inputs: [
+        {
+            indexed: true,
+            name: 'from',
+            type: 'address'
+        },
+        {
+            indexed: true,
+            name: 'to',
+            type: 'address'
+        },
+        {
+            indexed: false,
+            name: 'value',
+            type: 'uint256'
+        }
+    ],
+    name: 'Transfer',
+    type: 'event'
+}
+</script>

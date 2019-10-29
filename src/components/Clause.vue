@@ -25,7 +25,7 @@
             <b-tab title="Transfers">
                 <b-list-group flush v-if="transfers.length">
                     <b-list-group-item v-for="(t, i) in transfers" :key="i">
-                        <Transfer :item="t" :index="i" />
+                        <TransferItem :data="t" />
                     </b-list-group-item>
                 </b-list-group>
                 <div v-else class="text-center">No Transfer</div>
@@ -58,7 +58,13 @@ export default class Clause extends Vue {
     private tab = 0
 
     get events() { return this.output ? this.output.events : [] }
-    get transfers() { return this.output ? this.output.transfers : [] }
+    get transfers(): TransferItemData[] {
+        return this.output ? this.output.transfers.map(t => ({
+            from: t.sender,
+            to: t.recipient,
+            amount: t.amount
+        })) : []
+    }
     get showTabs() { return this.type !== 'transfer' || this.events.length || this.transfers.length }
     get type() {
         if (this.clause.to) {
