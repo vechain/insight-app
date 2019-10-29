@@ -52,9 +52,11 @@
                     <b-collapse v-if="txs.length" id="txs">
                         <ol start="0" class="text-monospace mb-0 mt-3 small">
                             <li v-for="(tx, i) in txs" :key="i" class="mt-2">
-                                <div class="text-truncate">
-                                    <router-link :to="{name: 'tx', params:{id: tx}}">{{tx}}</router-link>
-                                </div>
+                                <router-link
+                                    :to="{name: 'tx', params:{id: tx}}"
+                                    style="display: inline-block;"
+                                    class="text-truncate w-100 align-top"
+                                >{{tx}}</router-link>
                             </li>
                         </ol>
                     </b-collapse>
