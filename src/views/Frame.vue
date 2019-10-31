@@ -89,7 +89,7 @@
         </div>
         <div v-else class="py-4 d-flex align-items-center justify-content-center">
             <b-spinner type="grow" />
-            <div>Checking status...</div>
+            <div>Connecting ...</div>
         </div>
     </div>
 </template>

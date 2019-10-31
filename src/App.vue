@@ -1,5 +1,13 @@
 <template>
     <div class="app">
+        <b-alert
+            v-model="$store.state.newContentAvailable"
+            variant="primary"
+            class="py-1 rounded-0 m-0"
+        >
+            New content available,
+            <a href="#" @click="reload">reload</a> to upgrade
+        </b-alert>
         <router-view key="frame" />
     </div>
 </template>
@@ -19,7 +27,7 @@ export default class App extends Vue {
             net = undefined
         }
 
-        const {connex, shuffle} = createConnex(net)
+        const { connex, shuffle } = createConnex(net)
         Vue.prototype.$connex = connex
         Vue.prototype.$isConnexShuffle = shuffle
 
@@ -82,6 +90,10 @@ export default class App extends Vue {
             console.warn(err)
         }
         return null
+    }
+
+    private reload() {
+        window.location.reload()
     }
 }
 </script>
