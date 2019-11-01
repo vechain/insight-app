@@ -11,6 +11,7 @@ import Amount from './Amount.vue'
 import Decoded from './Decoded.vue'
 import Copy from './Copy.vue'
 import TransferItemList from './TransferItemList.vue'
+import VeChainStatsLink from './VeChainStatsLink.vue'
 
 import Vue from 'vue'
 
@@ -27,3 +28,4 @@ Vue.component('Decoded', Decoded)
 Vue.component('BandwidthChart', () => import('./BandwidthChart.vue'))
 Vue.component('Copy', Copy)
 Vue.component('TransferItemList', TransferItemList)
+Vue.component('VeChainStatsLink', VeChainStatsLink)

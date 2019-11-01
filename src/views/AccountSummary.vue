@@ -4,6 +4,7 @@
             <b-badge
                 :variant="account.entity.hasCode? 'success':'secondary'"
             >{{account.entity.hasCode? 'Contract': 'Regular'}}</b-badge>
+            <VeChainStatsLink v-if="isMainNet" class="ml-4" :address="address" />
         </div>
         <hr />
         <b-row>
@@ -86,11 +87,13 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Watch } from 'vue-property-decorator'
+import { genesisIdToNetwork } from '../utils'
 
 @Component({ name: 'AccountSummary' })
 export default class AccountSummary extends Vue {
     private address = ''
     get price() { return this.$store.state.price }
+    get isMainNet() { return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' }
     private account = {
         entity: null as Connex.Thor.Account | null,
         error: null as Error | null
