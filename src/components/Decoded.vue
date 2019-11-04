@@ -3,8 +3,8 @@
         <b-card-header class="py-1 px-2">
             <strong class="text-monospace">{{abi.json.type}} {{decoded.canonicalName}}</strong>
         </b-card-header>
-        <div class="px-3 py-2">
-            <table class="table mb-0 table-responsive-lg">
+        <div class="px-3 py-2 overflow-auto">
+            <table class="table mb-0">
                 <template v-if="decoded.params.length>0">
                     <tr class="table-borderless">
                         <th>#</th>
