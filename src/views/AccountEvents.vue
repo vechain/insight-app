@@ -30,6 +30,8 @@
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
 
+
+const VTHO_CONTRACT_ADDRESS = '0x0000000000000000000000000000456e65726779'
 const pageSize = 5
 
 @Component({ name: 'AccountEvents' })
@@ -61,15 +63,36 @@ export default class AccountEvents extends Vue {
         }
     }
 
+    private addLeadingZeros (value: String) {
+        const normalSize = 66
+
+        // eslint-disable-next-line prefer-const
+        let [leadingZeros, addrPart] = value.split('0x')
+
+        leadingZeros = '0x'
+        const sizeExceed = normalSize - addrPart.length
+
+        while (leadingZeros.length < sizeExceed) {
+            leadingZeros += '0'
+        }
+
+        return leadingZeros + addrPart
+    }
+
     private async reload() {
         if (this.loading) {
             return
         }
         try {
+            const modifiedAddress = this.addLeadingZeros(this.address)
             this.loading = true
             this.error = null
             this.items = await this.$connex.thor.filter('event')
-                .criteria([{ address: this.address }])
+                .criteria([
+                    { address: VTHO_CONTRACT_ADDRESS, topic0: modifiedAddress },
+                    { address: VTHO_CONTRACT_ADDRESS, topic1: modifiedAddress },
+                    { address: VTHO_CONTRACT_ADDRESS, topic2: modifiedAddress }
+                ])
                 .order('desc')
                 .apply(this.offset, pageSize)
         } catch (err) {
