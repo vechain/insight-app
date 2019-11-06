@@ -49,7 +49,7 @@
                             <b-row no-gutters>
                                 <b-col cols="4">
                                     <div>
-                                        <router-link :to="{name:'block', params: {id: b.id}}">
+                                        <router-link :to="{name:'block', params: {id: b.id, net:$net}}">
                                             <SvgIcon name="package" class="mr-1" />
                                             {{b.number}}
                                         </router-link>

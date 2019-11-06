@@ -24,7 +24,7 @@
                     txid
                     <router-link
                         class="text-monospace"
-                        :to="{name: 'tx', params:{id: item.meta.txID}}"
+                        :to="{name: 'tx', params:{id: item.meta.txID, net:$net}}"
                     >{{item.meta.txID | abbr}}</router-link>
                 </span>
                 <span v-else class="float-right">

@@ -3,7 +3,7 @@
         <b-navbar toggleable="lg" variant="secondary" type="dark">
             <div class="container">
                 <b-navbar-brand>
-                    <router-link :to="{name:'home'}" class="text-decoration-none text-white">
+                    <router-link :to="{name:'home', params: {net:$net}}" class="text-decoration-none text-white">
                         <span class="text-serif h4">Insight</span>
                     </router-link>
                     <b-dropdown

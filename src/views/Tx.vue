@@ -37,7 +37,7 @@
                         <b-col lg="10">
                             {{tx.meta.blockTimestamp|date}}
                             <router-link
-                                :to="{name:'block', params: {id: tx.meta.blockID}}"
+                                :to="{name:'block', params: {id: tx.meta.blockID, net:$net}}"
                             >#{{tx.meta.blockNumber}}</router-link>
                         </b-col>
                     </b-row>
@@ -139,7 +139,7 @@
                             <router-link
                                 class="text-monospace"
                                 v-if="!!tx.dependsOn"
-                                :to="{name:'tx', params:{id:tx.dependsOn}}"
+                                :to="{name:'tx', params:{id:tx.dependsOn, net:$net}}"
                             >{{tx.dependsOn}}</router-link>
                             <span v-else>-</span>
                         </b-col>

@@ -17,7 +17,7 @@
         <router-link
             class="text-monospace text-truncate"
             v-else
-            :to="{name:'account',params:{address:address}}"
+            :to="{name:'account',params:{address:address, net:$net}}"
         >
             <template v-if="abbr">{{address | abbr}}</template>
             <template v-else>{{address | checksum}}</template>

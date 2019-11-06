@@ -30,6 +30,10 @@ export default class App extends Vue {
         const { connex, shuffle } = createConnex(net)
         Vue.prototype.$connex = connex
         Vue.prototype.$isConnexShuffle = shuffle
+        Vue.prototype.$net = genesisIdToNetwork(connex.thor.genesis.id)
+        if (!['main', 'test'].includes(Vue.prototype.$net)) {
+            Vue.prototype.$net = ''
+        }
 
         this.routed()
 
@@ -42,7 +46,7 @@ export default class App extends Vue {
             }
         })()
 
-        if (genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main') {
+        if (this.$net === 'main') {
             (async () => {
                 for (; ;) {
                     const p = await this.fetchPrice()
@@ -60,17 +64,13 @@ export default class App extends Vue {
     @Watch('$route.path')
     private routed() {
 
-        const connexNet = genesisIdToNetwork(this.$connex.thor.genesis.id)
-        const pathNet = this.$route.params.net
-
-        if (['main', 'test'].includes(pathNet) && pathNet !== connexNet) {
+        if (this.$route.params.net && this.$route.params.net !== this.$net) {
             window.location.reload()
             return
         }
-
         this.$router.replace({
             ... this.$route,
-            params: { ... this.$route.params, net: ['main', 'test'].includes(connexNet) ? connexNet : '' }
+            params: { ... this.$route.params, net: this.$net || '' }
         })
     }
 

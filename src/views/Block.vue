@@ -53,7 +53,7 @@
                         <ol start="0" class="text-monospace mb-0 mt-3 small">
                             <li v-for="(tx, i) in txs" :key="i" class="mt-2">
                                 <router-link
-                                    :to="{name: 'tx', params:{id: tx}}"
+                                    :to="{name: 'tx', params:{id: tx, net:$net}}"
                                     style="display: inline-block;"
                                     class="text-truncate w-100 align-top"
                                 >{{tx}}</router-link>
@@ -70,7 +70,7 @@
                             <router-link
                                 v-if="block.number>0"
                                 class="text-monospace"
-                                :to="{name:'block', params: {id: block.parentID}}"
+                                :to="{name:'block', params: {id: block.parentID, net:$net}}"
                             >#{{block.number-1}}</router-link>
                             <span v-else>N/A</span>
                         </b-col>
