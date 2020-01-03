@@ -41,7 +41,8 @@ export default class Amount extends Vue {
     }
 
     private extractSlot() {
-        this.content = this.$slots.default[0] ? (this.$slots.default[0].text || '').trim() : ''
+        const slot = (this.$slots.default || [])[0]
+        this.content = slot ? (slot.text || '').trim() : ''
     }
 }
 </script>
