@@ -32,7 +32,7 @@ export default class App extends Vue {
         Vue.prototype.$isConnexShuffle = shuffle
         Vue.prototype.$net = genesisIdToNetwork(connex.thor.genesis.id)
         if (!['main', 'test'].includes(Vue.prototype.$net)) {
-            Vue.prototype.$net = ''
+            Vue.prototype.$net = undefined
         }
 
         this.routed()
@@ -70,7 +70,7 @@ export default class App extends Vue {
         }
         this.$router.replace({
             ... this.$route,
-            params: { ... this.$route.params, net: this.$net || '' }
+            params: { ... this.$route.params, net: this.$net }
         })
     }
 
