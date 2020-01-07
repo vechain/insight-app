@@ -160,7 +160,7 @@ export default class BandwidthChart extends Vue {
         for (let i = 0; i < 12; i++) {
             points.unshift(p - i * gap)
         }
-        return points
+        return points.filter(n => n >= 0)
     }
 
     private async  getGasLimits() {
