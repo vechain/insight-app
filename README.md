@@ -4,6 +4,11 @@
 
 [Try it out!](https://insight.vecha.in/#/)
 
+## Permanent links
+
+* Main net - `https://insight.vecha.in/#/main/txs/{txid}`
+* Test net - `https://insight.vecha.in/#/test/txs/{txid}`
+
 ## Screenshots
 
 ![Homepage](./screenshots/homepage-chrome-app.png)
