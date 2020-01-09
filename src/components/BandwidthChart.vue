@@ -80,6 +80,7 @@ export default class BandwidthChart extends Vue {
 
         const options: Chart.ChartOptions = {
             maintainAspectRatio: false,
+            responsive: true,
             scales: {
                 xAxes: [{
                     gridLines: {
@@ -130,6 +131,8 @@ export default class BandwidthChart extends Vue {
                 }
             }
         }
+
+        ;(this.$refs.canvas as HTMLElement).style.height="100%"
 
         if (this.chart) {
             this.chart.data = data

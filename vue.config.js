@@ -2,8 +2,17 @@ const Path = require('path')
 const webpack = require('webpack')
 
 module.exports = {
+    transpileDependencies: [
+        '@vechain/connex.driver-nodejs',
+        '@vechain/connex-framework',
+        '@vechain/picasso',
+        'thor-devkit',
+        'lru-cache',
+        'validator-ts',
+        'yallist'
+    ],
     lintOnSave: false,
-    baseUrl: '/',
+    publicPath: '/',
     pwa: {
         workboxOptions: {
             skipWaiting: true,
