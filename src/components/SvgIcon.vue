@@ -15,6 +15,7 @@ import '../assets/octicons/svg/package.svg'
 import '../assets/octicons/svg/shield.svg'
 import '../assets/octicons/svg/eye.svg'
 import '../assets/octicons/svg/clippy.svg'
+import '../assets/octicons/svg/mark-github.svg'
 
 @Component
 export default class SvgIcon extends Vue {
