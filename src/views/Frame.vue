@@ -134,9 +134,9 @@ export default class Frame extends Vue {
 
     get switchableNetworks(): Array<{ name: string, href: string }> {
         switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-            case 'main': return [{ name: 'TestNet', href: '/#/test/' }]
-            case 'test': return [{ name: 'MainNet', href: '/#/main/' }]
-            default: return [{ name: 'TestNet', href: '/#/test/' }, { name: 'MainNet', href: '/#/main/' }]
+            case 'main': return [{ name: 'TestNet', href: '#/test/' }]
+            case 'test': return [{ name: 'MainNet', href: '#/main/' }]
+            default: return [{ name: 'TestNet', href: '#/test/' }, { name: 'MainNet', href: '#/main/' }]
         }
     }
 

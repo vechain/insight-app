@@ -12,7 +12,7 @@ module.exports = {
         'yallist'
     ],
     lintOnSave: false,
-    publicPath: '/',
+    publicPath: './',
     pwa: {
         workboxOptions: {
             skipWaiting: true,
