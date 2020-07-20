@@ -1,5 +1,5 @@
-import { DriverNoVendor } from '@vechain/connex.driver-nodejs/dist/driver-no-vendor'
-import { SimpleNet } from '@vechain/connex.driver-nodejs/dist/simple-net'
+import { DriverNoVendor } from '@vechain/connex-driver/dist/driver-no-vendor'
+import { SimpleNet } from '@vechain/connex-driver/dist/simple-net'
 import { Framework } from '@vechain/connex-framework'
 
 const mainNetGenesis = {
