@@ -115,7 +115,7 @@ import { Vue, Component, Watch } from 'vue-property-decorator'
 @Component({ name: 'Home' })
 export default class Home extends Vue {
     private recentBlocks: Connex.Thor.Block[] | null = null
-    private recentTransfers: Connex.Thor.Transfer[] | null = null
+    private recentTransfers: Connex.VM.Transfer[] | null = null
     private loadingBlocks = false
     private loadingTransfers = false
     private searchString = ''
@@ -161,7 +161,7 @@ export default class Home extends Vue {
         try {
             this.loadingTransfers = true
             const result = await this.$connex.thor
-                .filter('transfer')
+                .filter('transfer', [])
                 .order('desc')
                 .apply(0, 10)
             let counter = 0

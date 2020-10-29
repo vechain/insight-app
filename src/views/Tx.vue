@@ -173,7 +173,7 @@ import BigNumber from 'bignumber.js'
 export default class Tx extends Vue {
     private error: Error | null = null
     private tx: Connex.Thor.Transaction | null = null
-    private receipt: Connex.Thor.Receipt | null = null
+    private receipt: Connex.Thor.Transaction.Receipt | null = null
     private id = ''
 
     get clauses() { return this.tx!.clauses }

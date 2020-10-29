@@ -35,7 +35,7 @@ const pageSize = 5
 @Component({ name: 'AccountEvents' })
 export default class AccountEvents extends Vue {
     private address = ''
-    private items = null as Connex.Thor.Event[] | null
+    private items = null as Connex.VM.Event[] | null
     private error = null as Error | null
     private loading = false
     private offset = 0
@@ -68,8 +68,7 @@ export default class AccountEvents extends Vue {
         try {
             this.loading = true
             this.error = null
-            this.items = await this.$connex.thor.filter('event')
-                .criteria([{ address: this.address }])
+            this.items = await this.$connex.thor.filter('event', [{ address: this.address }])
                 .order('desc')
                 .apply(this.offset, pageSize)
         } catch (err) {

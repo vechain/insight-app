@@ -12,7 +12,7 @@
 </template>
 <script lang="ts">
 import { Vue, Component } from 'vue-property-decorator'
-import { abi } from 'thor-devkit/dist/abi'
+import { abi } from 'thor-devkit'
 
 interface TabItem {
     title: string
@@ -29,8 +29,7 @@ export default class AccountTransfers extends Vue {
             title: 'VET',
             sym: 'VET',
             loader: async (offset, pageSize) => {
-                const items = await this.$connex.thor.filter('transfer')
-                    .criteria([{ sender: this.address }, { recipient: this.address }])
+                const items = await this.$connex.thor.filter('transfer', [{ sender: this.address }, { recipient: this.address }])
                     .order('desc')
                     .apply(offset, pageSize)
                 return items.map(i => ({

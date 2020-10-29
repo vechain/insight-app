@@ -2,7 +2,6 @@
     <div style="max-width:30rem;" class="mx-auto">
         <p>Send VET and VTHO to this account</p>
         <hr>
-        <template v-if="!$isConnexShuffle">
         <b-input-group>
             <b-input-group-prepend>
                 <b-input-group-text style="width:4rem" class="small">VET</b-input-group-text>
@@ -33,10 +32,6 @@
         <b-modal ok-only ref="popover">
             <p>Successfully sent!</p>
         </b-modal>
-        </template>
-        <div v-else>
-            <i>Unsupported in shuffle mode</i>
-        </div>
     </div>
 </template>
 <script lang="ts">
@@ -102,8 +97,8 @@ export default class AccountDeposit extends Vue {
                 })
             }
             if (message.length > 0) {
-                await this.$connex.vendor.sign('tx')
-                    .request(message)
+                await this.$connex.vendor.sign('tx', message)
+                    .request()
 
                 this.vet.value = ''
                 this.vtho.value = ''

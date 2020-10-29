@@ -100,7 +100,7 @@ export default class AccountSummary extends Vue {
     }
 
     private code = {
-        entity: null as Connex.Thor.Code | null,
+        entity: null as Connex.Thor.Account.Code | null,
         error: null as Error | null,
         loading: false
     }

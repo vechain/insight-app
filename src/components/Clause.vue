@@ -52,8 +52,8 @@ import { Vue, Component, Prop } from 'vue-property-decorator'
 @Component
 export default class Clause extends Vue {
     @Prop(Number) private index !: number
-    @Prop(Object) private clause !: Connex.Thor.Clause
-    @Prop(Object) private output!: Connex.Thor.Receipt['outputs'][number]
+    @Prop(Object) private clause !: Connex.VM.Clause
+    @Prop(Object) private output!: Connex.Thor.Transaction.Receipt['outputs'][number]
 
     private tab = 0
 

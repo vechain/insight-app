@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { format } from 'timeago.js'
-import { toChecksumAddress } from 'thor-devkit/dist/cry/address'
+import { address } from 'thor-devkit'
 import BigNumber from 'bignumber.js'
 
 Vue.filter('locale', (value: number) => value.toLocaleString())
@@ -10,7 +10,7 @@ Vue.filter('abbr', (id: string) => {
     if (id.length === 66) {
         return `${id.slice(0, 10)}…${id.slice(58)}`
     } else if (id.length === 42) {
-        id = toChecksumAddress(id)
+        id = address.toChecksumed(id)
         return `${id.slice(0, 8)}…${id.slice(38)}`
     }
     return id
@@ -30,7 +30,7 @@ Vue.filter('xamount', (val: string) => {
 
 Vue.filter('checksum', (val: string) => {
     try {
-        return toChecksumAddress(val)
+        return address.toChecksumed(val)
     } catch {
         return val
     }

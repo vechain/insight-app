@@ -28,7 +28,7 @@
 </template>
 <script lang="ts">
 import { Vue, Prop, Component, Watch } from 'vue-property-decorator'
-import { isAddress } from 'thor-devkit/dist/cry/address'
+import { address } from 'thor-devkit'
 
 @Component
 export default class AccountLink extends Vue {
@@ -39,7 +39,7 @@ export default class AccountLink extends Vue {
 
     private owned = false
 
-    get isValid() { return isAddress(this.address) }
+    get isValid() { return address.test(this.address) }
 
     private created() {
         this.addressChanged()
@@ -47,17 +47,17 @@ export default class AccountLink extends Vue {
 
     @Watch('address')
     private async addressChanged() {
-        const addr = this.address
-        if (isAddress(addr)) {
-            if (addr && this.$connex.vendor.owned) {
-                const owned = await this.$connex.vendor.owned(addr)
-                if (addr === this.address) {
-                    this.owned = owned
-                }
-            }
-        } else {
-            this.owned = false
-        }
+        // const addr = this.address
+        // if (cry.isAddress(addr)) {
+        //     if (addr && this.$connex.vendor.owned) {
+        //         const owned = await this.$connex.vendor.owned(addr)
+        //         if (addr === this.address) {
+        //             this.owned = owned
+        //         }
+        //     }
+        // } else {
+        //     this.owned = false
+        // }
     }
 }
 </script>

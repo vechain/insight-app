@@ -60,7 +60,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
 
 @Component
 export default class Event extends Vue {
-    @Prop(Object) private item!: Connex.Thor.Event
+    @Prop(Object) private item!: Connex.VM.Event
     @Prop(Number) private index!: number
 
     private view = 'raw' as 'raw' | 'decoded'
