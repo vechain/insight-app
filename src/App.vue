@@ -6,7 +6,10 @@
             class="py-1 rounded-0 m-0"
         >
             New content available,
-            <a href="#" @click="reload">reload</a> to upgrade
+            <a
+                href="#"
+                @click="reload"
+            >reload</a> to upgrade
         </b-alert>
         <router-view key="frame" />
     </div>
@@ -37,7 +40,7 @@ export default class App extends Vue {
         this.$store.commit(Store.UPDATE_CHAIN_STATUS, this.$connex.thor.status);
         (async () => {
             const ticker = this.$connex.thor.ticker();
-            for (;;) {
+            for (; ;) {
                 await ticker.next();
                 this.$store.commit(
                     Store.UPDATE_CHAIN_STATUS,
@@ -48,7 +51,7 @@ export default class App extends Vue {
 
         if (this.$net === "main") {
             (async () => {
-                for (;;) {
+                for (; ;) {
                     const p = await this.fetchPrice();
                     if (p) {
                         this.$store.commit(Store.UPDATE_PRICE, p);
@@ -63,14 +66,16 @@ export default class App extends Vue {
 
     @Watch("$route.path")
     private routed() {
-        if (this.$route.params.net && this.$route.params.net !== this.$net) {
-            window.location.reload();
-            return;
+        if (!this.$route.params.net) {
+            this.$router.replace({
+                ...this.$route,
+                params: { ...this.$route.params, net: this.$net },
+            })
+            return
         }
-        this.$router.replace({
-            ...this.$route,
-            params: { ...this.$route.params, net: this.$net },
-        });
+        if (this.$route.params.net !== this.$net) {
+            window.location.reload();
+        }
     }
 
     private async fetchPrice() {
