@@ -10,7 +10,6 @@ import Search from './views/Search.vue'
 import AccountSummary from './views/AccountSummary.vue'
 import AccountEvents from './views/AccountEvents.vue'
 import AccountTransfers from './views/AccountTransfers.vue'
-import AccountDeposit from './views/AccountDeposit.vue'
 
 Vue.use(Router)
 
@@ -55,7 +54,7 @@ export default new Router({
                     }, {
                         name: 'deposit',
                         path: 'deposit',
-                        component: AccountDeposit,
+                        component: AccountSummary,
                     }]
                 },
                 {

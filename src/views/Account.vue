@@ -4,17 +4,40 @@
             <b-card-header class="border-bottom-0 pb-0">
                 <span class="h4 mr-3">Account</span>
                 <div class="d-flex">
-                    <AccountLink no-link icon :address="address" style="min-width:0px" />
-                    <Copy :value="address|checksum" class="ml-2" />
+                    <AccountLink
+                        no-link
+                        icon
+                        :address="address"
+                        style="min-width:0px"
+                    />
+                    <Copy
+                        :value="address|checksum"
+                        class="ml-2"
+                    />
                 </div>
             </b-card-header>
-            <b-tabs card v-model="tab" class="text-capitalize">
-                <b-tab v-for="n in tabNames" :title="n" :key="n" no-body />
+            <b-tabs
+                card
+                v-model="tab"
+                class="text-capitalize"
+            >
+                <b-tab
+                    v-for="n in tabNames"
+                    :title="n"
+                    :key="n"
+                    no-body
+                />
             </b-tabs>
             <b-card-body>
-                <transition name="fade" mode="out-in">
+                <transition
+                    name="fade"
+                    mode="out-in"
+                >
                     <keep-alive>
-                        <router-view :key="$route.fullPath" ref="view" />
+                        <router-view
+                            :key="$route.fullPath"
+                            ref="view"
+                        />
                     </keep-alive>
                 </transition>
             </b-card-body>
@@ -22,22 +45,24 @@
     </b-container>
 </template>
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
 
-const tabNames = ['summary', 'transfers', 'events', 'deposit']
-
-@Component({ name: 'Account' })
-export default class Account extends Vue {
-    private tab = 0
-    private address = ''
-    private tabNames = ['summary', 'transfers', 'events', 'deposit']
-
-    @Watch('tab')
-    private tabChanged(newTab: number) {
-        this.$router.replace({ name: this.tabNames[newTab] })
-    }
-
-    private created() {
+export default Vue.extend({
+    data: () => {
+        return {
+            tab: 0,
+            address: ''
+        }
+    },
+    computed: {
+        tabNames() { return ['summary', 'transfers', 'events'] }
+    },
+    watch: {
+        tab(newTab: number) {
+            this.$router.replace({ name: this.tabNames[newTab] })
+        }
+    },
+    created() {
         this.$ga.page('/insight/account')
         this.address = this.$route.params.address.toLowerCase()
         this.tab = this.tabNames.indexOf(this.$route.name!)
@@ -45,5 +70,5 @@ export default class Account extends Vue {
             this.tab = 0
         }
     }
-}
+})
 </script>
