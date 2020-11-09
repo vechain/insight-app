@@ -66,10 +66,12 @@
             hide-footer
             v-model="showProgress"
         >
-            <div class="text-center p-1">
+            <div class="text-center p-1 text-break">
                 <div v-if="!!session.result">
                     <div>Successfully sent!</div>
-                    <router-link :to="{name: 'tx', params:{id: session.result.txid, net:$net}}">txid: {{session.result.txid}}</router-link>
+                    <span>
+                        txid: <router-link :to="{name: 'tx', params:{id: session.result.txid, net:$net}}">{{session.result.txid}}</router-link>
+                    </span>
                 </div>
                 <div v-else-if="!!session.error">
                     <div>Error occurred</div>
