@@ -7,42 +7,68 @@
                 :class="isIn?'text-success':'text-danger'"
                 class="mr-4"
             />
-            <AccountLink :address="opposite" abbr icon />
+            <AccountLink
+                :address="opposite"
+                abbr
+                icon
+            />
         </b-col>
-        <b-col lg="3" class="text-right">
+        <b-col
+            lg="3"
+            class="text-right"
+        >
             {{isIn?'+':'-'}}
             <Amount :sym="sym">{{data.amount}}</Amount>
         </b-col>
-        <b-col lg="5" class="text-right text-muted small">{{data.timestamp|date}}</b-col>
+        <b-col
+            lg="5"
+            class="text-right text-muted small"
+        >{{data.timestamp|date}}</b-col>
     </b-row>
     <b-row v-else>
         <b-col lg="8">
             <b-row>
                 <b-col cols="5">
-                    <AccountLink :address="data.from" abbr icon />
+                    <AccountLink
+                        :address="data.from"
+                        abbr
+                        icon
+                    />
                 </b-col>
                 <b-col cols="2">
-                    <SvgIcon name="arrow-right" style="font-size:130%" />
+                    <SvgIcon
+                        name="arrow-right"
+                        style="font-size:130%"
+                    />
                 </b-col>
                 <b-col cols="5">
-                    <AccountLink :address="data.to" abbr icon />
+                    <AccountLink
+                        :address="data.to"
+                        abbr
+                        icon
+                    />
                 </b-col>
             </b-row>
         </b-col>
-        <b-col lg="4" class="text-right">
+        <b-col
+            lg="4"
+            class="text-right"
+        >
             <Amount :sym="sym">{{data.amount}}</Amount>
         </b-col>
     </b-row>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
+import Vue from 'vue'
 
-@Component
-export default class TransferItem extends Vue {
-    @Prop(Object) private data!: TransferItemData
-    @Prop(String) private sym!: string
-
-    get isIn() { return this.data.owner === this.data.to }
-    get opposite() { return this.isIn ? this.data.from : this.data.to }
-}
+export default Vue.extend({
+    props: {
+        data: Object as () => TransferItemData,
+        sym: String
+    },
+    computed: {
+        isIn(): boolean { return this.data.owner === this.data.to },
+        opposite(): string { return this.isIn ? this.data.from : this.data.to }
+    }
+})
 </script>

@@ -13,7 +13,7 @@ export default Vue.extend({
         }
     },
     watch: {
-        '$store.state.chainStatus'() {
+        '$state.chainStatus'() {
             this.reload()
         },
         samples(newVal, oldVal) {

@@ -5,7 +5,11 @@
                 <span class="h4 mr-3">Block</span>
                 <template v-if="block">
                     #{{block.number}}
-                    <b-badge v-if="!block.isTrunk" class="ml-3" variant="warning">Branch</b-badge>
+                    <b-badge
+                        v-if="!block.isTrunk"
+                        class="ml-3"
+                        variant="warning"
+                    >Branch</b-badge>
                 </template>
             </b-card-header>
             <b-card-body>
@@ -14,9 +18,15 @@
                         <b-col lg="2">
                             <strong>ID</strong>
                         </b-col>
-                        <b-col lg="10" class="d-flex">
+                        <b-col
+                            lg="10"
+                            class="d-flex"
+                        >
                             <span class="text-monospace text-truncate">{{block.id}}</span>
-                            <Copy :value="block.id" class="ml-2" />
+                            <Copy
+                                :value="block.id"
+                                class="ml-2"
+                            />
                         </b-col>
                     </b-row>
                     <hr />
@@ -49,9 +59,19 @@
                             >{{txs.length}} {{txs.length>1?'transactions': 'transaction'}}</b-button>
                         </b-col>
                     </b-row>
-                    <b-collapse v-if="txs.length" id="txs">
-                        <ol start="0" class="text-monospace mb-0 mt-3 small">
-                            <li v-for="(tx, i) in txs" :key="i" class="mt-2">
+                    <b-collapse
+                        v-if="txs.length"
+                        id="txs"
+                    >
+                        <ol
+                            start="0"
+                            class="text-monospace mb-0 mt-3 small"
+                        >
+                            <li
+                                v-for="(tx, i) in txs"
+                                :key="i"
+                                class="mt-2"
+                            >
                                 <router-link
                                     :to="{name: 'tx', params:{id: tx, net:$net}}"
                                     style="display: inline-block;"
@@ -66,7 +86,10 @@
                         <b-col lg="2">
                             <strong>Parent</strong>
                         </b-col>
-                        <b-col lg="10" class="text-truncate">
+                        <b-col
+                            lg="10"
+                            class="text-truncate"
+                        >
                             <router-link
                                 v-if="block.number>0"
                                 class="text-monospace"
@@ -88,7 +111,10 @@
                             <strong>Features</strong>
                         </b-col>
                         <b-col lg="10">
-                            <b-badge v-if="vip191Supported" variant="info">VIP-191</b-badge>
+                            <b-badge
+                                v-if="vip191Supported"
+                                variant="info"
+                            >VIP-191</b-badge>
                             <div v-else>None</div>
                         </b-col>
                     </b-row>
@@ -115,68 +141,90 @@
                         <b-col lg="2">
                             <strong>State Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace text-truncate">{{block.stateRoot}}</b-col>
+                        <b-col
+                            lg="10"
+                            class="text-monospace text-truncate"
+                        >{{block.stateRoot}}</b-col>
                     </b-row>
                     <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Txs Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace text-truncate">{{block.txsRoot}}</b-col>
+                        <b-col
+                            lg="10"
+                            class="text-monospace text-truncate"
+                        >{{block.txsRoot}}</b-col>
                     </b-row>
                     <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Receipts Root</strong>
                         </b-col>
-                        <b-col lg="10" class="text-monospace text-truncate">{{block.receiptsRoot}}</b-col>
+                        <b-col
+                            lg="10"
+                            class="text-monospace text-truncate"
+                        >{{block.receiptsRoot}}</b-col>
                     </b-row>
                 </template>
                 <template v-else>
-                    <div v-if="error" class="text-center">
+                    <div
+                        v-if="error"
+                        class="text-center"
+                    >
                         <p>Oops</p>
                         <p class="text-warning">Error: {{error.message}}</p>
-                        <b-button size="sm" @click="reload">Reload</b-button>
+                        <b-button
+                            size="sm"
+                            @click="reload"
+                        >Reload</b-button>
                     </div>
-                    <Loading v-else class="my-3" />
+                    <Loading
+                        v-else
+                        class="my-3"
+                    />
                 </template>
             </b-card-body>
         </b-card>
     </b-container>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import Vue from 'vue'
 
-@Component({ name: 'Block' })
-export default class Block extends Vue {
-    private block: Connex.Thor.Block | null = null
-    private error: Error | null = null
-
-    private id = ''
-    get txs() { return this.block!.transactions }
-    // tslint:disable-next-line:no-bitwise
-    get vip191Supported() { return !!(((this.block as any).txsFeatures || 0) & 1) }
-
-    private async reload() {
-        this.block = null
-        this.error = null
-
-        try {
-            const block = await this.$connex.thor.block(this.id).get()
-            if (!block) {
-                this.error = new Error('block not found')
-            } else {
-                this.block = block
-            }
-        } catch (err) {
-            this.error = err
+export default Vue.extend({
+    data: () => {
+        return {
+            block: null as Connex.Thor.Block | null,
+            error: null as Error | null,
+            id: ''
         }
-    }
+    },
+    computed: {
+        txs() { return this.block!.transactions },
+        // tslint:disable-next-line:no-bitwise
+        vip191Supported() { return !!(((this.block as any).txsFeatures || 0) & 1) }
+    },
+    methods: {
+        async reload() {
+            this.block = null
+            this.error = null
 
-    private created() {
+            try {
+                const block = await this.$connex.thor.block(this.id).get()
+                if (!block) {
+                    this.error = new Error('block not found')
+                } else {
+                    this.block = block
+                }
+            } catch (err) {
+                this.error = err
+            }
+        }
+    },
+    created() {
         this.$ga.page('/insight/block')
         this.id = this.$route.params.id
         this.reload()
     }
-}
+})
 </script>

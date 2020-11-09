@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
             console.log('New content is downloading.')
         },
         updated() {
-            store.commit(Store.UPDATE_NEW_CONTENT_AVAILABLE, true)
+            state.updateAvailable = true
             console.log('New content is available; please refresh.')
         },
         offline() {
@@ -35,7 +35,6 @@ import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import App from './App.vue'
 import Router from './router'
-import Store from './store'
 import './filters'
 import VueClipboard from 'vue-clipboard2'
 
@@ -43,6 +42,7 @@ import './style.scss'
 import VueAnalytics from 'vue-analytics'
 
 import '@/components'
+import { build } from './state'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
@@ -54,9 +54,15 @@ Vue.use(VueAnalytics, {
 VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
 
-const store = new Store()
-new App({
-    router: Router,
-    store,
-}).$mount('#app')
+const state = build()
+Object.defineProperty(Vue.prototype, '$state', {
+    get() { return state }
+})
 
+new App({ router: Router }).$mount('#app')
+
+declare module 'vue/types/vue' {
+    interface Vue {
+        $state: ReturnType<typeof build>
+    }
+}

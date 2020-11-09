@@ -1,17 +1,35 @@
 <template>
     <div>
-        <b-tabs pills small no-key-nav no-body v-model="tab" align="center">
-            <b-tab v-for="item in tabs" :key="item.title" :title="item.title" />
+        <b-tabs
+            pills
+            small
+            no-key-nav
+            no-body
+            v-model="tab"
+            align="center"
+        >
+            <b-tab
+                v-for="item in tabs"
+                :key="item.title"
+                :title="item.title"
+            />
         </b-tabs>
-        <transition name="fade" mode="out-in">
+        <transition
+            name="fade"
+            mode="out-in"
+        >
             <keep-alive>
-                <TransferItemList :loader="tabs[tab].loader" :sym="tabs[tab].sym" :key="tab" />
+                <TransferItemList
+                    :loader="tabs[tab].loader"
+                    :sym="tabs[tab].sym"
+                    :key="tab"
+                />
             </keep-alive>
         </transition>
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
+import Vue from 'vue'
 import { abi } from 'thor-devkit'
 
 interface TabItem {
@@ -20,54 +38,58 @@ interface TabItem {
     loader: (offset: number, pageSize: number) => Promise<TransferItemData[]>
 }
 
-@Component({ name: 'AccountTransfers' })
-export default class AccountTransfers extends Vue {
-    private address = ''
-    private tab = 0
-    private get tabs(): TabItem[] {
-        return [{
-            title: 'VET',
-            sym: 'VET',
-            loader: async (offset, pageSize) => {
-                const items = await this.$connex.thor.filter('transfer', [{ sender: this.address }, { recipient: this.address }])
-                    .order('desc')
-                    .apply(offset, pageSize)
-                return items.map(i => ({
-                    from: i.sender,
-                    to: i.recipient,
-                    amount: i.amount,
-                    timestamp: i.meta!.blockTimestamp,
-                    owner: this.address,
-                    txid: i.meta!.txID,
-                }))
-            }
-        }, {
-            title: 'VTHO',
-            sym: 'VTHO',
-            loader: async (offset, pageSize) => {
-                const items = await this.$connex.thor
-                    .account('0x0000000000000000000000000000456E65726779')
-                    .event(vip180TransferEventABI)
-                    .filter([{ from: this.address }, { to: this.address }])
-                    .order('desc')
-                    .apply(offset, pageSize)
+export default Vue.extend({
+    data: () => {
+        return {
+            address: '',
+            tab: 0
+        }
+    },
+    computed: {
+        tabs(): TabItem[] {
+            return [{
+                title: 'VET',
+                sym: 'VET',
+                loader: async (offset, pageSize) => {
+                    const items = await this.$connex.thor.filter('transfer', [{ sender: this.address }, { recipient: this.address }])
+                        .order('desc')
+                        .apply(offset, pageSize)
+                    return items.map(i => ({
+                        from: i.sender,
+                        to: i.recipient,
+                        amount: i.amount,
+                        timestamp: i.meta!.blockTimestamp,
+                        owner: this.address,
+                        txid: i.meta!.txID,
+                    }))
+                }
+            }, {
+                title: 'VTHO',
+                sym: 'VTHO',
+                loader: async (offset, pageSize) => {
+                    const items = await this.$connex.thor
+                        .account('0x0000000000000000000000000000456E65726779')
+                        .event(vip180TransferEventABI)
+                        .filter([{ from: this.address }, { to: this.address }])
+                        .order('desc')
+                        .apply(offset, pageSize)
 
-                return items.map(i => ({
-                    from: i.decoded!.from,
-                    to: i.decoded!.to,
-                    amount: i.decoded!.value,
-                    timestamp: i.meta!.blockTimestamp,
-                    owner: this.address,
-                    txid: i.meta!.txID,
-                }))
-            }
-        }]
-    }
-
-    private created() {
+                    return items.map(i => ({
+                        from: i.decoded!.from,
+                        to: i.decoded!.to,
+                        amount: i.decoded!.value,
+                        timestamp: i.meta!.blockTimestamp,
+                        owner: this.address,
+                        txid: i.meta!.txID,
+                    }))
+                }
+            }]
+        }
+    },
+    created() {
         this.address = this.$route.params.address.toLowerCase()
     }
-}
+})
 
 const vip180TransferEventABI = {
     anonymous: false,

@@ -125,7 +125,7 @@ export default Vue.extend({
         }
     },
     computed: {
-        price() { return this.$store.state.price }
+        price() { return this.$state.price }
     },
     methods: {
         async send() {

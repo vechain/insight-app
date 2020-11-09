@@ -178,7 +178,7 @@ export default Vue.extend({
         }
     },
     watch: {
-        '$store.state.chainStatus'() {
+        '$state.chainStatus'() {
             this.reload()
         }
     },
@@ -249,7 +249,7 @@ export default Vue.extend({
         }
     },
     computed: {
-        price() { return this.$store.state.price },
+        price() { return this.$state.price },
         isMainNet() { return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' }
     },
     created() {

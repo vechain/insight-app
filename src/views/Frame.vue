@@ -1,6 +1,10 @@
 <template>
     <div>
-        <b-navbar toggleable="lg" variant="secondary" type="dark">
+        <b-navbar
+            toggleable="lg"
+            variant="secondary"
+            type="dark"
+        >
             <div class="container">
                 <b-navbar-brand>
                     <router-link
@@ -25,7 +29,10 @@
                     </b-dropdown>
                 </b-navbar-brand>
                 <b-navbar-toggle target="nav_collapse" />
-                <b-collapse is-nav id="nav_collapse">
+                <b-collapse
+                    is-nav
+                    id="nav_collapse"
+                >
                     <b-navbar-nav class="ml-auto">
                         <template v-if="price">
                             <b-nav-item
@@ -73,7 +80,10 @@
                                 target="_blank"
                             >{{item.title}}</b-dropdown-item>
                         </b-nav-item-dropdown>
-                        <b-nav-item href="https://github.com/vechain/" target="_blank">
+                        <b-nav-item
+                            href="https://github.com/vechain/"
+                            target="_blank"
+                        >
                             <SvgIcon name="mark-github" />
                         </b-nav-item>
                         <b-nav-form v-if="!isHome">
@@ -87,7 +97,11 @@
                                     @keydown.enter.prevent="search"
                                 />
                                 <b-input-group-append>
-                                    <b-button size="sm" variant="primary" @click="search">
+                                    <b-button
+                                        size="sm"
+                                        variant="primary"
+                                        @click="search"
+                                    >
                                         <SvgIcon name="search" />
                                     </b-button>
                                 </b-input-group-append>
@@ -97,107 +111,118 @@
                 </b-collapse>
             </div>
         </b-navbar>
-        <div class="py-4" v-if="isHeadReady">
-            <transition name="fade" mode="out-in">
+        <div
+            class="py-4"
+            v-if="isHeadReady"
+        >
+            <transition
+                name="fade"
+                mode="out-in"
+            >
                 <keep-alive include="Block,Tx">
                     <router-view :key="routeViewKey" />
                 </keep-alive>
             </transition>
         </div>
-        <div v-else class="py-4 d-flex align-items-center justify-content-center">
-            <b-spinner type="grow" />
-            <div>Connecting ...</div>
+        <div
+            v-else
+            class="py-4 d-flex align-items-center justify-content-center"
+        >
+            <Loading />
         </div>
     </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Watch } from 'vue-property-decorator'
+import Vue from 'vue'
 import { genesisIdToNetwork } from '../utils'
 
-@Component
-export default class Frame extends Vue {
-    private searchString = ''
-
-    get routeName() { return this.$route.name }
-    get isHome() { return this.routeName === 'home' }
-    get price() { return this.$store.state.price }
-    get isHeadReady() { return this.$store.state.chainStatus.head.number > 0 }
-
-    get network() {
-        switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-            case 'main': return 'MainNet'
-            case 'test': return 'TestNet'
-            case 'solo': return 'Solo'
-            case 'custom': return 'Custom'
+export default Vue.extend({
+    data: () => {
+        return {
+            searchString: ''
         }
-    }
-
-    get switchableNetworks(): Array<{ name: string, href: string }> {
-        switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-            case 'main': return [{ name: 'TestNet', href: '#/test/' }]
-            case 'test': return [{ name: 'MainNet', href: '#/main/' }]
-            default: return [{ name: 'TestNet', href: '#/test/' }, { name: 'MainNet', href: '#/main/' }]
+    },
+    computed: {
+        routeName(): string { return this.$route.name || '' },
+        isHome(): boolean { return this.routeName === 'home' },
+        price() { return this.$state.price },
+        isHeadReady() { return this.$state.chainStatus!.head.number > 0 },
+        network() {
+            switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
+                case 'main': return 'MainNet'
+                case 'test': return 'TestNet'
+                case 'solo': return 'Solo'
+                case 'custom': return 'Custom'
+            }
+        },
+        switchableNetworks(): Array<{ name: string, href: string }> {
+            switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
+                case 'main': return [{ name: 'TestNet', href: '#/test/' }]
+                case 'test': return [{ name: 'MainNet', href: '#/main/' }]
+                default: return [{ name: 'TestNet', href: '#/test/' }, { name: 'MainNet', href: '#/main/' }]
+            }
+        },
+        networkBadgeVariant() {
+            return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' ? 'light' : 'warning'
+        },
+        alters() {
+            return [
+                { title: 'Official Explorer', href: 'https://explore.vechain.org/' },
+                { title: 'VeChainThorScan', href: 'https://vechainthorscan.com/' },
+                { title: 'Vexplorer', href: 'https://vexplorer.io/' },
+                { title: 'VeChainStats', href: 'https://vechainstats.com/' }
+            ]
+        },
+        tools() {
+            return [
+                { title: 'Inspector', href: 'https://inspector.vecha.in' },
+                { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
+                { title: 'B32', href: 'https://b32.vecha.in' },
+                { title: 'VeChainLinks', href: 'https://vechainlinks.com' }
+            ].filter(i => !!i.href)
+        },
+        routeViewKey() {
+            if (this.$route.matched.find(i => i.name === 'account')) {
+                return `accounts-${this.$route.params.address.toLowerCase()}`
+            }
+            return this.$route.fullPath
         }
-    }
+    },
+    methods: {
+        search() {
+            const str = this.searchString.trim()
+            this.searchString = ''
+            if (!str) {
+                return
+            }
+            this.$router.push({ name: 'search', query: { q: str } })
+        },
+        routed() {
+            const name = this.$route.name
+            const params = this.$route.params
 
-    get networkBadgeVariant() {
-        return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' ? 'light' : 'warning'
-    }
-
-    private search() {
-        const str = this.searchString.trim()
-        this.searchString = ''
-        if (!str) {
-            return
+            let subTitle
+            if (this.$route.matched.find(r => r.name === 'account')) {
+                subTitle = 'Account ' + this.$options.filters!.checksum(params.address)
+            } else if (name === 'tx') {
+                subTitle = 'Tx ' + params.id
+            } else if (name === 'block') {
+                subTitle = 'Block ' + params.id
+            } else if (name === 'search') {
+                subTitle = 'Search'
+            }
+            document.title = subTitle ? `Insight | ${subTitle}` : 'Insight - VeChain Explorer'
         }
-        this.$router.push({ name: 'search', query: { q: str } })
-    }
-    get alters() {
-        return [
-            { title: 'Official Explorer', href: 'https://explore.vechain.org/' },
-            { title: 'VeChainThorScan', href: 'https://vechainthorscan.com/' },
-            { title: 'Vexplorer', href: 'https://vexplorer.io/' },
-            { title: 'VeChainStats', href: 'https://vechainstats.com/' }
-        ]
-    }
-
-    get tools() {
-        return [
-            { title: 'Inspector', href: 'https://inspector.vecha.in' },
-            { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
-            { title: 'B32', href: 'https://b32.vecha.in' },
-            { title: 'VeChainLinks', href: 'https://vechainlinks.com' }
-        ].filter(i => !!i.href)
-    }
-
-    get routeViewKey() {
-        if (this.$route.matched.find(i => i.name === 'account')) {
-            return `accounts-${this.$route.params.address.toLowerCase()}`
+    },
+    watch: {
+        '$route.path'() {
+            this.routed()
         }
-        return this.$route.fullPath
-    }
-
-    @Watch('$route.path')
-    private routed() {
-        const name = this.$route.name
-        const params = this.$route.params
-
-        let subTitle
-        if (this.$route.matched.find(r => r.name === 'account')) {
-            subTitle = 'Account ' + this.$options.filters!.checksum(params.address)
-        } else if (name === 'tx') {
-            subTitle = 'Tx ' + params.id
-        } else if (name === 'block') {
-            subTitle = 'Block ' + params.id
-        } else if (name === 'search') {
-            subTitle = 'Search'
-        }
-        document.title = subTitle ? `Insight | ${subTitle}` : 'Insight - VeChain Explorer'
-    }
-    private created() {
+    },
+    created() {
         this.routed()
     }
-}
+})
 </script>
 <style lang="scss" scoped>
 @keyframes fade-in {
