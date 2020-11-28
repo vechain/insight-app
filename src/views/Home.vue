@@ -195,7 +195,7 @@ export default Vue.extend({
             this.loadRecentTransfers()
         },
         async loadRecentBlocks() {
-            if (this.loadingBlocks) {
+            if (this.loadingBlocks || this.head.number === 0) {
                 return
             }
             try {

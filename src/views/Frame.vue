@@ -111,10 +111,7 @@
                 </b-collapse>
             </div>
         </b-navbar>
-        <div
-            class="py-4"
-            v-if="isHeadReady"
-        >
+        <div class="py-4">
             <transition
                 name="fade"
                 mode="out-in"
@@ -123,12 +120,6 @@
                     <router-view :key="routeViewKey" />
                 </keep-alive>
             </transition>
-        </div>
-        <div
-            v-else
-            class="py-4 d-flex align-items-center justify-content-center"
-        >
-            <Loading />
         </div>
     </div>
 </template>
@@ -146,7 +137,6 @@ export default Vue.extend({
         routeName(): string { return this.$route.name || '' },
         isHome(): boolean { return this.routeName === 'home' },
         price() { return this.$state.price },
-        isHeadReady() { return this.$state.chainStatus!.head.number > 0 },
         network() {
             switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
                 case 'main': return 'MainNet'
