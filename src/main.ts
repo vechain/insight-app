@@ -43,6 +43,7 @@ import VueAnalytics from 'vue-analytics'
 
 import '@/components'
 import { build } from './state'
+import AsyncComputed from 'vue-async-computed'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
@@ -53,6 +54,7 @@ Vue.use(VueAnalytics, {
 
 VueClipboard.config.autoSetContainer = true
 Vue.use(VueClipboard)
+Vue.use(AsyncComputed)
 
 const state = build()
 Object.defineProperty(Vue.prototype, '$state', {

@@ -42,17 +42,17 @@
         </div>
     </div>
     <b-card-body v-else>
-        <Loading v-if="abi.loading" />
+        <Loading v-if="$asyncComputed.decoded.updating" />
         <div
-            v-else-if="abi.error"
+            v-else-if="$asyncComputed.decoded.exception"
             class="text-center"
         >
             <p class="h5">Oops</p>
-            <p class="text-warning">{{abi.error.name}}: {{abi.error.message}}</p>
+            <p class="text-warning">{{$asyncComputed.decoded.exception.name}}: {{$asyncComputed.decoded.exception.message}}</p>
             <b-button
                 size="sm"
                 variant="primary"
-                @click="reload"
+                @click="$asyncComputed.decoded.update()"
             >Retry</b-button>
         </div>
         <div
@@ -86,22 +86,21 @@ export default Vue.extend({
             topics?: string[]
         }
     },
-    data: () => {
-        return {
-            abi: {
-                defs: [] as Array<abi.Function.Definition | abi.Event.Definition>,
-                loading: false,
-                error: null as Error | null
+    asyncComputed: {
+        async decoded(): Promise<Decoded | null> {
+            const val = this.value
+            const sig = val.topics ? val.topics[0] : val.data.slice(0, 10)
+            let defs: Array<abi.Function.Definition | abi.Event.Definition> | undefined = abiCache.get(sig)
+            if (!defs) {
+                defs = await queryABI(sig)
+                abiCache.set(sig, defs)
             }
-        }
-    },
-    computed: {
-        decoded(): Decoded | null {
-            for (const def of this.abi.defs) {
+
+            for (const def of defs) {
                 try {
                     if (def.type === 'event') {
                         const ev = new abi.Event(def)
-                        const dec = ev.decode(this.value.data, this.value.topics!)
+                        const dec = ev.decode(val.data, val.topics!)
                         return {
                             def,
                             params: def.inputs.map((p, i) => {
@@ -116,7 +115,7 @@ export default Vue.extend({
                         }
                     } else {
                         const fn = new abi.Function(def)
-                        const dec = abi.decodeParameters(def.inputs, '0x' + this.value.data.slice(10))
+                        const dec = abi.decodeParameters(def.inputs, '0x' + val.data.slice(10))
                         return {
                             def,
                             params: def.inputs.map((p, i) => {
@@ -135,47 +134,6 @@ export default Vue.extend({
             }
             return null
         }
-    },
-    watch: {
-        value() {
-            this.reload()
-        }
-    },
-    methods: {
-        async reload() {
-            if (this.abi.loading) {
-                return
-            }
-
-            this.abi.defs = []
-            this.abi.error = null
-            if (this.value.topics) {
-                this.abi.defs = abiCache.get(this.value.topics[0]) || []
-            } else {
-                this.abi.defs = abiCache.get(this.value.data.slice(0, 10)) || []
-            }
-
-            if (this.abi.defs.length > 0) {
-                return
-            }
-
-            try {
-                this.abi.loading = true
-                const sig = this.value.topics ? this.value.topics[0] : this.value.data.slice(0, 10)
-                const defs = await queryABI(sig)
-                if (defs) {
-                    this.abi.defs = defs
-                    abiCache.set(sig, defs)
-                }
-            } catch (err) {
-                this.abi.error = err
-            } finally {
-                this.abi.loading = false
-            }
-        }
-    },
-    created() {
-        this.reload()
     }
 })
 
