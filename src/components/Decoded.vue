@@ -1,7 +1,7 @@
 <template>
-    <div v-if="abi.json && decoded">
+    <div v-if="decoded">
         <b-card-header class="py-1 px-2">
-            <strong class="text-monospace">{{abi.json.type}} {{decoded.canonicalName}}</strong>
+            <strong class="text-monospace">{{decoded.def.type}} {{decoded.canonicalName}}</strong>
         </b-card-header>
         <div class="px-3 py-2 overflow-auto">
             <table class="table mb-0">
@@ -73,6 +73,12 @@
 import Vue from 'vue'
 import { abi } from 'thor-devkit'
 
+type Decoded = {
+    def: abi.Function.Definition | abi.Event.Definition
+    canonicalName: string
+    params: Array<{ name: string, type: string, value: string, indexed?: boolean }>
+}
+
 export default Vue.extend({
     props: {
         value: Object as () => {
@@ -83,48 +89,51 @@ export default Vue.extend({
     data: () => {
         return {
             abi: {
-                json: null as abi.Function.Definition | abi.Event.Definition | null,
+                defs: [] as Array<abi.Function.Definition | abi.Event.Definition>,
                 loading: false,
                 error: null as Error | null
             }
         }
     },
     computed: {
-        decoded(): null | { params: Array<{ name: string, type: string, value: string, indexed?: boolean }>, canonicalName: string } {
-            const json = this.abi.json
-            if (!json) {
-                return null
-            }
-
-            if (json.type === 'event') {
-                const ev = new abi.Event(json)
-                const dec = ev.decode(this.value.data, this.value.topics!)
-                return {
-                    params: json.inputs.map((p, i) => {
+        decoded(): Decoded | null {
+            for (const def of this.abi.defs) {
+                try {
+                    if (def.type === 'event') {
+                        const ev = new abi.Event(def)
+                        const dec = ev.decode(this.value.data, this.value.topics!)
                         return {
-                            name: p.name,
-                            type: p.type,
-                            value: dec[i],
-                            indexed: p.indexed
+                            def,
+                            params: def.inputs.map((p, i) => {
+                                return {
+                                    name: p.name,
+                                    type: p.type,
+                                    value: dec[i],
+                                    indexed: p.indexed
+                                }
+                            }),
+                            canonicalName: ev.canonicalName
                         }
-                    }),
-                    canonicalName: ev.canonicalName
-                }
-
-            } else {
-                const fn = new abi.Function(json)
-                const dec = abi.decodeParameters(json.inputs, '0x' + this.value.data.slice(10))
-                return {
-                    params: json.inputs.map((p, i) => {
+                    } else {
+                        const fn = new abi.Function(def)
+                        const dec = abi.decodeParameters(def.inputs, '0x' + this.value.data.slice(10))
                         return {
-                            name: p.name,
-                            type: p.type,
-                            value: dec[i]
+                            def,
+                            params: def.inputs.map((p, i) => {
+                                return {
+                                    name: p.name,
+                                    type: p.type,
+                                    value: dec[i]
+                                }
+                            }),
+                            canonicalName: fn.canonicalName
                         }
-                    }),
-                    canonicalName: fn.canonicalName
+                    }
+                } catch {
+                    // continue
                 }
             }
+            return null
         }
     },
     watch: {
@@ -138,25 +147,25 @@ export default Vue.extend({
                 return
             }
 
-            this.abi.json = null
+            this.abi.defs = []
             this.abi.error = null
             if (this.value.topics) {
-                this.abi.json = abiCache.get(this.value.topics[0]) || null
+                this.abi.defs = abiCache.get(this.value.topics[0]) || []
             } else {
-                this.abi.json = abiCache.get(this.value.data.slice(0, 10)) || null
+                this.abi.defs = abiCache.get(this.value.data.slice(0, 10)) || []
             }
 
-            if (this.abi.json) {
+            if (this.abi.defs.length > 0) {
                 return
             }
 
             try {
                 this.abi.loading = true
                 const sig = this.value.topics ? this.value.topics[0] : this.value.data.slice(0, 10)
-                const json = await queryABI(sig)
-                if (json) {
-                    this.abi.json = json
-                    abiCache.set(sig, json)
+                const defs = await queryABI(sig)
+                if (defs) {
+                    this.abi.defs = defs
+                    abiCache.set(sig, defs)
                 }
             } catch (err) {
                 this.abi.error = err
@@ -170,23 +179,23 @@ export default Vue.extend({
     }
 })
 
-export const abiCache = new Map<string, any>()
+export const abiCache = new Map<string, any[]>()
 export async function queryABI(sig: string) {
     const url = `https://b32.vecha.in/q/${sig}.json`
 
     const resp = await fetch(url)
     if (resp.status === 404) {
-        return null
+        return []
     }
     if (resp.status !== 200) {
         throw new Error(`Failed to query ABI (status: ${resp.status})`)
     }
 
     const json = await resp.json()
-    if (!Array.isArray(json) || !json[0]) {
+    if (!Array.isArray(json)) {
         throw new Error('Failed to query ABI (bad response)')
     }
-    return json[0]
+    return json
 }
 </script>
 <style lang="scss" scoped>

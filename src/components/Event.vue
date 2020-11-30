@@ -97,7 +97,7 @@ export default Vue.extend({
     data: () => {
         return {
             view: 'raw' as 'raw' | 'decoded',
-            decodedViewCreated: true
+            decodedViewCreated: false
         }
     },
     computed: {
