@@ -8,15 +8,15 @@ const nodeUrls = {
 export function createConnex(net?: 'main' | 'test') {
     if (net) { // net specified
         const url = nodeUrls[net]
-        return new Connex(url, { network: net })
+        return new Connex({ nodeUrl: url, network: net })
     } else {
         const injected = (window as any).connex
         // net unspecified
         if (injected) {
-            return new Connex('', { network: injected.thor.genesis })
+            return new Connex({ nodeUrl: '', network: injected.thor.genesis })
         } else {
             // defaults to main net
-            return new Connex(nodeUrls.main)
+            return new Connex({ nodeUrl: nodeUrls.main })
         }
     }
 }
