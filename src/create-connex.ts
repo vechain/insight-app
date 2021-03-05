@@ -1,4 +1,4 @@
-import Connex from '@vechain/connex'
+import Connex from '@vechain/connex/esm'
 
 const nodeUrls = {
     main: 'https://explore-mainnet.veblocks.net',
