@@ -8,14 +8,14 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
-    "@vechain/connex": "^2.0.3",
+    "@vechain/connex": "^2.0.9",
     "@vechain/picasso": "^2.1.0",
     "bignumber.js": "^8.0.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.19.0",
     "chart.js": "^2.9.3",
     "register-service-worker": "^1.5.2",
-    "thor-devkit": "^2.0.1",
+    "thor-devkit": "^2.0.4",
     "timeago.js": "^4.0.0-beta.1",
     "vue": "^2.6.10",
     "vue-analytics": "^5.16.2",

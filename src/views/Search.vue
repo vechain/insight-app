@@ -47,7 +47,7 @@ export default Vue.extend({
                 }
                 this.error = null
                 try {
-                    const tx = await this.$connex.thor.transaction(str).get()
+                    const tx = await this.$connex.thor.transaction(str).allowPending().get()
                     if (tx) {
                         return this.$router.replace({ name: 'tx', params: { id: tx.id } })
                     }
