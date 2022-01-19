@@ -13,7 +13,7 @@
     "bignumber.js": "^8.0.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.19.0",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "register-service-worker": "^1.5.2",
     "thor-devkit": "^2.0.4",
     "timeago.js": "^4.0.0-beta.1",
