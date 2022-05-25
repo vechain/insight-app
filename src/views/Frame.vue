@@ -142,7 +142,7 @@ export default Vue.extend({
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
                 case 'solo': return 'Solo'
-                case 'custom': return 'Custom'
+                case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
             }
         },
         switchableNetworks(): Array<{ name: string, href: string }> {
