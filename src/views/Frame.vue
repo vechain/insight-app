@@ -142,7 +142,7 @@ export default Vue.extend({
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
                 case 'solo': return 'Solo'
-                case 'custom': return 'Custom'
+                case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
             }
         },
         switchableNetworks(): Array<{ name: string, href: string }> {
@@ -158,9 +158,8 @@ export default Vue.extend({
         alters() {
             return [
                 { title: 'Official Explorer', href: 'https://explore.vechain.org/' },
-                { title: 'VeChainThorScan', href: 'https://vechainthorscan.com/' },
-                { title: 'Vexplorer', href: 'https://vexplorer.io/' },
-                { title: 'VeChainStats', href: 'https://vechainstats.com/' }
+                { title: 'VeChainStats', href: 'https://vechainstats.com/' },
+                { title: 'VeBlocks', href: 'https://www.veblocks.net/' }
             ]
         },
         tools() {
@@ -168,7 +167,6 @@ export default Vue.extend({
                 { title: 'Inspector', href: 'https://inspector.vecha.in' },
                 { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
                 { title: 'B32', href: 'https://b32.vecha.in' },
-                { title: 'VeChainLinks', href: 'https://vechainlinks.com' }
             ].filter(i => !!i.href)
         },
         routeViewKey() {
