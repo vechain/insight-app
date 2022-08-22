@@ -4,12 +4,22 @@
             <b-card-header>
                 <span class="h4 mr-3">Block</span>
                 <template v-if="block">
-                    #{{block.number}}
-                    <b-badge
+                    <span
+                        v-if="!!block.isFinalized"
+                        title="Finalized block"
+                    >
+                        <svg-icon name="lock" />
+                    </span>
+                    <span
                         v-if="!block.isTrunk"
-                        class="ml-3"
-                        variant="warning"
-                    >Branch</b-badge>
+                        title="Branch block"
+                    >
+                        <svg-icon
+                            class="text-danger"
+                            name="git-branch"
+                        />
+                    </span>
+                    #{{block.number}}
                 </template>
             </b-card-header>
             <b-card-body>
@@ -202,7 +212,8 @@ export default Vue.extend({
     computed: {
         txs() { return this.block!.transactions },
         // tslint:disable-next-line:no-bitwise
-        vip191Supported() { return !!(((this.block as any).txsFeatures || 0) & 1) }
+        vip191Supported() { return !!(((this.block as any).txsFeatures || 0) & 1) },
+        finalized() { return !!(this.block as any).isFinalized }
     },
     methods: {
         async reload() {

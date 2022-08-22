@@ -19,6 +19,8 @@ import '../assets/octicons/svg/shield.svg'
 import '../assets/octicons/svg/eye.svg'
 import '../assets/octicons/svg/clippy.svg'
 import '../assets/octicons/svg/mark-github.svg'
+import '../assets/octicons/svg/lock.svg'
+import '../assets/octicons/svg/git-branch.svg'
 
 export default Vue.extend({
     props: {
