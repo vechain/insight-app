@@ -60,15 +60,15 @@ export default Vue.extend({
         }
     },
     created() {
-        let net = this.$route.params.net as "main" | "test" | undefined
-        if (!["main", "test"].includes(net!)) {
+        let net = this.$route.params.net as "main" | "test" | "solo" | undefined
+        if (!["main", "test", "solo"].includes(net!)) {
             net = undefined
         }
 
         const connex = createConnex(net)
         Vue.prototype.$connex = connex
         Vue.prototype.$net = genesisIdToNetwork(connex.thor.genesis.id)
-        if (!["main", "test"].includes(Vue.prototype.$net)) {
+        if (!["main", "test", "solo"].includes(Vue.prototype.$net)) {
             Vue.prototype.$net = undefined
         }
 
