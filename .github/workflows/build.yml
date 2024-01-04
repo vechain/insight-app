@@ -10,24 +10,18 @@ jobs:
     runs-on: ubuntu-18.04
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v2
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '10'
+          node-version-file: .nvmrc
 
-      - name: Cache Node.js modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.OS }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.OS }}-node-
+      - name: Install & Patch packages
+        run: yarn install
 
-      - name: Install Dependencies
-        run: npm ci
-  
-      - name: Build Website
+      - name: Build app
         run: npm run build
 
       - name: Deploy Without CNAME
