@@ -228,7 +228,7 @@ export default Vue.extend({
                     this.block = block
                 }
             } catch (err) {
-                this.error = err
+                this.error = err as Error
             }
         }
     },

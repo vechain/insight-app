@@ -15,6 +15,7 @@
     </div>
 </template>
 <script lang="ts">
+
 import Vue from 'vue'
 import { genesisIdToNetwork } from "./utils"
 import { createConnex } from "./create-connex"
@@ -23,6 +24,7 @@ export default Vue.extend({
     methods: {
         routed() {
             if (!this.$route.params.net) {
+                //@ts-ignore
                 this.$router.replace({
                     ...this.$route,
                     params: { ...this.$route.params, net: this.$net },
@@ -51,7 +53,7 @@ export default Vue.extend({
             return null
         },
         forceReload() {
-            window.location.reload(true)
+            window.location.reload()
         }
     },
     watch: {

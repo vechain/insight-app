@@ -43,7 +43,7 @@ export default Vue.extend({
                         return this.$router.replace({ name: 'block', params: { id: block.id } })
                     }
                 } catch (err) {
-                    this.error = err
+                    this.error = err as Error
                 }
                 this.error = null
                 try {
@@ -52,7 +52,7 @@ export default Vue.extend({
                         return this.$router.replace({ name: 'tx', params: { id: tx.id } })
                     }
                 } catch (err) {
-                    this.error = err
+                    this.error = err as Error
                 }
             } else if (/^[0-9]+$/.test(str)) {
                 const num = parseInt(str, 10)
@@ -63,7 +63,7 @@ export default Vue.extend({
                             return this.$router.replace({ name: 'block', params: { id: block.id } })
                         }
                     } catch (err) {
-                        this.error = err
+                        this.error = err as Error
                     }
                 }
             }

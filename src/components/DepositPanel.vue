@@ -172,7 +172,7 @@ export default Vue.extend({
                         this.vtho.value = ''
                     }
                 } catch (err) {
-                    session.error = err
+                    session.error = err as Error
                 } finally {
                     if (session === this.session) {
                         this.showProgress = true

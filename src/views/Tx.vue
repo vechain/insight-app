@@ -257,7 +257,7 @@ export default Vue.extend({
                 if (tx) { this.tx = tx } else { this.error = new Error('not found') }
                 if (receipt) { this.receipt = receipt }
             } catch (err) {
-                this.error = err
+                this.error = err as Error
             }
         }
     },
