@@ -110,7 +110,7 @@ export default Vue.extend({
             try {
                 this.items = await this.loader(this.offset, this.pageSize)
             } catch (err) {
-                this.error = err
+                this.error = err as Error
             } finally {
                 this.loading = false
             }

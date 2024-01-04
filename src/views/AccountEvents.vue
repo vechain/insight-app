@@ -102,7 +102,7 @@ export default Vue.extend({
                     .order('desc')
                     .apply(this.offset, pageSize)
             } catch (err) {
-                this.error = err
+                this.error = err as Error
             } finally {
                 this.loading = false
             }

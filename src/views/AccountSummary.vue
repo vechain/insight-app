@@ -194,7 +194,7 @@ export default Vue.extend({
                 this.account.entity = await acc.get()
                 this.account.error = null
             } catch (err) {
-                this.account.error = err
+                this.account.error = err as Error
             }
         },
         async loadMaster() {
@@ -213,7 +213,7 @@ export default Vue.extend({
                 this.master.addr = addr === zeroAddress ? 'N/A' : addr
                 this.master.error = null
             } catch (err) {
-                this.master.error = err
+                this.master.error = err as Error
             }
         },
         async loadSponsor() {
@@ -233,7 +233,7 @@ export default Vue.extend({
                 this.sponsor.addr = addr === zeroAddress ? 'N/A' : addr
                 this.sponsor.error = null
             } catch (err) {
-                this.sponsor.error = err
+                this.sponsor.error = err as Error
             }
         },
         async loadCode() {
@@ -242,7 +242,7 @@ export default Vue.extend({
                 this.code.entity = await this.$connex.thor.account(this.address).getCode()
                 this.code.error = null
             } catch (err) {
-                this.code.error = err
+                this.code.error = err as Error
             } finally {
                 this.code.loading = false
             }
