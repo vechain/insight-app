@@ -1,9 +1,10 @@
 name: Publish image to GHCR
 
 on:
-  workflow_call:
-  release:
-    types: [published]
+  workflow_dispatch:
+  push:
+    branches:
+      - master
 
 jobs:
   build:
