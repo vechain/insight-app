@@ -6,11 +6,11 @@ on:
     branches:
       - master
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: vechain/insight-app
 jobs:
-  build:
-    env:
-      REGISTRY: ghcr.io
-      IMAGE_NAME: vechain/insight-app
+  publish:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -22,23 +22,17 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Download artifact explorer
-        uses: actions/download-artifact@v2
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          name: insight-app
-          path: /tmp
-      - name: Load Docker images
-        run: |
-          docker load --input /tmp/insight-app.tar
-          docker image ls -a
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Tags images to publish
-        run: |
-          timestamp=`date +%s`
-          docker tag insight-app ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${timestamp}
-          docker tag insight-app ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
-          docker tag insight-app ${{env.REGISTRY}}/${{env.IMAGE_NAME}}:${{github.sha}}
-
-      - name: Publish images
-        run: |
-          docker push -a ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
