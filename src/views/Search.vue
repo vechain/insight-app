@@ -16,6 +16,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { genesisIdToNetwork } from '../utils'
+import * as namehash from '@ensdomains/eth-ens-namehash'
 
 export default Vue.extend({
     data: () => {
@@ -66,6 +68,28 @@ export default Vue.extend({
                         this.error = err as Error
                     }
                 }
+            } else if (/\./.test(str) && genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main') {
+                try {
+                    const node = namehash.hash(str)
+
+                    const { decoded: { resolverAddress } }  = await this.$connex.thor
+                        .account(vetRegistryAddress)
+                        .method(resolverJsonAbi)
+                        .call(node)
+
+                    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
+                        throw new Error('Name not found')
+                    }
+
+                    const { decoded: { address } } = await this.$connex.thor
+                        .account(resolverAddress)
+                        .method(addrJsonAbi)
+                        .call(node)
+
+                    return this.$router.replace({ name: 'account', params: { address: address } })
+                } catch (err) {
+                    this.error = new Error('Name not found')
+                }
             }
             if (!this.error) {
                 this.error = new Error(`No result for '${str}'`)
@@ -76,5 +100,45 @@ export default Vue.extend({
         this.reload()
     }
 })
-</script>
 
+const vetRegistryAddress = '0xa9231da8BF8D10e2df3f6E03Dd5449caD600129b'
+const resolverJsonAbi = {
+    "inputs": [
+        {
+            "internalType": "bytes32",
+            "name": "node",
+            "type": "bytes32"
+        }
+    ],
+    "name": "resolver",
+    "outputs": [
+        {
+            "internalType": "address",
+            "name": "resolverAddress",
+            "type": "address"
+        }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+}
+
+const addrJsonAbi = {
+    "inputs": [
+        {
+            "internalType": "bytes32",
+            "name": "node",
+            "type": "bytes32"
+        }
+    ],
+    "name": "addr",
+    "outputs": [
+        {
+            "internalType": "address payable",
+            "name": "address",
+            "type": "address"
+        }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+}
+</script>

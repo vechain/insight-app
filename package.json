@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@ensdomains/eth-ens-namehash": "^2.0.15",
     "@vechain/connex": "^2.0.14",
     "@vechain/picasso": "^2.1.0",
     "bignumber.js": "^8.0.1",
