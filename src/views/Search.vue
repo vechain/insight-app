@@ -17,7 +17,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import { genesisIdToNetwork } from '../utils'
-import * as namehash from '@ensdomains/eth-ens-namehash'
 
 export default Vue.extend({
     data: () => {
@@ -70,23 +69,16 @@ export default Vue.extend({
                 }
             } else if (/\./.test(str) && genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main') {
                 try {
-                    const node = namehash.hash(str)
+                    const { decoded: { addresses } }  = await this.$connex.thor
+                        .account(vetResolverUtilsAddress)
+                        .method(getAddressesJsonAbi)
+                        .call([str])
 
-                    const { decoded: { resolverAddress } }  = await this.$connex.thor
-                        .account(vetRegistryAddress)
-                        .method(resolverJsonAbi)
-                        .call(node)
-
-                    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
+                    if (!addresses[0] || addresses[0] === '0x0000000000000000000000000000000000000000') {
                         throw new Error('Name not found')
                     }
 
-                    const { decoded: { address } } = await this.$connex.thor
-                        .account(resolverAddress)
-                        .method(addrJsonAbi)
-                        .call(node)
-
-                    return this.$router.replace({ name: 'account', params: { address: address } })
+                    return this.$router.replace({ name: 'account', params: { address: addresses[0] } })
                 } catch (err) {
                     this.error = new Error('Name not found')
                 }
@@ -101,44 +93,25 @@ export default Vue.extend({
     }
 })
 
-const vetRegistryAddress = '0xa9231da8BF8D10e2df3f6E03Dd5449caD600129b'
-const resolverJsonAbi = {
-    "inputs": [
-        {
-            "internalType": "bytes32",
-            "name": "node",
-            "type": "bytes32"
-        }
-    ],
-    "name": "resolver",
-    "outputs": [
-        {
-            "internalType": "address",
-            "name": "resolverAddress",
-            "type": "address"
-        }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+const vetResolverUtilsAddress = '0xA11413086e163e41901bb81fdc5617c975Fa5a1A'
+const getAddressesJsonAbi = {
+  "inputs": [
+    {
+      "internalType": "string[]",
+      "name": "names",
+      "type": "string[]"
+    }
+  ],
+  "name": "getAddresses",
+  "outputs": [
+    {
+      "internalType": "address[]",
+      "name": "addresses",
+      "type": "address[]"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
 }
 
-const addrJsonAbi = {
-    "inputs": [
-        {
-            "internalType": "bytes32",
-            "name": "node",
-            "type": "bytes32"
-        }
-    ],
-    "name": "addr",
-    "outputs": [
-        {
-            "internalType": "address payable",
-            "name": "address",
-            "type": "address"
-        }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-}
 </script>
