@@ -40,6 +40,12 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 
 # Copy the rest of the source files into the image.
 COPY . .
+
+ARG VUE_APP_SOLO_URL
+ENV VUE_APP_SOLO_URL=$VUE_APP_SOLO_URL
+
+ENV NODE_ENV=production
+
 # Run the build script.
 RUN yarn run build
 
@@ -50,4 +56,6 @@ FROM nginx:stable-alpine AS final
 COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 # COPY --from=build /usr/src/app/nginx.prod.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
+
