@@ -28,7 +28,7 @@
                             v-for="(n, i) in switchableNetworks"
                             :key="i"
                             :href="n.href"
-                        >{{n.name}}</b-dropdown-item>
+                        >{{n.label}}</b-dropdown-item>
                     </b-dropdown>
                     </div>
                     <div class="d-flex align-items-center">
@@ -135,8 +135,12 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { genesisIdToNetwork } from '../utils'
+import { genesisIdToNetwork, networkToGenesisId } from '../utils'
 import { nodeUrls } from '@/create-connex'
+
+const isSoloUrl = !!process.env.VUE_APP_SOLO_URL
+const isCustomurl = !!process.env.VUE_APP_CUSTOM_URL
+
 
 export default Vue.extend({
     data: () => {
@@ -157,15 +161,16 @@ export default Vue.extend({
                 case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
             }
         },
-        switchableNetworks(): Array<{ name: string, href: string }> {
-            switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-                case 'main': return [{ name: 'TestNet', href: '#/test/' }, { name: 'SoloNet', href: '#/solo/' }]
-                case 'test': return [{ name: 'MainNet', href: '#/main/' }, { name: 'SoloNet', href: '#/solo/' }]
-                case 'solo': return [{ name: 'MainNet', href: '#/main/' }, { name: 'TestNet', href: '#/test/' }]
-                default: return [{ name: 'TestNet', href: '#/test/' },
-                { name: 'MainNet', href: '#/main/' },
-                { name: 'Solo', href: '#/solo/' }]
-            }
+        networks(): Array<{ name: string, label: string, href: string }> {
+            return [
+                { name: 'main',label: 'MainNet', href: '#/main/' },
+                { name: 'test',label: 'TestNet', href: '#/test/' },
+                ...(isSoloUrl ? [{ name:'solo',label: 'SoloNet', href: '#/solo/' }] : []),
+                ...(isCustomurl ? [{ name:'custom',label: `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`, href: '#/custom/' }] : [])
+            ]
+        },
+        switchableNetworks(): Array<{ name: string, label: string, href: string }> {
+            return this.networks.filter(i =>  this.$connex.thor.genesis.id !== networkToGenesisId(i.name))
         },
         networkBadgeVariant() {
             return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' ? 'light' : 'warning'
