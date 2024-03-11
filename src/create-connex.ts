@@ -1,9 +1,10 @@
 import Connex from "@vechain/connex/esm";
 
-const nodeUrls = {
+export const nodeUrls = {
   main: "https://explore-mainnet.veblocks.net",
   test: "https://explore-testnet.veblocks.net",
   solo: process.env.VUE_APP_SOLO_URL ?? "http://localhost:8669",
+  custom: process.env.VUE_APP_CUSTOM_URL ?? "http://localhost:8669",
 };
 
 const soloGenesis = {

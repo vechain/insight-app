@@ -7,19 +7,22 @@
         >
             <div class="container">
                 <b-navbar-brand>
+                    
+                    <div class="d-flex align-items-center d-flex-row">
                     <router-link
                         :to="{name:'home', params: {net:$net}}"
                         class="text-decoration-none text-white"
                     >
                         <span class="text-serif h4">Insight</span>
                     </router-link>
+                    
                     <b-dropdown
                         size="sm"
                         :text="network"
                         :variant="networkBadgeVariant"
                         toggle-class="py-0 px-1"
                         style="vertical-align:top"
-                        class="ml-2"
+                        class="ml-4"
                     >
                         <b-dropdown-item
                             v-for="(n, i) in switchableNetworks"
@@ -27,7 +30,14 @@
                             :href="n.href"
                         >{{n.name}}</b-dropdown-item>
                     </b-dropdown>
+                    </div>
+                    <div class="d-flex align-items-center">
+                    <span class="text-monospace small light ">
+                        {{nodeUrl}}
+                    </span>
+                    </div>
                 </b-navbar-brand>
+
                 <b-navbar-toggle target="nav_collapse" />
                 <b-collapse
                     is-nav
@@ -126,6 +136,7 @@
 <script lang="ts">
 import Vue from 'vue'
 import { genesisIdToNetwork } from '../utils'
+import { nodeUrls } from '@/create-connex'
 
 export default Vue.extend({
     data: () => {
@@ -137,6 +148,7 @@ export default Vue.extend({
         routeName(): string { return this.$route.name || '' },
         isHome(): boolean { return this.routeName === 'home' },
         price() { return this.$state.price },
+        nodeUrl() { return nodeUrls[genesisIdToNetwork(this.$connex.thor.genesis.id)] },
         network() {
             switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
                 case 'main': return 'MainNet'
