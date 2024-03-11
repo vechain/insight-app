@@ -16,7 +16,9 @@
                         <span class="text-serif h4">Insight</span>
                     </router-link>
                     
+                    <b-badge v-if="networks.length === 1" :variant="networkBadgeVariant" size="sm" class="ml-4">{{networks[0].label}}</b-badge>
                     <b-dropdown
+                        v-if="networks.length > 1"
                         size="sm"
                         :text="network"
                         :variant="networkBadgeVariant"
@@ -136,10 +138,8 @@
 <script lang="ts">
 import Vue from 'vue'
 import { genesisIdToNetwork, networkToGenesisId } from '../utils'
-import { nodeUrls } from '@/create-connex'
+import { nodeUrls, isSoloNode} from '@/create-connex'
 
-const isSoloUrl = !!process.env.VUE_APP_SOLO_URL
-const isCustomurl = !!process.env.VUE_APP_CUSTOM_URL
 
 
 export default Vue.extend({
@@ -158,15 +158,18 @@ export default Vue.extend({
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
                 case 'solo': return 'SoloNet'
-                case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
             }
         },
         networks(): Array<{ name: string, label: string, href: string }> {
+            if(isSoloNode) return [ {
+                name: 'solo',
+                label: 'SoloNet',
+                href: '#/solo/'
+                }]
             return [
                 { name: 'main',label: 'MainNet', href: '#/main/' },
                 { name: 'test',label: 'TestNet', href: '#/test/' },
-                ...(isSoloUrl ? [{ name:'solo',label: 'SoloNet', href: '#/solo/' }] : []),
-                ...(isCustomurl ? [{ name:'custom',label: `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`, href: '#/custom/' }] : [])
+                ...(isSoloNode ? [{ name:'solo',label: 'SoloNet', href: '#/solo/' }] : []),
             ]
         },
         switchableNetworks(): Array<{ name: string, label: string, href: string }> {
