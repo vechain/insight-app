@@ -141,15 +141,18 @@ export default Vue.extend({
             switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
-                case 'solo': return 'Solo'
+                case 'solo': return 'SoloNet'
                 case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
             }
         },
         switchableNetworks(): Array<{ name: string, href: string }> {
             switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-                case 'main': return [{ name: 'TestNet', href: '#/test/' }]
-                case 'test': return [{ name: 'MainNet', href: '#/main/' }]
-                default: return [{ name: 'TestNet', href: '#/test/' }, { name: 'MainNet', href: '#/main/' }]
+                case 'main': return [{ name: 'TestNet', href: '#/test/' }, { name: 'SoloNet', href: '#/solo/' }]
+                case 'test': return [{ name: 'MainNet', href: '#/main/' }, { name: 'SoloNet', href: '#/solo/' }]
+                case 'solo': return [{ name: 'MainNet', href: '#/main/' }, { name: 'TestNet', href: '#/test/' }]
+                default: return [{ name: 'TestNet', href: '#/test/' },
+                { name: 'MainNet', href: '#/main/' },
+                { name: 'Solo', href: '#/solo/' }]
             }
         },
         networkBadgeVariant() {
