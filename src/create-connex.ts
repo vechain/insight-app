@@ -1,10 +1,14 @@
 import Connex from "@vechain/connex/esm";
 
+export const soloUrlNode = process.env.VUE_APP_SOLO_URL;
+
+//Needed to support runtime env variables
+export const isSoloNode = !!soloUrlNode;
 export const nodeUrls = {
   main: "https://explore-mainnet.veblocks.net",
   test: "https://explore-testnet.veblocks.net",
-  solo: process.env.VUE_APP_SOLO_URL ?? "http://localhost:8669",
-  custom: process.env.VUE_APP_CUSTOM_URL ?? "http://localhost:8669",
+  solo: soloUrlNode ?? "http://localhost:8669",
+  custom: "",
 };
 
 const soloGenesis = {
@@ -43,7 +47,10 @@ export function createConnex(net?: "main" | "test" | "solo") {
     if (injected) {
       return new Connex({ node: "", network: injected.thor.genesis });
     } else {
-      // defaults to main net
+      // defaults to main net, or soloUrl if solo is provided
+      if (isSoloNode) {
+        return new Connex({ node: nodeUrls.solo, network: soloGenesis });
+      }
       return new Connex({ node: nodeUrls.main });
     }
   }
