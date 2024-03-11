@@ -32,9 +32,9 @@
                     </b-dropdown>
                     </div>
                     <div class="d-flex align-items-center">
-                    <span class="text-monospace small light ">
-                        {{nodeUrl}}
-                    </span>
+                        <span class="text-monospace" style="font-size: x-small;">
+                            {{nodeUrl}}
+                        </span>
                     </div>
                 </b-navbar-brand>
 
