@@ -16,6 +16,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import { genesisIdToNetwork } from '../utils'
 
 export default Vue.extend({
     data: () => {
@@ -66,6 +67,21 @@ export default Vue.extend({
                         this.error = err as Error
                     }
                 }
+            } else if (/\./.test(str) && genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main') {
+                try {
+                    const { decoded: { addresses } }  = await this.$connex.thor
+                        .account(vetResolverUtilsAddress)
+                        .method(getAddressesJsonAbi)
+                        .call([str])
+
+                    if (!addresses[0] || addresses[0] === '0x0000000000000000000000000000000000000000') {
+                        throw new Error('Name not found')
+                    }
+
+                    return this.$router.replace({ name: 'account', params: { address: addresses[0] } })
+                } catch (err) {
+                    this.error = new Error('Name not found')
+                }
             }
             if (!this.error) {
                 this.error = new Error(`No result for '${str}'`)
@@ -76,5 +92,26 @@ export default Vue.extend({
         this.reload()
     }
 })
-</script>
 
+const vetResolverUtilsAddress = '0xA11413086e163e41901bb81fdc5617c975Fa5a1A'
+const getAddressesJsonAbi = {
+  "inputs": [
+    {
+      "internalType": "string[]",
+      "name": "names",
+      "type": "string[]"
+    }
+  ],
+  "name": "getAddresses",
+  "outputs": [
+    {
+      "internalType": "address[]",
+      "name": "addresses",
+      "type": "address[]"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}
+
+</script>
