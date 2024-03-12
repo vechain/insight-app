@@ -47,18 +47,19 @@
                 >
                     <b-navbar-nav class="ml-auto">
                         <template v-if="price">
+                            
                             <b-nav-item
-                                class="text-monospace small"
+                                class="text-monospace small d-flex align-items-center"
                                 href="https://www.coingecko.com/en/coins/vechain"
                                 target="_blank"
                             >
                                 <div class="small">
-                                    &nbsp;VET
+                                    VET
                                     <span class="text-light">${{price.vet.toFixed(5)}}</span>
                                 </div>
                             </b-nav-item>
                             <b-nav-item
-                                class="text-monospace small mr-3"
+                                class="text-monospace small mr-3 d-flex align-items-center"
                                 href="https://www.coingecko.com/en/coins/vethor-token"
                                 target="_blank"
                             >
@@ -149,7 +150,7 @@ export default Vue.extend({
         }
     },
     computed: {
-        routeName(): string { return this.$route.name || '' },
+        routeName(): string { return this.$route.name ?? '' },
         isHome(): boolean { return this.routeName === 'home' },
         price() { return this.$state.price },
         nodeUrl() { return nodeUrls[genesisIdToNetwork(this.$connex.thor.genesis.id)] },
