@@ -7,27 +7,39 @@
         >
             <div class="container">
                 <b-navbar-brand>
+                    
+                    <div class="d-flex align-items-center d-flex-row">
                     <router-link
                         :to="{name:'home', params: {net:$net}}"
                         class="text-decoration-none text-white"
                     >
                         <span class="text-serif h4">Insight</span>
                     </router-link>
+                    
+                    <b-badge v-if="networks.length === 1" :variant="networkBadgeVariant" size="sm" class="ml-4">{{networks[0].label}}</b-badge>
                     <b-dropdown
+                        v-if="networks.length > 1"
                         size="sm"
                         :text="network"
                         :variant="networkBadgeVariant"
                         toggle-class="py-0 px-1"
                         style="vertical-align:top"
-                        class="ml-2"
+                        class="ml-4"
                     >
                         <b-dropdown-item
                             v-for="(n, i) in switchableNetworks"
                             :key="i"
                             :href="n.href"
-                        >{{n.name}}</b-dropdown-item>
+                        >{{n.label}}</b-dropdown-item>
                     </b-dropdown>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="text-monospace" style="font-size: x-small;">
+                            {{nodeUrl}}
+                        </span>
+                    </div>
                 </b-navbar-brand>
+
                 <b-navbar-toggle target="nav_collapse" />
                 <b-collapse
                     is-nav
@@ -35,18 +47,19 @@
                 >
                     <b-navbar-nav class="ml-auto">
                         <template v-if="price">
+                            
                             <b-nav-item
-                                class="text-monospace small"
+                                class="text-monospace small d-flex align-items-center"
                                 href="https://www.coingecko.com/en/coins/vechain"
                                 target="_blank"
                             >
                                 <div class="small">
-                                    &nbsp;VET
+                                    VET
                                     <span class="text-light">${{price.vet.toFixed(5)}}</span>
                                 </div>
                             </b-nav-item>
                             <b-nav-item
-                                class="text-monospace small mr-3"
+                                class="text-monospace small mr-3 d-flex align-items-center"
                                 href="https://www.coingecko.com/en/coins/vethor-token"
                                 target="_blank"
                             >
@@ -125,7 +138,10 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { genesisIdToNetwork } from '../utils'
+import { genesisIdToNetwork, networkToGenesisId } from '../utils'
+import { nodeUrls, isSoloNode} from '@/create-connex'
+
+
 
 export default Vue.extend({
     data: () => {
@@ -134,23 +150,31 @@ export default Vue.extend({
         }
     },
     computed: {
-        routeName(): string { return this.$route.name || '' },
+        routeName(): string { return this.$route.name ?? '' },
         isHome(): boolean { return this.routeName === 'home' },
         price() { return this.$state.price },
+        nodeUrl() { return nodeUrls[genesisIdToNetwork(this.$connex.thor.genesis.id)] },
         network() {
             switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
-                case 'solo': return 'Solo'
-                case 'custom': return `Custom:0x${this.$connex.thor.genesis.id.slice(-2)}`
+                case 'solo': return 'SoloNet'
             }
         },
-        switchableNetworks(): Array<{ name: string, href: string }> {
-            switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-                case 'main': return [{ name: 'TestNet', href: '#/test/' }]
-                case 'test': return [{ name: 'MainNet', href: '#/main/' }]
-                default: return [{ name: 'TestNet', href: '#/test/' }, { name: 'MainNet', href: '#/main/' }]
-            }
+        networks(): Array<{ name: string, label: string, href: string }> {
+            if(isSoloNode) return [ {
+                name: 'solo',
+                label: 'SoloNet',
+                href: '#/solo/'
+                }]
+            return [
+                { name: 'main',label: 'MainNet', href: '#/main/' },
+                { name: 'test',label: 'TestNet', href: '#/test/' },
+                ...(isSoloNode ? [{ name:'solo',label: 'SoloNet', href: '#/solo/' }] : []),
+            ]
+        },
+        switchableNetworks(): Array<{ name: string, label: string, href: string }> {
+            return this.networks.filter(i =>  this.$connex.thor.genesis.id !== networkToGenesisId(i.name))
         },
         networkBadgeVariant() {
             return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' ? 'light' : 'warning'
