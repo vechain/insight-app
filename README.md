@@ -51,7 +51,7 @@ docker compose up -d --build
 
 ## Run the app with a solo node 
 
-inspector support running using a custom solo node address to be provided via .env config
+Insight support running using a custom solo node address to be provided via .env config
 
 ### In your local machine 
 
