@@ -9,7 +9,7 @@ export const soloUrlNode = () => {
     }
     return process.env.VUE_APP_SOLO_URL;
 }
-//Needed to support runtime env variables
+
 export const isSoloNode = !!soloUrlNode();
 export const nodeUrls = {
   main: "https://explore-mainnet.veblocks.net",
