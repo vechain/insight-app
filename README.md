@@ -63,28 +63,35 @@ VUE_APP_SOLO_URL=http://localhost:8080
 
 ### With docker 
 
-Vue does not support runtime env variables, for this reason we need to provide them at build time
+We can provide runtime env variables using -e 
+
+#### Using image from registry 
 
 ```
-docker build -t insight-app --build-arg="VUE_APP_SOLO_URL=http://localhost:8080"
+docker run ghcr.io/vechain/insight-app:master -e VUE_APP_SOLO_URL=http://localhost:8080
+```
+
+#### Build local image 
+```
+docker build -t insight-app 
+docker run -e VUE_APP_SOLO_URL=http://localhost:8080
 ```
 
 ### With compose 
 
-Pass the build args in the compose file directly. 
+Use the image and pass the env variable in the compose file directly
 
 ```
+version: "3.7"
 services:
   insight:
-    build:
-      context: .
-      args:
-        - VUE_APP_SOLO_URL=http://localhost:8669
+    image: ghcr.io/vechain/insight-app:master
+    hostname: insight
+    container_name: insight
     environment:
-      NODE_ENV: production
-    
+      - VUE_APP_SOLO_URL=http://localhost:8669
     ports:
-      - 8080:80
+      - "8080:80"
 ```
 
 

@@ -43,6 +43,7 @@ COPY . .
 
 ARG VUE_APP_SOLO_URL
 ENV VUE_APP_SOLO_URL=$VUE_APP_SOLO_URL
+ENV VUE_APP_IS_DOCKER=True
 
 ENV NODE_ENV=production
 
@@ -57,5 +58,12 @@ COPY --from=build /usr/src/app/dist /usr/share/nginx/html
 # COPY --from=build /usr/src/app/nginx.prod.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copy entrypoint script as /entrypoint.sh
+COPY ./entrypoint.sh /entrypoint.sh
+
+# Grant Linux permissions and run entrypoint script
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+# CMD ["nginx", "-g", "daemon off;"]
 
