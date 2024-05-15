@@ -13,7 +13,9 @@ on:
       s3_bucket_name:
         description: Name of the S3 bucket which stores static FE
         required: true
-        type: string
+        type: choice
+        options:
+          - b3tr-dev-insight-fe
         default: b3tr-dev-insight-fe
       cloudfront_distribution_id:
         description: ID of the Cloudfront distribution to invalidate
@@ -70,7 +72,7 @@ jobs:
             role-to-assume: ${{ steps.determine-account.outputs.role_arn }}
 
       - name: Upload to S3
-        run: aws s3 sync ./packages/frontend/dist s3://${{ inputs.s3_bucket_name }} --delete
+        run: aws s3 sync ./dist s3://${{ inputs.s3_bucket_name }} --delete
 
       - name: Cloudfront Invalidation
         run: |
