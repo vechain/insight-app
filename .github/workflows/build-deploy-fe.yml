@@ -15,8 +15,8 @@ on:
         required: true
         type: choice
         options:
-          - b3tr-dev-insight-fe
-        default: b3tr-dev-insight-fe
+          - dev-b3tr-insight-20240327144251186900000001
+        default: dev-b3tr-insight-20240327144251186900000001
       cloudfront_distribution_id:
         description: ID of the Cloudfront distribution to invalidate
         required: true
@@ -33,7 +33,7 @@ permissions:
   contents: read # This is required for actions/checkout
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
