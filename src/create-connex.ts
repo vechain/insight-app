@@ -12,8 +12,8 @@ export const soloUrlNode = () => {
 
 export const isSoloNode = !!soloUrlNode();
 export const nodeUrls = {
-  main: "https://explore-mainnet.veblocks.net",
-  test: "https://explore-testnet.veblocks.net",
+  main: "https://mainnet.vechain.org",
+  test: "https://testnet.vechain.org",
   solo: soloUrlNode() ?? "http://localhost:8669",
   custom: "",
 };
