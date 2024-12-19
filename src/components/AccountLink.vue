@@ -13,17 +13,18 @@
             v-if="noLink"
             class="text-monospace text-truncate"
         >
-            <template v-if="abbr">{{ address | abbr }}</template>
+            <template v-if="!!resolvedName">{{ resolvedName }}</template>
+            <template v-else-if="abbr">{{ address | abbr }}</template>
             <template v-else>{{ address | checksum }}</template>
-            <template v-if="vetName"> ({{ vetName }})</template>
         </span>
         <router-link
             class="text-monospace text-truncate"
             v-else
             :to="{ name: 'account', params: { address: address, net: $net } }"
         >
-            <template v-if="abbr">{{ (vetName || address) | abbr }}</template>
-            <template v-else>{{ (vetName || address | checksum) }}</template>
+            <template v-if="resolvedName">{{ resolvedName }}</template>
+            <template v-else-if="abbr">{{ address | abbr }}</template>
+            <template v-else>{{ address | checksum }}</template>
         </router-link>
     </div>
     <span
@@ -35,6 +36,7 @@
 import Vue from "vue"
 import { address } from "thor-devkit"
 import { genesisIdToNetwork } from '../utils'
+import { resolveDomainName } from '../resolver'
 
 export default Vue.extend({
     props: {
@@ -44,20 +46,11 @@ export default Vue.extend({
         noLink: Boolean
     },
     asyncComputed: {
-        async vetName(): Promise<string | null> {
+        async resolvedName(): Promise<string | null> {
             if (genesisIdToNetwork(this.$connex.thor.genesis.id) !== 'main') {
                 return null
             }
-            try {               
-                const { decoded: { names } }  = await this.$connex.thor
-                    .account(vetResolverUtilsAddress)
-                    .method(getNamesJsonAbi)
-                    .call([this.address])
-
-                return names[0] || null
-            } catch {
-                return null
-            }
+            return resolveDomainName(this.address, this.$connex)
         }
     },
     computed: {
@@ -66,26 +59,5 @@ export default Vue.extend({
         }
     }
 })
-
-const vetResolverUtilsAddress = '0xA11413086e163e41901bb81fdc5617c975Fa5a1A'
-const getNamesJsonAbi = {
-  "inputs": [
-    {
-      "internalType": "address[]",
-      "name": "addresses",
-      "type": "address[]"
-    }
-  ],
-  "name": "getNames",
-  "outputs": [
-    {
-      "internalType": "string[]",
-      "name": "names",
-      "type": "string[]"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-}
 
 </script>
