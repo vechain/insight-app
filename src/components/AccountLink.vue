@@ -13,9 +13,11 @@
             v-if="noLink"
             class="text-monospace text-truncate"
         >
-            <template v-if="!!resolvedName">{{ resolvedName }}</template>
-            <template v-else-if="abbr">{{ address | abbr }}</template>
+            <template v-if="abbr">{{ address | abbr }}</template>
             <template v-else>{{ address | checksum }}</template>
+
+            <!-- display the resolved domain name in no link mode(only used in account summary page) -->
+            <span class="text-black-50 small" v-if="!!resolvedName"> {{ resolvedName }}</span>
         </span>
         <router-link
             class="text-monospace text-truncate"
