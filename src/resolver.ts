@@ -20,6 +20,25 @@ const getNamesJsonAbi = {
   "stateMutability": "view",
   "type": "function"
 }
+const getAddressesJsonAbi = {
+  "inputs": [
+    {
+      "internalType": "string[]",
+      "name": "names",
+      "type": "string[]"
+    }
+  ],
+  "name": "getAddresses",
+  "outputs": [
+    {
+      "internalType": "address[]",
+      "name": "addresses",
+      "type": "address[]"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+}
 
 export const resolveDomainName = async (address: string, connex: Connex) => { 
     try {               
@@ -34,3 +53,18 @@ export const resolveDomainName = async (address: string, connex: Connex) => {
         return null
     }
 }
+
+export const resolveAddressByName = async (name: string, connex: Connex) => { 
+    try {               
+        const { decoded: { addresses } }  = await connex.thor
+            .account(vet_domainResolver)
+            .method(getAddressesJsonAbi)
+            .cache([vet_domainResolver])
+            .call([name])
+
+        return addresses[0] || null
+    } catch {
+        return null
+    }
+}
+

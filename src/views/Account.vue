@@ -4,24 +4,16 @@
             <b-card-header class="border-bottom-0 pb-0">
                 <span class="h4 mr-3">Account</span>
                 <div class="d-flex">
-                    <div class="d-inline-flex align-items-center mw-100 mt-1">
-                        <Ident
-                            class="mr-2 flex-shrink-0"
-                            :value="address"
-                            style="width: 3.64em; height: 2.6em; border-radius: 0.2em"
-                        />
-                        <div class="d-flex flex-column">
-                            <div>
-                                <span class="text-monospace text-truncate">{{ address|checksum }}</span>
-                                <Copy
-                                    :value="address|checksum"
-                                    class="ml-2"
-                                />
-                            </div>
-                            <span v-if="resolvedName" class="text-monospace text-truncate text-black-50" style="font-size: 75%;">{{ resolvedName }}</span>
-                        </div> 
-                    </div>
-                    
+                    <AccountLink
+                        no-link
+                        icon
+                        :address="address"
+                        style="min-width:0px"
+                    />
+                    <Copy
+                        :value="address|checksum"
+                        class="ml-1"
+                    />
                 </div>
             </b-card-header>
             <b-tabs
