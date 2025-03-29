@@ -1,0 +1,118 @@
+name: Build & Publish Docker Image
+
+on:
+  workflow_call:
+    inputs:
+      imagePlatform:
+        required: false
+        type: string
+      environment:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      imagePlatform:
+        required: false
+        type: choice
+        options:
+          - linux/amd64
+      environment:
+        required: true
+        type: choice
+        options:
+          - dev
+          - prod
+
+env:
+  latestTag: ${{ inputs.environment }}-latest
+  imageTag: ${{ github.sha }}
+
+# Required for authentication through GitHub OIDC
+permissions:
+  id-token: write # This is required for requesting the JWT
+  contents: read # This is required for actions/checkout
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ${{ inputs.workingDirectory }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Determine AWS account ID and role
+        id: account
+        run: |
+            if [ "${{ inputs.environment }}" == "prod" ]; then
+              echo "role_arn=${{ secrets.PROD_AWS_ACC_ROLE }}" >> $GITHUB_OUTPUT
+            else
+              echo "role_arn=${{ secrets.DEV_AWS_ACC_ROLE }}" >> $GITHUB_OUTPUT
+            fi
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+            aws-region: eu-west-1
+            role-to-assume: ${{ steps.account.outputs.role_arn }}
+
+      - name: Login To Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Check ECR Repository
+        id: check-ecr-repo
+        env:
+          REPOSITORY: insight/${{ inputs.packageName }}
+        run: |
+          if 
+            aws ecr describe-repositories --repository-names $REPOSITORY 
+          then
+            echo "::set-output name=exists::true"
+          else
+            echo "::set-output name=exists::false"
+          fi
+
+      - name: Create ECR Repository
+        env:
+          REPOSITORY: insight/${{ inputs.packageName }}
+        if: steps.check-ecr-repo.outputs.exists == 'false'
+        run: |
+          aws ecr create-repository --repository-name $REPOSITORY
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          platforms: ${{ inputs.imagePlatform }}
+          build-args: |
+            ${{ inputs.buildArgs }}
+          push: true
+          context: ${{ inputs.workingDirectory }}
+          provenance: false
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/insight/${{ inputs.packageName }}:${{ env.imageTag }}
+            ${{ steps.login-ecr.outputs.registry }}/insight/${{ inputs.packageName }}:${{ env.latestTag }}
+
+      - name: Scan Docker image
+        id: docker-scan
+        uses: alexjurkiewicz/ecr-scan-image@v1.7.1
+        with:
+          repository: insight/${{ inputs.packageName }}
+          tag: ${{ env.imageTag }}
+          fail_threshold: high
+
+      - name: On Scan Failure
+        if: failure() && steps.docker-scan.outcome == 'failure'
+        run: |
+          aws ecr batch-delete-image \
+            --repository-name insight/${{ inputs.packageName }} \
+            --image-ids imageTag=${{ env.imageTag }} imageTag=${{ env.latestTag }}

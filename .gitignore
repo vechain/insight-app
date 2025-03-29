@@ -19,3 +19,18 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# Terraform-specific
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.tfvars
+*.tfplan
+.terraform/
+terraform.rc
+
+# Ignore override files as they are usually used to override resources locally
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
