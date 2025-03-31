@@ -1,18 +1,19 @@
 region: eu-west-1
 project: insight
 app_name: explorer
-environment: dev
+environment: prod
 vpc_id: vpc-09a1702508635ac94
 azs:
   - eu-west-1a
   - eu-west-1b
   - eu-west-1c
-cidr: 172.31.0.0/16
+vpc_cidr: 172.31.0.0/16
+
+cpu: 4096
+memory: 8192
 
 #app insights settings
 image_tag: dev-latest
-cpu: 1024
-memory: 4096
 max_capacity: 2
 
 # vpc settings

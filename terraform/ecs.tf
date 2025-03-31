@@ -41,6 +41,43 @@ module "ecs-sg" {
 
 }
 
+
+######################
+# Public ALB Security Group
+######################
+
+resource "aws_security_group" "alb-sg" {
+  description = "security-group-alb"
+  name        = "${local.env.environment}-${local.env.project}-sg-alb"
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 0
+    protocol    = "-1"
+    to_port     = 0
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 80
+    protocol    = "tcp"
+    to_port     = 80
+  }
+
+  ingress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port   = 443
+    protocol    = "tcp"
+    to_port     = 443
+  }
+
+  tags = {
+    Environment = local.env.environment
+    Name        = "${local.env.environment}-${local.env.project}-sg-alb"
+  }
+  vpc_id = local.env.vpc_id
+}
+
+
 ################################################################################
 # Module For ECS Cluster creation
 ################################################################################
@@ -50,47 +87,43 @@ module "ecs-cluster" {
   env     = local.env.environment
   project = local.env.project
   vpc_id  = local.env.vpc_id
-  cidr    = local.env.cidr
+  cidr    = local.env.vpc_cidr
 }
 
-
 ################################################################################
-# Module For ECS Non-Load Balanced Services for all enabled_nets
+# Module For ECS Load Balanced insights Service
 ################################################################################
+module "ecs-backend-service-insights" {
+  source                     = "git::git@github.com:/vechain/terraform_infrastructure_modules.git//ecs-loadbalanced-webservice"
+  region                     = local.env.region
+  vpc_id                     = local.env.vpc_id
+  cluster_name               = module.ecs-cluster.name
+  autoscale_cluster_name     = module.ecs-cluster.name
+  lb_subnets                 = local.env.public_subnets
+  app_subnets                = local.env.private_subnets
+  env                        = local.env.environment
+  is_create_repo             = true
+  secrets_enable             = false
+  assign_public_ip           = false
+  app_name                   = "insights-app"
+  project                    = local.env.project
+  cpu                        = local.env.cpu
+  memory                     = local.env.memory
+  cidr                       = local.env.vpc_cidr
+  container_port             = 80
+  https_tg_port              = 80
+  certificate_arn            = "arn:aws:acm:eu-west-1:891377394468:certificate/7da6ac4f-16c4-4c65-b7b8-ad98a8bc2bdb"
+  ecs_sg                     = [module.ecs-sg.security_group_id]
+  rule_0_path_pattern        = ["/*"]
+  alb_sg                     = [aws_security_group.alb-sg.id]
+  enable_deletion_protection = local.env == "prod" ? true : false
+  namespace_id               = module.namespace.namespace_id
+  https_tg_healthcheck_path  = "/"
 
-module "ecs-backend-service" {
-  for_each                           = local.env.enabled_nets
-
-  depends_on                         = [module.ecs-cluster]
-  source                             = "git::git@github.com:/vechain/terraform_infrastructure_modules.git//ecs-backend-service?ref=v.1.4.22"
-
-  vpc_id                             = local.env.vpc_id
-  region                             = local.env.region
-  cluster                            = module.ecs-cluster.name
-  subnets                            = local.env.private_subnets
-  env                                = local.env.environment
-  network                            = each.key
-  is_create_repo                     = false
-  ecr_repo_uri                       = each.value.ecr_repo_uri
-  secrets_enable                     = false
-  ecr_image_tag                      = lookup(each.value, "image_version", "latest")
-  app_name                           = "${each.key}-indexer"
-  project                            = local.env.project
-  cpu                                = each.value.cpu
-  memory                             = each.value.memory
-  cidr                               = local.env.cidr
-  security_groups                    = [module.ecs-sg.security_group_id]
-  desired_capacity                   = "1"
-  containerPort                      = 8080
-  hostPort                           = 8080
-  namespace_id                       = module.namespace.namespace_id
-  deployment_minimum_healthy_percent = 0
-  deployment_maximum_percent         = 100
-
-  log_metric_filters = [
-    for filter in each.value.log_metric_filters : {
-      name    = filter.name
-      pattern = filter.pattern
+    log_metric_filters = [
+    {
+      name    = "AppUnhealthy",
+      pattern = "Application is UNHEALTHY"
     }
   ]
 
@@ -105,23 +138,9 @@ module "ecs-backend-service" {
     },
     {
       name  = "VUE_APP_SOLO_URL"
-      value = "https://galactica.green.dev.node.vechain.org/"
-    },
-    {
-      name  = "APP_LOG_LEVEL"
-      value = "INFO"
-    },
-    {
-      name  = "LOG_INTERVAL"
-      value = "200"
-    },
-    {
-      name  = "SPRING_DATA_LOG_LEVEL"
-      value = "INFO"
-    },
-    {
-      name  = "APP_LOGGER"
-      value = "CloudWatch"
+      value = "galactica.green.dev.node.vechain.org"
     }
   ]
+ depends_on = [ module.ecs-cluster ]
 }
+

@@ -1,0 +1,37 @@
+region: eu-west-1
+project: insight
+app_name: explorer
+environment: prod
+vpc_id: vpc-09a1702508635ac94
+azs:
+  - eu-west-1a
+  - eu-west-1b
+  - eu-west-1c
+vpc_cidr: 172.31.0.0/16
+
+cpu: 4096
+memory: 8192
+
+#app insights settings
+image_tag: dev-latest
+max_capacity: 2
+
+# vpc settings
+public_subnets:
+  - subnet-0124d1b1bca4da686
+  - subnet-0cf08a1f3aa9954a2
+  - subnet-0a963e53f5b50781b
+private_subnets:
+  - subnet-07f6f718172b0c640
+  - subnet-06b67e91b846414f7
+  - subnet-00d01ce070a125e58
+
+enabled_nets:
+  indexer:
+    cpu: 4096
+    memory: 8192
+    ecr_repo_uri: 891377394468.dkr.ecr.eu-west-1.amazonaws.com/insight/insight-app
+    log_metric_filters:
+      - name: "AppUnhealthy"
+        pattern: "Application is UNHEALTHY"
+        threshold: 2

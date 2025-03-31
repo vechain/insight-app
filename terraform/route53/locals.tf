@@ -2,4 +2,5 @@
 # can then be used as local.env.<key> in other files
 locals {
 env = yamldecode(file("config/config.yml"))
+
 }

@@ -18,7 +18,7 @@ terraform {
   }
   backend "s3" {
     bucket = "indexer-insights-tf-state"
-    key                  = "indexer-insights-tf-state/indexer.tfstate"
+    key                  = "indexer-insights-tf-state/route53.tfstate"
     region               = "eu-west-1"
     workspace_key_prefix = "workspaces"
   }
