@@ -9,12 +9,11 @@ azs:
   - eu-west-1c
 vpc_cidr: 172.31.0.0/16
 
-cpu: 4096
-memory: 8192
-
 #app insights settings
 image_tag: dev-latest
 max_capacity: 2
+cpu: 4096
+memory: 8192
 
 # vpc settings
 public_subnets:
