@@ -20,7 +20,6 @@ terraform {
     bucket = "indexer-insights-tf-state"
     key                  = "indexer-insights-tf-state/indexer.tfstate"
     region               = "eu-west-1"
-    workspace_key_prefix = "workspaces"
   }
 }
 
