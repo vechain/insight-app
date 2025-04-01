@@ -1,4 +1,3 @@
-
 name: Build common images and upload to use it across jobs
 
 on:

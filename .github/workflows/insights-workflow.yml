@@ -17,19 +17,19 @@ jobs:
       image: libs
     secrets: inherit
 
-  call-workflow-push-ecr:
-    needs:  
-      [
-        call-workflow-build-common-images
-      ]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-    uses: ./.github/workflows/common-push-ecr.yml
-    secrets: inherit
-    with:
-      commonImageName: libs
-      repository: insights-app
-      dockerFolder: ./docker/insights-app/
-      imageTag: ${{ github.sha }}
+#   call-workflow-push-ecr:
+#     needs:  
+#       [
+#         call-workflow-build-common-images
+#       ]
+#     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+#     uses: ./.github/workflows/common-push-ecr.yml
+#     secrets: inherit
+#     with:
+#       commonImageName: libs
+#       repository: insights-app
+#       dockerFolder: ./docker/insights-app/
+#       imageTag: ${{ github.sha }}
 
 #   call-workflow-deploy-ecs-task:
 #     needs:  
