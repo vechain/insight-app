@@ -15,7 +15,7 @@ on:
 
 jobs:
   call-workflow-build-common-images:
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.event_name == 'pull_request' || github.base_ref == 'master' }}
     uses: ./.github/workflows/common-images-build.yml
     with:
       image: libs
