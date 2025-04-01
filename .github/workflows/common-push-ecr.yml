@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   push-to-ecr-and-scan:
-    environment: 'new_dev'
+    environment: 'dev'
     name: Push + Scan
     runs-on: ubuntu-latest
     env:
