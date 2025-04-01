@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Call Build Common Images Workflow
-        uses: ./.github/workflows/common-images-build.yml@master
+        uses: ./.github/workflows/common-images-build.yml
         with:
           image: libs
 

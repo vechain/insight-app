@@ -12,18 +12,23 @@ on:
       commonImageName:
         required: false
         type: string
-        description: 'Common image name'
+        description: 'common image name'
         default: 'libs'
 
 permissions:
-  id-token: write
-  contents: read
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
 
 jobs:
   push-to-ecr-and-scan:
     environment: 'new_dev'
+    name: Push + Scan
     runs-on: ubuntu-latest
-    steps:
+    env:
+      REPOSITORY: insight/${{ inputs.repository }}
+
+    steps: 
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -33,6 +38,7 @@ jobs:
         uses: ./.github/actions/common-images-load
         with:
           image: ${{ inputs.commonImageName }}
+
   
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -40,14 +46,16 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ACC_ROLE }}
           aws-region: ${{ vars.AWS_REGION }}
       
-      - name: Login to Amazon ECR
+      - name: Login To Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
       
       - name: Check ECR Repository
         id: check-ecr-repo
         run: |
-          if aws ecr describe-repositories --repository-names $REPOSITORY; then
+          if 
+            aws ecr describe-repositories --repository-names $REPOSITORY 
+          then
             echo "::set-output name=exists::true"
           else
             echo "::set-output name=exists::false"
@@ -58,12 +66,15 @@ jobs:
         run: |
           aws ecr create-repository --repository-name $REPOSITORY
       
-      - name: Build and push Docker image
-        env:
+      - name: Build & Push Docker Image
+        env: 
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           ECR_IMAGE=$ECR_REGISTRY/$REPOSITORY
+          cd ${{ inputs.dockerFolder }};
           docker build -f Dockerfile -t $ECR_IMAGE ../../
           docker push $ECR_IMAGE
           docker tag $ECR_IMAGE $ECR_IMAGE:${{ inputs.imageTag }}
           docker push $ECR_IMAGE:${{ inputs.imageTag }}
+
+        
