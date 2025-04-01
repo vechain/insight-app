@@ -17,7 +17,7 @@ export default new Router({
     mode: 'hash',
     routes: [
         {
-            path: '/:net(main|test|solo)?',
+            path: '/:net(main|test|solo|galactica)?',
             children: [
                 {
                     path: '',

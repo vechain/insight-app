@@ -1,53 +1,51 @@
 <template>
     <div>
-        <b-navbar
-            toggleable="lg"
-            variant="secondary"
-            type="dark"
-        >
+        <b-navbar toggleable="lg" variant="secondary" type="dark">
             <div class="container">
                 <b-navbar-brand>
-                    
                     <div class="d-flex align-items-center d-flex-row">
-                    <router-link
-                        :to="{name:'home', params: {net:$net}}"
-                        class="text-decoration-none text-white"
-                    >
-                        <span class="text-serif h4">Insight</span>
-                    </router-link>
-                    
-                    <b-badge v-if="networks.length === 1" :variant="networkBadgeVariant" size="sm" class="ml-4">{{networks[0].label}}</b-badge>
-                    <b-dropdown
-                        v-if="networks.length > 1"
-                        size="sm"
-                        :text="network"
-                        :variant="networkBadgeVariant"
-                        toggle-class="py-0 px-1"
-                        style="vertical-align:top"
-                        class="ml-4"
-                    >
-                        <b-dropdown-item
-                            v-for="(n, i) in switchableNetworks"
-                            :key="i"
-                            :href="n.href"
-                        >{{n.label}}</b-dropdown-item>
-                    </b-dropdown>
+                        <router-link
+                            :to="{ name: 'home', params: { net: $net } }"
+                            class="text-decoration-none text-white"
+                        >
+                            <span class="text-serif h4">Insight</span>
+                        </router-link>
+
+                        <b-badge
+                            v-if="networks.length === 1"
+                            :variant="networkBadgeVariant"
+                            size="sm"
+                            class="ml-4"
+                            >{{ networks[0].label }}</b-badge
+                        >
+                        <b-dropdown
+                            v-if="networks.length > 1"
+                            size="sm"
+                            :text="network"
+                            :variant="networkBadgeVariant"
+                            toggle-class="py-0 px-1"
+                            style="vertical-align: top"
+                            class="ml-4"
+                        >
+                            <b-dropdown-item
+                                v-for="(n, i) in switchableNetworks"
+                                :key="i"
+                                @click="$router.push(n.href.replace('#', ''))"
+                                >{{ n.label }}</b-dropdown-item
+                            >
+                        </b-dropdown>
                     </div>
                     <div class="d-flex align-items-center">
-                        <span class="text-monospace" style="font-size: x-small;">
-                            {{nodeUrl}}
+                        <span class="text-monospace" style="font-size: x-small">
+                            {{ nodeUrl }}
                         </span>
                     </div>
                 </b-navbar-brand>
 
                 <b-navbar-toggle target="nav_collapse" />
-                <b-collapse
-                    is-nav
-                    id="nav_collapse"
-                >
+                <b-collapse is-nav id="nav_collapse">
                     <b-navbar-nav class="ml-auto">
                         <template v-if="price">
-                            
                             <b-nav-item
                                 class="text-monospace small d-flex align-items-center"
                                 href="https://www.coingecko.com/en/coins/vechain"
@@ -55,7 +53,7 @@
                             >
                                 <div class="small">
                                     VET
-                                    <span class="text-light">${{price.vet.toFixed(5)}}</span>
+                                    <span class="text-light">${{ price.vet.toFixed(5) }}</span>
                                 </div>
                             </b-nav-item>
                             <b-nav-item
@@ -65,7 +63,7 @@
                             >
                                 <div class="small">
                                     VTHO
-                                    <span class="text-light">${{price.vtho.toFixed(5)}}</span>
+                                    <span class="text-light">${{ price.vtho.toFixed(5) }}</span>
                                 </div>
                             </b-nav-item>
                         </template>
@@ -75,11 +73,12 @@
                                 <span>Alternatives</span>
                             </template>
                             <b-dropdown-item
-                                v-for="(item,i) in alters"
+                                v-for="(item, i) in alters"
                                 :key="i"
                                 :href="item.href"
                                 target="_blank"
-                            >{{item.title}}</b-dropdown-item>
+                                >{{ item.title }}</b-dropdown-item
+                            >
                         </b-nav-item-dropdown>
                         <b-nav-item-dropdown class="mr-3">
                             <!-- Using button-content slot -->
@@ -87,16 +86,14 @@
                                 <span>Tools</span>
                             </template>
                             <b-dropdown-item
-                                v-for="(item,i) in tools"
+                                v-for="(item, i) in tools"
                                 :key="i"
                                 :href="item.href"
                                 target="_blank"
-                            >{{item.title}}</b-dropdown-item>
+                                >{{ item.title }}</b-dropdown-item
+                            >
                         </b-nav-item-dropdown>
-                        <b-nav-item
-                            href="https://github.com/vechain/"
-                            target="_blank"
-                        >
+                        <b-nav-item href="https://github.com/vechain/" target="_blank">
                             <SvgIcon name="mark-github" />
                         </b-nav-item>
                         <b-nav-form v-if="!isHome">
@@ -105,16 +102,12 @@
                                     class="border-0"
                                     size="sm"
                                     placeholder="block, tx or account"
-                                    style="min-width:15rem"
+                                    style="min-width: 15rem"
                                     v-model="searchString"
                                     @keydown.enter.prevent="search"
                                 />
                                 <b-input-group-append>
-                                    <b-button
-                                        size="sm"
-                                        variant="primary"
-                                        @click="search"
-                                    >
+                                    <b-button size="sm" variant="primary" @click="search">
                                         <SvgIcon name="search" />
                                     </b-button>
                                 </b-input-group-append>
@@ -125,10 +118,7 @@
             </div>
         </b-navbar>
         <div class="py-4">
-            <transition
-                name="fade"
-                mode="out-in"
-            >
+            <transition name="fade" mode="out-in">
                 <keep-alive include="Block,Tx">
                     <router-view :key="routeViewKey" />
                 </keep-alive>
@@ -139,42 +129,60 @@
 <script lang="ts">
 import Vue from 'vue'
 import { genesisIdToNetwork, networkToGenesisId } from '../utils'
-import { nodeUrls, isSoloNode} from '@/create-connex'
-
-
+import { nodeUrls, isSoloNode } from '@/create-connex'
 
 export default Vue.extend({
     data: () => {
         return {
-            searchString: ''
+            searchString: '',
         }
     },
     computed: {
-        routeName(): string { return this.$route.name ?? '' },
-        isHome(): boolean { return this.routeName === 'home' },
-        price() { return this.$state.price },
-        nodeUrl() { return nodeUrls[genesisIdToNetwork(this.$connex.thor.genesis.id)] },
+        routeName(): string {
+            return this.$route.name ?? ''
+        },
+        isHome(): boolean {
+            return this.routeName === 'home'
+        },
+        price() {
+            return this.$state.price
+        },
+        nodeUrl() {
+            return nodeUrls[this.$route.params.net as 'main' | 'test' | 'solo' | 'galactica']
+        },
         network() {
-            switch (genesisIdToNetwork(this.$connex.thor.genesis.id)) {
-                case 'main': return 'MainNet'
-                case 'test': return 'TestNet'
-                case 'solo': return 'SoloNet'
+            switch (this.$route.params.net) {
+                case 'main':
+                    return 'MainNet'
+                case 'test':
+                    return 'TestNet'
+                case 'solo':
+                    return 'SoloNet'
+                case 'galactica':
+                    return 'Galactica'
+                default:
+                    return 'MainNet'
             }
         },
-        networks(): Array<{ name: string, label: string, href: string }> {
-            if(isSoloNode) return [ {
-                name: 'solo',
-                label: 'SoloNet',
-                href: '#/solo/'
-                }]
+        networks(): Array<{ name: string; label: string; href: string }> {
+            if (isSoloNode)
+                return [
+                    {
+                        name: 'galactica',
+                        label: 'Galactica',
+                        href: '#/galactica/',
+                    },
+                ]
             return [
-                { name: 'main',label: 'MainNet', href: '#/main/' },
-                { name: 'test',label: 'TestNet', href: '#/test/' },
-                ...(isSoloNode ? [{ name:'solo',label: 'SoloNet', href: '#/solo/' }] : []),
+                { name: 'main', label: 'MainNet', href: '#/main/' },
+                { name: 'test', label: 'TestNet', href: '#/test/' },
+                { name: 'galactica', label: 'Galactica', href: '#/galactica/' },
             ]
         },
-        switchableNetworks(): Array<{ name: string, label: string, href: string }> {
-            return this.networks.filter(i =>  this.$connex.thor.genesis.id !== networkToGenesisId(i.name))
+        switchableNetworks(): Array<{ name: string; label: string; href: string }> {
+            return this.networks.filter(
+                i => this.$connex.thor.genesis.id !== networkToGenesisId(i.name)
+            )
         },
         networkBadgeVariant() {
             return genesisIdToNetwork(this.$connex.thor.genesis.id) === 'main' ? 'light' : 'warning'
@@ -183,13 +191,16 @@ export default Vue.extend({
             return [
                 { title: 'Official Explorer', href: 'https://explore.vechain.org/' },
                 { title: 'VeChainStats', href: 'https://vechainstats.com/' },
-                { title: 'VeBlocks', href: 'https://www.veblocks.net/' }
+                { title: 'VeBlocks', href: 'https://www.veblocks.net/' },
             ]
         },
         tools() {
             return [
                 { title: 'Inspector', href: 'https://inspector.vecha.in' },
-                { title: 'Tokens', href: 'https://laalaguer.github.io/vechain-token-transfer/' },
+                {
+                    title: 'Tokens',
+                    href: 'https://laalaguer.github.io/vechain-token-transfer/',
+                },
                 { title: 'B32', href: 'https://b32.vecha.in' },
             ].filter(i => !!i.href)
         },
@@ -198,7 +209,7 @@ export default Vue.extend({
                 return `accounts-${this.$route.params.address.toLowerCase()}`
             }
             return this.$route.fullPath
-        }
+        },
     },
     methods: {
         search() {
@@ -224,16 +235,16 @@ export default Vue.extend({
                 subTitle = 'Search'
             }
             document.title = subTitle ? `Insight | ${subTitle}` : 'Insight - VeChain Explorer'
-        }
+        },
     },
     watch: {
         '$route.path'() {
             this.routed()
-        }
+        },
     },
     created() {
         this.routed()
-    }
+    },
 })
 </script>
 <style lang="scss" scoped>

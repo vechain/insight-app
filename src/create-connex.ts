@@ -15,6 +15,7 @@ export const nodeUrls = {
   main: "https://mainnet.vechain.org",
   test: "https://testnet.vechain.org",
   solo: soloUrlNode() ?? "http://localhost:8669",
+  galactica: "https://galactica.dev.node.vechain.org",
   custom: "",
 };
 
@@ -40,12 +41,37 @@ const soloGenesis = {
   transactions: [],
 };
 
-export function createConnex(net?: "main" | "test" | "solo") {
+const galacticaGenesis = {
+  number: 0,
+  id: "0x000000005639ad3ce1665a037d4da0f65f1dc32460c0e2a566b906893f6fe5e4",
+  size: 170,
+  parentID:
+    "0xffffffff47616c616374696361204465766e6574000000000000000000000000",
+  timestamp: 1743437301,
+  gasLimit: 40000000,
+  beneficiary: "0x0000000000000000000000000000000000000000",
+  gasUsed: 0,
+  totalScore: 0,
+  txsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+  txsFeatures: 0,
+  stateRoot:
+    "0x4b418645fbdd227e08d9457ce22284c61f714016e845bc65c738b351d8e89541",
+  receiptsRoot:
+    "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
+  signer: "0x0000000000000000000000000000000000000000",
+  isTrunk: true,
+  transactions: [],
+};
+
+export function createConnex(net?: "main" | "test" | "solo" | "galactica") {
   if (net) {
     // net specified
     const url = nodeUrls[net];
     if (net == "solo") {
       return new Connex({ node: url, network: soloGenesis });
+    }
+    if (net == "galactica") {
+      return new Connex({ node: url, network: galacticaGenesis });
     }
     return new Connex({ node: url, network: net });
   } else {
