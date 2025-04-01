@@ -1,4 +1,5 @@
 import { register } from 'register-service-worker'
+import { fetchGenesis } from './create-connex'
 
 /* tslint:disable:no-console */
 if (process.env.NODE_ENV === 'production') {
@@ -45,6 +46,7 @@ import '@/components'
 import { build } from './state'
 import AsyncComputed from 'vue-async-computed'
 
+
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(VueAnalytics, {
@@ -61,7 +63,9 @@ Object.defineProperty(Vue.prototype, '$state', {
     get() { return state }
 })
 
-new App({ router: Router }).$mount('#app')
+fetchGenesis().then(() => {
+    new App({ router: Router }).$mount('#app')
+})
 
 declare module 'vue/types/vue' {
     interface Vue {

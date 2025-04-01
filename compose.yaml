@@ -4,7 +4,6 @@ services:
       context: .
     environment:
       NODE_ENV: production
-      VUE_APP_SOLO_URL: https://hayabusa.live.dev.node.vechain.org/
-      VUE_APP_GENESIS: '{"number":0,"id":"0x00000000f335530f85c19a549f469f946d34234e9376da6029dc8d0ca5eb453c","size":171,"parentID":"0xffffffff48617961627573612047656e6573697320426c6f636b207630000000","timestamp":1742287863,"gasLimit":40000000,"beneficiary":"0x0000000000000000000000000000000000000000","gasUsed":0,"totalScore":0,"txsRoot":"0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0","txsFeatures":0,"stateRoot":"0xf81426d7fc5e77cb647831bb67ae728401eb372d0ed98c4cd0fe759a6a95d689","receiptsRoot":"0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0","com":false,"signer":"0x0000000000000000000000000000000000000000","isTrunk":true,"isFinalized":true,"transactions":[]}'
+      VUE_APP_SOLO_URL: https://galactica.live.dev.node.vechain.org/
     ports:
       - 8080:80

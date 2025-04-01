@@ -18,7 +18,7 @@ export const nodeUrls = {
   custom: "",
 };
 
-const soloGenesis = {
+let soloGenesis = {
   number: 0,
   id: "0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6",
   size: 170,
@@ -39,6 +39,16 @@ const soloGenesis = {
   isTrunk: true,
   transactions: [],
 };
+
+export async function fetchGenesis() {
+  if (nodeUrls.solo === "http://localhost:8669") {
+    return;
+  }
+
+  const genesis = await fetch(nodeUrls.solo + "/blocks/0").then((res) => res.json());
+  
+  soloGenesis = genesis;
+}
 
 export function createConnex(net?: "main" | "test" | "solo") {
   if (net) {
