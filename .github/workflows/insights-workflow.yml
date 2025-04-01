@@ -22,7 +22,7 @@ jobs:
       [
         call-workflow-build-common-images
       ]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.event_name == 'pull_request' || github.base_ref == 'master' }}
     uses: ./.github/workflows/common-push-ecr.yml
     secrets: inherit
     with:
@@ -33,7 +33,7 @@ jobs:
   call-workflow-deploy-ecs-task:
     needs:  
       [  call-workflow-build-common-images, call-workflow-push-ecr ]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.event_name == 'pull_request' || github.base_ref == 'master' }}
     uses: ./.github/workflows/common-deploy-env.yml
     with:
       service-name:  prod-insight-insights-app-service
