@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
             context: .
-            file: ./docker/${{inputs.image}}/Dockerfile
+            file: ./Dockerfile
             tags: ${{inputs.image}}
             outputs: type=docker,dest=/tmp/${{inputs.image}}.tar
       
