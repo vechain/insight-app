@@ -3,7 +3,7 @@ provider "aws" {
   default_tags {
     tags = {
       Terraform = "true"
-      Project   = "insight"
+      Project   = "insights"
     }
   }
 }
@@ -18,9 +18,7 @@ terraform {
   }
   backend "s3" {
     bucket = "indexer-insights-tf-state"
-    key                  = "indexer-insights-tf-state/indexer.tfstate"
-    region               = "eu-west-1"
+    key    = "indexer-insights-tf-state/indexer.tfstate"
+    region = "eu-west-1"
   }
 }
-
-

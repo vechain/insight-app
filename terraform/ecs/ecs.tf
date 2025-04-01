@@ -41,7 +41,6 @@ module "ecs-sg" {
 
 }
 
-
 ######################
 # Public ALB Security Group
 ######################
@@ -77,9 +76,8 @@ resource "aws_security_group" "alb-sg" {
   vpc_id = local.env.vpc_id
 }
 
-
 ################################################################################
-# Module For ECS Cluster creation
+# Module For ECS Cluster Creation
 ################################################################################
 
 module "ecs-cluster" {
@@ -93,6 +91,7 @@ module "ecs-cluster" {
 ################################################################################
 # Module For ECS Load Balanced insights Service
 ################################################################################
+
 module "ecs-backend-service-insights" {
   source                     = "git::git@github.com:/vechain/terraform_infrastructure_modules.git//ecs-loadbalanced-webservice"
   region                     = local.env.region
@@ -120,7 +119,7 @@ module "ecs-backend-service-insights" {
   namespace_id               = module.namespace.namespace_id
   https_tg_healthcheck_path  = "/"
 
-    log_metric_filters = [
+  log_metric_filters = [
     {
       name    = "AppUnhealthy",
       pattern = "Application is UNHEALTHY"
@@ -141,6 +140,5 @@ module "ecs-backend-service-insights" {
       value = "galactica.green.dev.node.vechain.org"
     }
   ]
- depends_on = [ module.ecs-cluster ]
+  depends_on = [module.ecs-cluster]
 }
-
