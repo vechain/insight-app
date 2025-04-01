@@ -17,30 +17,30 @@ jobs:
       image: libs
     secrets: inherit
 
-#   call-workflow-push-ecr:
-#     needs:  
-#       [
-#         call-workflow-build-common-images
-#       ]
-#     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-#     uses: ./.github/workflows/common-push-ecr.yml
-#     secrets: inherit
-#     with:
-#       commonImageName: libs
-#       repository: insights-app
-#       dockerFolder: ./docker/insights-app/
-#       imageTag: ${{ github.sha }}
+  call-workflow-push-ecr:
+    needs:  
+      [
+        call-workflow-build-common-images
+      ]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    uses: ./.github/workflows/common-push-ecr.yml
+    secrets: inherit
+    with:
+      commonImageName: libs
+      repository: insights-app
+      dockerFolder: ./docker/insights-app/
+      imageTag: ${{ github.sha }}
 
-#   call-workflow-deploy-ecs-task:
-#     needs:  
-#       [  call-workflow-build-common-images, call-workflow-push-ecr ]
-#     if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-#     uses: ./.github/workflows/common-deploy-env.yml
-#     with:
-#       service-name:  prod-insight-insights-app-service
-#       task-definition: prod-insight-insights-app
-#       image-name: insights-app-testnet
-#       container-name: prod-insight-insights-app-task
-#       environment: prod
-#       tag: ${{ github.sha }}
-#     secrets: inherit
+  call-workflow-deploy-ecs-task:
+    needs:  
+      [  call-workflow-build-common-images, call-workflow-push-ecr ]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    uses: ./.github/workflows/common-deploy-env.yml
+    with:
+      service-name:  prod-insight-insights-app-service
+      task-definition: prod-insight-insights-app
+      image-name: insights-app-testnet
+      container-name: prod-insight-insights-app-task
+      environment: dev
+      tag: ${{ github.sha }}
+    secrets: inherit
