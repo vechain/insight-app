@@ -6,12 +6,12 @@ on:
     paths:
       - '*'
     branches:
-      - main
+      - master
   push:
     paths:
       - '*'
     branches:
-      - main
+      - master
 
 jobs:
   call-workflow-build-common-images:
