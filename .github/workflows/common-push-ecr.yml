@@ -71,7 +71,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
           ECR_IMAGE=$ECR_REGISTRY/$REPOSITORY
-          cd ${{ inputs.dockerFolder }};
+          cd ./
           docker build -f Dockerfile -t $ECR_IMAGE ../../
           docker push $ECR_IMAGE
           docker tag $ECR_IMAGE $ECR_IMAGE:${{ inputs.imageTag }}
