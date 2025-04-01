@@ -38,7 +38,6 @@ module "ecs-sg" {
       ipv6_cidr_blocks = []
     }
   ]
-
 }
 
 ######################
