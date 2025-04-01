@@ -40,6 +40,7 @@ jobs:
       service-name:  prod-insight-insights-app-service
       task-definition: prod-insight-insights-app
       image-name: insights-app-testnet
+      dockerFolder: ./
       container-name: prod-insight-insights-app-task
       environment: dev
       tag: ${{ github.sha }}
