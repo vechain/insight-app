@@ -21,12 +21,12 @@ jobs:
       image: libs
     secrets: inherit
 
-  call-workflow-push-new-dev-ecr:
+  call-workflow-push-ecr:
     needs:  
       [
         call-workflow-build-common-images
       ]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+    if: ${{ github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' }}
     uses: ./.github/workflows/common-push-ecr.yml
     secrets: inherit
     with:
@@ -35,10 +35,10 @@ jobs:
       dockerFolder: ./docker/insights-app/
       imageTag: ${{ github.sha }}
 
-  call-workflow-deploy-new-qa-testnet:
+  call-workflow-deploy-ecs-task:
     needs:  
-      [  call-workflow-build-common-images, call-workflow-push-new-dev-ecr ]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
+      [  call-workflow-build-common-images, call-workflow-push-ecr ]
+    if: ${{ github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' }}
     uses: ./.github/workflows/common-deploy-env.yml
     with:
       service-name:  prod-insight-insights-app-service
