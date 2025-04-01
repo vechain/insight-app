@@ -20,7 +20,7 @@ on:
       environment:
         required: true
         type: string
-        default: 'prod'
+        default: 'dev'
 
 permissions:
   id-token: write   # This is required for requesting the JWT

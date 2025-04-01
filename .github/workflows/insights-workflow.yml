@@ -3,48 +3,28 @@ name: insights-app workflow
 on:
   workflow_dispatch:
   pull_request:
-    paths:
-      - '*'
     branches:
       - master
   push:
-    paths:
-      - '*'
     branches:
       - master
 
 jobs:
   call-workflow-build-common-images:
-    if: ${{ github.event_name == 'pull_request' || github.base_ref == 'master' }}
-    uses: ./.github/workflows/common-images-build.yml
-    with:
-      image: libs
-    secrets: inherit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Build Common Images Workflow
+        uses: ./.github/workflows/common-images-build.yml@master
+        with:
+          image: libs
 
   call-workflow-push-ecr:
-    needs:  
-      [
-        call-workflow-build-common-images
-      ]
-    if: ${{ github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' }}
-    uses: ./.github/workflows/common-push-ecr.yml
-    secrets: inherit
-    with:
-      commonImageName: libs
-      repository: insights-app
-      dockerFolder: ./docker/insights-app/
-      imageTag: ${{ github.sha }}
-
-  call-workflow-deploy-ecs-task:
-    needs:  
-      [  call-workflow-build-common-images, call-workflow-push-ecr ]
-    if: ${{ github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' }}
-    uses: ./.github/workflows/common-deploy-env.yml
-    with:
-      service-name:  prod-insight-insights-app-service
-      task-definition: prod-insight-insights-app
-      image-name: insights-app-testnet
-      container-name: prod-insight-insights-app-task
-      environment: prod
-      tag: ${{ github.sha }}
-    secrets: inherit
+    needs: call-workflow-build-common-images
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Push to ECR Workflow
+        uses: ./.github/workflows/common-push-ecr.yml@master
+        with:
+          repository: insights-app
+          imageTag: ${{ github.sha }}
+          commonImageName: libs
