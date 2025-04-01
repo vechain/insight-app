@@ -28,7 +28,6 @@ jobs:
     with:
       commonImageName: libs
       repository: insights-app
-      dockerFolder: ./docker/insights-app/
       imageTag: ${{ github.sha }}
 
   call-workflow-deploy-ecs-task:
