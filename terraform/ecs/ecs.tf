@@ -117,6 +117,7 @@ module "ecs-backend-service-insights" {
   enable_deletion_protection = local.env == "prod" ? true : false
   namespace_id               = module.namespace.namespace_id
   https_tg_healthcheck_path  = "/"
+  
 
   log_metric_filters = [
     {
