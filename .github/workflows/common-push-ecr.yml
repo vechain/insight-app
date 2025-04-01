@@ -34,10 +34,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download and load libs image
-        uses: ./.github/actions/common-images-load
-        with:
-          image: ${{ inputs.commonImageName }}
+      # - name: Download and load libs image
+      #   uses: ./.github/actions/common-images-load
+      #   with:
+      #     image: ${{ inputs.commonImageName }}
 
   
       - name: Configure AWS credentials
