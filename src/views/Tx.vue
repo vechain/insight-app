@@ -103,7 +103,25 @@
                             </b-col>
                             <b-col lg="10">
                                 {{receipt.gasUsed | locale}} / {{tx.gas | locale}}
-                                <sup>price coef {{tx.gasPriceCoef}}</sup>
+                                <sup v-if="tx.gasPriceCoef">price coef {{tx.gasPriceCoef}}</sup>
+                            </b-col>
+                        </b-row>
+                        <hr />
+                        <b-row v-if="tx.maxFeePerGas">
+                            <b-col lg="2">
+                                <strong>Max Fee Per Gas</strong>
+                            </b-col>
+                            <b-col lg="10">
+                                {{ convertHexToDecimal(tx.maxFeePerGas) | locale }}
+                            </b-col>
+                        </b-row>
+                        <hr />
+                        <b-row v-if="tx.maxPriorityFeePerGas">
+                            <b-col lg="2">
+                                <strong>Max Priority Fee Per Gas</strong>
+                            </b-col>
+                            <b-col lg="10">
+                                {{ convertHexToDecimal(tx.maxPriorityFeePerGas) | locale }}
                             </b-col>
                         </b-row>
                         <hr />
@@ -258,6 +276,22 @@ export default Vue.extend({
                 if (receipt) { this.receipt = receipt }
             } catch (err) {
                 this.error = err as Error
+            }
+        },
+        convertHexToDecimal(hexString) {
+            if (!hexString) {
+                return 'N/A'; // Or whatever default you want
+            }
+            try {
+                // Remove the "0x" prefix if it exists
+                const cleanedHexString = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
+
+                // Parse the hexadecimal string as a BigInt to handle large numbers
+                const decimalValue = BigInt('0x' + cleanedHexString);
+                return decimalValue.toString();
+            } catch (error) {
+                console.error('Error converting hex to decimal:', error);
+                return 'Invalid Hex'; // Or handle the error as needed
             }
         }
     },

@@ -69,6 +69,15 @@
                             >{{txs.length}} {{txs.length>1?'transactions': 'transaction'}}</b-button>
                         </b-col>
                     </b-row>
+                    <hr />
+                    <b-row v-if="block.baseFeePerGas">
+                        <b-col lg="2">
+                            <strong>Base Fee</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            {{ convertHexToDecimal(block.baseFeePerGas) | locale }}
+                          </b-col>
+                    </b-row>
                     <b-collapse
                         v-if="txs.length"
                         id="txs"
@@ -230,7 +239,23 @@ export default Vue.extend({
             } catch (err) {
                 this.error = err as Error
             }
-        }
+        },
+        convertHexToDecimal(hexString) {
+            if (!hexString) {
+                return 'N/A'; // Or whatever default you want
+            }
+            try {
+                // Remove the "0x" prefix if it exists
+                const cleanedHexString = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
+
+                // Parse the hexadecimal string as a BigInt to handle large numbers
+                const decimalValue = BigInt('0x' + cleanedHexString);
+                return decimalValue.toString();
+            } catch (error) {
+                console.error('Error converting hex to decimal:', error);
+                return 'Invalid Hex'; // Or handle the error as needed
+            }
+        },
     },
     created() {
         this.$ga.page('/insight/block')
