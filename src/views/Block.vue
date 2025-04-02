@@ -69,7 +69,7 @@
                             >{{txs.length}} {{txs.length>1?'transactions': 'transaction'}}</b-button>
                         </b-col>
                     </b-row>
-                    <hr />
+                    <hr v-if="block.baseFeePerGas" />
                     <b-row v-if="block.baseFeePerGas">
                         <b-col lg="2">
                             <strong>Base Fee</strong>

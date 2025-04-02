@@ -106,7 +106,7 @@
                                 <sup v-if="tx.gasPriceCoef">price coef {{tx.gasPriceCoef}}</sup>
                             </b-col>
                         </b-row>
-                        <hr />
+                        <hr v-if="tx.maxFeePerGas" />
                         <b-row v-if="tx.maxFeePerGas">
                             <b-col lg="2">
                                 <strong>Max Fee Per Gas</strong>
@@ -115,13 +115,13 @@
                                 <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxFeePerGas}}</Amount>
                             </b-col>
                         </b-row>
-                        <hr />
+                        <hr v-if="tx.maxPriorityFeePerGas" />
                         <b-row v-if="tx.maxPriorityFeePerGas">
                             <b-col lg="2">
                                 <strong>Max Priority Fee Per Gas</strong>
                             </b-col>
                             <b-col lg="10">
-                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxPriorityFeePerGas}}</Amount>
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.ma}}</Amount>
                             </b-col>
                         </b-row>
                         <hr />
