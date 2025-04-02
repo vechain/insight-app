@@ -121,7 +121,7 @@
                                 <strong>Max Priority Fee Per Gas</strong>
                             </b-col>
                             <b-col lg="10">
-                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.ma}}</Amount>
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxPriorityFeePerGas}}</Amount>
                             </b-col>
                         </b-row>
                         <hr />
