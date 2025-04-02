@@ -1,13 +1,12 @@
 import Connex from "@vechain/connex/esm";
 
-
 export const soloUrlNode = () => {
-    //Used to support docker runtime env variables. This string is overrided on container startup using the injected env 
-    if(process.env.VUE_APP_IS_DOCKER) {
-        const soloUrlPlaceholder = 'VUE_APP_SOLO_URL_PLACEHOLDER';
-        return soloUrlPlaceholder;
-    }
-    return process.env.VUE_APP_SOLO_URL;
+  //Used to support docker runtime env variables. This string is overrided on container startup using the injected env 
+  if(process.env.VUE_APP_IS_DOCKER) {
+      const soloUrlPlaceholder = 'VUE_APP_SOLO_URL_PLACEHOLDER';
+      return soloUrlPlaceholder;
+  }
+  return process.env.VUE_APP_SOLO_URL;
 }
 
 export const isSoloNode = !!soloUrlNode();

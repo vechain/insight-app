@@ -103,7 +103,25 @@
                             </b-col>
                             <b-col lg="10">
                                 {{receipt.gasUsed | locale}} / {{tx.gas | locale}}
-                                <sup>price coef {{tx.gasPriceCoef}}</sup>
+                                <sup v-if="tx.gasPriceCoef">price coef {{tx.gasPriceCoef}}</sup>
+                            </b-col>
+                        </b-row>
+                        <hr />
+                        <b-row v-if="tx.maxFeePerGas">
+                            <b-col lg="2">
+                                <strong>Max Fee Per Gas</strong>
+                            </b-col>
+                            <b-col lg="10">
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxFeePerGas}}</Amount>
+                            </b-col>
+                        </b-row>
+                        <hr />
+                        <b-row v-if="tx.maxPriorityFeePerGas">
+                            <b-col lg="2">
+                                <strong>Max Priority Fee Per Gas</strong>
+                            </b-col>
+                            <b-col lg="10">
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxPriorityFeePerGas}}</Amount>
                             </b-col>
                         </b-row>
                         <hr />
