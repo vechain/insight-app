@@ -108,8 +108,8 @@ module "ecs-backend-service-insights" {
   cpu                        = local.env.cpu
   memory                     = local.env.memory
   cidr                       = local.env.vpc_cidr
-  container_port             = 8002
-  https_tg_port              = 8002
+  container_port             = 8001
+  https_tg_port              = 8001
   certificate_arn            = "arn:aws:acm:eu-west-1:891377394468:certificate/7da6ac4f-16c4-4c65-b7b8-ad98a8bc2bdb"
   ecs_sg                     = [module.ecs-sg.security_group_id]
   rule_0_path_pattern        = ["/*"]
