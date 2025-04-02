@@ -112,7 +112,7 @@
                                 <strong>Max Fee Per Gas</strong>
                             </b-col>
                             <b-col lg="10">
-                                {{ convertHexToDecimal(tx.maxFeePerGas) | locale }}
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxFeePerGas}}</Amount>
                             </b-col>
                         </b-row>
                         <hr />
@@ -121,7 +121,7 @@
                                 <strong>Max Priority Fee Per Gas</strong>
                             </b-col>
                             <b-col lg="10">
-                                {{ convertHexToDecimal(tx.maxPriorityFeePerGas) | locale }}
+                                <Amount  class="mr-2" sym="VTHO" :dec="18">{{tx.maxPriorityFeePerGas}}</Amount>
                             </b-col>
                         </b-row>
                         <hr />
@@ -276,22 +276,6 @@ export default Vue.extend({
                 if (receipt) { this.receipt = receipt }
             } catch (err) {
                 this.error = err as Error
-            }
-        },
-        convertHexToDecimal(hexString) {
-            if (!hexString) {
-                return 'N/A'; // Or whatever default you want
-            }
-            try {
-                // Remove the "0x" prefix if it exists
-                const cleanedHexString = hexString.startsWith('0x') ? hexString.slice(2) : hexString;
-
-                // Parse the hexadecimal string as a BigInt to handle large numbers
-                const decimalValue = BigInt('0x' + cleanedHexString);
-                return decimalValue.toString();
-            } catch (error) {
-                console.error('Error converting hex to decimal:', error);
-                return 'Invalid Hex'; // Or handle the error as needed
             }
         }
     },
