@@ -1,0 +1,63 @@
+name: Deploy service in new environment
+on:
+  workflow_call:
+    inputs:
+      service-name:
+        required: true
+        type: string
+      task-definition:
+        required: true
+        type: string
+      image-name:
+        required: true
+        type: string
+      container-name:
+        required: true
+        type: string
+      tag:
+        required: true
+        type: string
+      environment:
+        required: true
+        type: string
+        default: 'dev'
+
+permissions:
+  id-token: write   # This is required for requesting the JWT
+  contents: read    # This is required for actions/checkout
+
+jobs:
+  deploy-prod:
+    name: Deploy
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ACC_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
+  
+      - name: Download task definition
+        run: |
+          aws ecs describe-task-definition --task-definition ${{ inputs.task-definition }} --query taskDefinition > task-definition.json
+          cat task-definition.json     
+      - name: update the  new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+         task-definition: task-definition.json
+         container-name: ${{ inputs.container-name }}
+         image: ${{ vars.ECR_REPO_URL }}/${{ inputs.image-name }}:${{ inputs.tag }}
+
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+        with:
+         task-definition: ${{ steps.task-def.outputs.task-definition }}
+         service: ${{ inputs.service-name }}
+         cluster: ${{ vars.ECS_CLUSTER_NAME }}
+         wait-for-service-stability: true

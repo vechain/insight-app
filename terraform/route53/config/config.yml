@@ -1,0 +1,5 @@
+region: eu-west-1
+project: insight
+app_name: explorer
+environment: prod
+vpc_id: vpc-09a1702508635ac94
