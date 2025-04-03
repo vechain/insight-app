@@ -1,24 +1,16 @@
 <template>
     <div class="app">
-        <b-alert
-            v-model="$state.updateAvailable"
-            variant="primary"
-            class="py-1 rounded-0 m-0"
-        >
+        <b-alert v-model="$state.updateAvailable" variant="primary" class="py-1 rounded-0 m-0">
             New content available,
-            <a
-                href="#"
-                @click="forceReload"
-            >reload</a> to upgrade
+            <a href="#" @click="forceReload">reload</a> to upgrade
         </b-alert>
         <router-view key="frame" />
     </div>
 </template>
 <script lang="ts">
-
 import Vue from 'vue'
-import { genesisIdToNetwork } from "./utils"
-import { createConnex } from "./create-connex"
+import { genesisIdToNetwork } from './utils'
+import { createConnex } from './create-connex'
 
 export default Vue.extend({
     methods: {
@@ -31,8 +23,20 @@ export default Vue.extend({
                 })
                 return
             }
+            // Recreate Connex instance when network changes
             if (this.$route.params.net !== this.$net) {
-                window.location.reload()
+                const net = this.$route.params.net as 'main' | 'test' | 'solo' | 'galactica'
+                const connex = createConnex(net)
+                Vue.prototype.$connex = connex
+                Vue.prototype.$net = genesisIdToNetwork(connex.thor.genesis.id)
+                this.$state.chainStatus = this.$connex.thor.status
+                // Only reload if we're switching between main/test networks
+                if (
+                    ['main', 'test'].includes(this.$route.params.net) &&
+                    ['main', 'test'].includes(this.$net)
+                ) {
+                    window.location.reload()
+                }
             }
         },
         async fetchPrice() {
@@ -43,7 +47,7 @@ export default Vue.extend({
                 if (resp.status === 200) {
                     const json = await resp.json()
                     const vet = json.vechain.usd as number
-                    const vtho = json["vethor-token"].usd as number
+                    const vtho = json['vethor-token'].usd as number
                     return { vet, vtho }
                 }
             } catch (err) {
@@ -54,51 +58,50 @@ export default Vue.extend({
         },
         forceReload() {
             window.location.reload()
-        }
+        },
     },
     watch: {
         '$route.path'() {
             this.routed()
-        }
+        },
     },
     created() {
-        let net = this.$route.params.net as "main" | "test" | "solo" | undefined
-        if (!["main", "test", "solo"].includes(net!)) {
+        let net = this.$route.params.net as 'main' | 'test' | 'solo' | 'galactica' | undefined
+        if (!['main', 'test', 'solo', 'galactica'].includes(net!)) {
             net = undefined
         }
 
         const connex = createConnex(net)
         Vue.prototype.$connex = connex
         Vue.prototype.$net = genesisIdToNetwork(connex.thor.genesis.id)
-        if (!["main", "test", "solo"].includes(Vue.prototype.$net)) {
+        if (!['main', 'test', 'solo', 'galactica'].includes(Vue.prototype.$net)) {
             Vue.prototype.$net = undefined
         }
-
 
         this.routed()
 
         this.$state.chainStatus = this.$connex.thor.status
         void (async () => {
             const ticker = this.$connex.thor.ticker()
-            for (; ;) {
+            for (;;) {
                 await ticker.next()
                 this.$state.chainStatus = this.$connex.thor.status
             }
         })()
 
-        if (this.$net === "main") {
-            (async () => {
-                for (; ;) {
+        if (this.$net === 'main') {
+            ;(async () => {
+                for (;;) {
                     const p = await this.fetchPrice()
                     if (p) {
                         this.$state.price = p
                     }
-                    await new Promise((resolve) => {
+                    await new Promise(resolve => {
                         setTimeout(resolve, 5 * 60 * 1000)
                     })
                 }
             })()
         }
-    }
+    },
 })
 </script>

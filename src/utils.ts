@@ -6,6 +6,8 @@ export function genesisIdToNetwork(id: string) {
       return "test";
     case "0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6":
       return "solo";
+    case "0x000000005639ad3ce1665a037d4da0f65f1dc32460c0e2a566b906893f6fe5e4":
+      return "galactica";
     default:
       return "custom";
   }
@@ -19,6 +21,8 @@ export function networkToGenesisId(net: string) {
       return "0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127";
     case "solo":
       return "0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6";
+    case "galactica":
+      return "0x000000005639ad3ce1665a037d4da0f65f1dc32460c0e2a566b906893f6fe5e4";
     default:
       return "";
   }
