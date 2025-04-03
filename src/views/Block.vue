@@ -69,15 +69,6 @@
                             >{{txs.length}} {{txs.length>1?'transactions': 'transaction'}}</b-button>
                         </b-col>
                     </b-row>
-                    <hr v-if="block.baseFeePerGas" />
-                    <b-row v-if="block.baseFeePerGas">
-                        <b-col lg="2">
-                            <strong>Base Fee</strong>
-                        </b-col>
-                        <b-col lg="10">
-                            <Amount  class="mr-2" sym="VTHO" :dec="18">{{block.baseFeePerGas}}</Amount>
-                        </b-col>
-                    </b-row>
                     <b-collapse
                         v-if="txs.length"
                         id="txs"
@@ -99,8 +90,17 @@
                             </li>
                         </ol>
                     </b-collapse>
-                    <hr />
 
+                    <hr v-if="block.baseFeePerGas" />
+                    <b-row v-if="block.baseFeePerGas">
+                        <b-col lg="2">
+                            <strong>Base Fee</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <Amount  class="mr-2" sym="VTHO" :dec="18">{{block.baseFeePerGas}}</Amount>
+                        </b-col>
+                    </b-row>
+                    <hr />
                     <b-row>
                         <b-col lg="2">
                             <strong>Parent</strong>
