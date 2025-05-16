@@ -90,16 +90,6 @@
                             </li>
                         </ol>
                     </b-collapse>
-
-                    <hr v-if="block.baseFeePerGas" />
-                    <b-row v-if="block.baseFeePerGas">
-                        <b-col lg="2">
-                            <strong>Base Fee</strong>
-                        </b-col>
-                        <b-col lg="10">
-                            <Amount  class="mr-2" sym="VTHO" :dec="18">{{block.baseFeePerGas}}</Amount>
-                        </b-col>
-                    </b-row>
                     <hr />
                     <b-row>
                         <b-col lg="2">
@@ -115,6 +105,15 @@
                                 :to="{name:'block', params: {id: block.parentID, net:$net}}"
                             >#{{block.number-1}}</router-link>
                             <span v-else>N/A</span>
+                        </b-col>
+                    </b-row>
+                    <hr v-if="block.baseFeePerGas" />
+                    <b-row v-if="block.baseFeePerGas">
+                        <b-col lg="2">
+                            <strong>Base Fee</strong>
+                        </b-col>
+                        <b-col lg="10">
+                            <Fee class="mr-2"">{{block.baseFeePerGas}}</Fee>
                         </b-col>
                     </b-row>
                     <hr />
