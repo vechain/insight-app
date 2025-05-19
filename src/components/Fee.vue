@@ -5,7 +5,7 @@
     >
         {{pretty}}
         <span
-            class="text-secondary small ml-1"
+            class="text-secondary small"
             style="white-space: pre"
         >Gwei</span>
     </span>
