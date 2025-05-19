@@ -258,11 +258,38 @@ import Vue from 'vue'
 import BigNumber from 'bignumber.js'
 import { genesisIdToGalacticaNumber } from '@/utils'
 
+type Transaction = {
+    id: string
+    type: 0|81
+    chainTag: number
+    blockRef: string
+    expiration: number
+    clauses: Array<{
+        to: string | null
+        value: string
+        data: string
+    }>
+    gasPriceCoef?: number
+    maxPriorityFeePerGas?: string
+    maxFeePerGas?: string
+    gas: number
+    origin: string
+    delegator?: string | null
+    nonce: string
+    dependsOn: string | null
+    size: number
+    meta: {
+        blockID: string
+        blockNumber: number
+        blockTimestamp: number
+    }
+}
+
 export default Vue.extend({
     data: () => {
         return {
             error: null as Error | null,
-            tx: null as Connex.Thor.Transaction | null,
+            tx: null as Transaction | null,
             receipt: null as Connex.Thor.Transaction.Receipt | null,
             id: '',
             isFeeMarketActivated: false,
@@ -302,7 +329,7 @@ export default Vue.extend({
                     tv.getReceipt()
                 ])
 
-                if (tx) { this.tx = tx } else { this.error = new Error('not found') }
+                if (tx) { this.tx = tx as Transaction } else { this.error = new Error('not found') }
                 if (receipt) { this.receipt = receipt }
 
                 await this.updateIsFeeMarketActivated()
