@@ -56,6 +56,23 @@
                     <hr />
                     <b-row>
                         <b-col lg="2">
+                            <strong>Parent</strong>
+                        </b-col>
+                        <b-col
+                            lg="10"
+                            class="text-truncate"
+                        >
+                            <router-link
+                                v-if="block.number>0"
+                                class="text-monospace"
+                                :to="{name:'block', params: {id: block.parentID, net:$net}}"
+                            >#{{block.number-1}}</router-link>
+                            <span v-else>N/A</span>
+                        </b-col>
+                    </b-row>
+                    <hr />
+                    <b-row>
+                        <b-col lg="2">
                             <strong>Gas Used</strong>
                         </b-col>
                         <b-col lg="10">
@@ -91,32 +108,17 @@
                         </ol>
                     </b-collapse>
                     <hr />
-                    <b-row>
-                        <b-col lg="2">
-                            <strong>Parent</strong>
-                        </b-col>
-                        <b-col
-                            lg="10"
-                            class="text-truncate"
-                        >
-                            <router-link
-                                v-if="block.number>0"
-                                class="text-monospace"
-                                :to="{name:'block', params: {id: block.parentID, net:$net}}"
-                            >#{{block.number-1}}</router-link>
-                            <span v-else>N/A</span>
-                        </b-col>
-                    </b-row>
-                    <hr v-if="block.baseFeePerGas" />
-                    <b-row v-if="block.baseFeePerGas">
-                        <b-col lg="2">
-                            <strong>Base Fee</strong>
-                        </b-col>
-                        <b-col lg="10">
-                            <Fee class="mr-2"">{{block.baseFeePerGas}}</Fee>
-                        </b-col>
-                    </b-row>
-                    <hr />
+                    <template v-if="block.baseFeePerGas">
+                        <b-row>
+                            <b-col lg="2">
+                                <strong>Base Fee</strong>
+                            </b-col>
+                            <b-col lg="10">
+                                <Fee class="mr-2" sym="VTHO">{{block.baseFeePerGas}}</Fee>
+                            </b-col>
+                        </b-row>
+                        <hr />
+                    </template>
                     <b-row>
                         <b-col lg="2">
                             <strong>Total Score</strong>
