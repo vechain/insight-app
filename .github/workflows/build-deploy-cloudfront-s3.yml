@@ -54,8 +54,10 @@ jobs:
       - name: Determine AWS account ID and role
         id: determine-account
         # For any account requiring insights depoyment, configure OIDC authentication in that account and update this step accordingly
+        env:
+          ACCOUNT: ${{ inputs.account }}
         run: |
-            case ${{ inputs.account }} in
+            case $ACCOUNT in
               b3tr-dev)
                 echo "role_arn=${{ secrets.B3TR_DEV_AWS_ACC_ROLE }}" >> $GITHUB_OUTPUT
                 ;;
