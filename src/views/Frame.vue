@@ -159,6 +159,7 @@ export default Vue.extend({
                 case 'main': return 'MainNet'
                 case 'test': return 'TestNet'
                 case 'solo': return 'SoloNet'
+                default: return ''
             }
         },
         networks(): Array<{ name: string, label: string, href: string }> {

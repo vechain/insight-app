@@ -30,7 +30,6 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { abi } from 'thor-devkit'
 
 interface TabItem {
     title: string

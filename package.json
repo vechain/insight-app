@@ -3,19 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build --report",
-    "lint": "vue-cli-service lint"
+    "serve": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .ts,.vue"
   },
   "dependencies": {
-    "@vechain/connex": "^2.2.0",
+    "@vechain/connex": "2.3.2",
     "@vechain/picasso": "^2.1.0",
     "bignumber.js": "^8.0.1",
     "bootstrap": "^4.5.3",
     "bootstrap-vue": "^2.19.0",
     "chart.js": "^2.9.3",
     "register-service-worker": "^1.5.2",
-    "thor-devkit": "^2.0.5",
+    "thor-devkit": "2.2.0",
     "timeago.js": "^4.0.0-beta.1",
     "vue": "^2.7.14",
     "vue-analytics": "^5.16.2",
@@ -23,16 +24,23 @@
     "vue-clipboard2": "^0.3.1",
     "vue-router": "^3.0.1"
   },
+  "resolutions": {
+    "readable-stream": "^3.6.2"
+  },
   "devDependencies": {
     "@types/chart.js": "^2.7.56",
-    "@types/node": "^16.18.69",
-    "@vue/cli-plugin-pwa": "^3.2.0",
-    "@vue/cli-plugin-typescript": "^3.2.0",
-    "@vue/cli-service": "^3.12.1",
-    "sass": "^1.54.5",
-    "sass-loader": "^7.0.1",
-    "svg-sprite-loader": "^4.1.3",
-    "typescript": "^5.3.3",
-    "vue-template-compiler": "^2.6.11"
+    "@types/node": "22.19.15",
+    "@typescript-eslint/eslint-plugin": "6",
+    "@typescript-eslint/parser": "6",
+    "@vitejs/plugin-vue2": "^2.3.4",
+    "eslint": "8",
+    "eslint-plugin-vue": "9",
+    "fast-glob": "^3.3.3",
+    "sass": "^1.98.0",
+    "typescript": "5.7.3",
+    "vite": "7.3.1",
+    "vite-plugin-node-polyfills": "^0.25.0",
+    "vite-plugin-pwa": "^1.2.0",
+    "vite-plugin-svg-icons": "^2.0.1"
   }
 }

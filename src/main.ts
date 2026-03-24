@@ -1,3 +1,4 @@
+import 'virtual:svg-icons-register'
 import { register } from 'register-service-worker'
 
 /* tslint:disable:no-console */
