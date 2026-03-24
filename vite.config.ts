@@ -53,6 +53,8 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.resolve(__dirname, 'src'),
+            // picasso's esm/index.js incorrectly uses require() — force CJS entry
+            '@vechain/picasso': path.resolve(__dirname, 'node_modules/@vechain/picasso/dist/index.js'),
         },
     },
     define: {
