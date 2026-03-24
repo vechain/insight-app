@@ -14,6 +14,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
+import logoUrl from '../assets/vechainstats-logo.png'
 
 export default Vue.extend({
     props: {
@@ -24,7 +25,7 @@ export default Vue.extend({
             return `https://vechainstats.com/account/${this.address}/`
         },
         iconURL(): string {
-            return require('../assets/vechainstats-logo.png')
+            return logoUrl
         }
     }
 })

@@ -12,7 +12,8 @@
         "sourceMap": true,
         "baseUrl": ".",
         "types": [
-            "webpack-env",
+            "vite/client",
+            "vite-plugin-svg-icons/client",
             "@vechain/connex-types",
             "@types/node"
         ],
@@ -31,6 +32,7 @@
             "scripthost"
         ],
         "outDir": "./dist",
+        "skipLibCheck": true,
     },
     "include": [
         "src/**/*.ts",
