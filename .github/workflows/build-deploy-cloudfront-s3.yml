@@ -27,14 +27,13 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}-deploy-fe
   cancel-in-progress: true
 
-# Required for authentication through GitHub OIDC
-permissions:
-  id-token: write # This is required for requesting the JWT
-  contents: read # This is required for actions/checkout
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    # Required for authentication through GitHub OIDC
+    permissions:
+      id-token: write # This is required for requesting the JWT
+      contents: read # This is required for actions/checkout
 
     steps:
       - name: Checkout
@@ -66,7 +65,7 @@ jobs:
             esac
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@7474bc4690e29a8392af63c5b98e7449536d5c3a # v4
         with:
             aws-region: eu-west-1
             role-to-assume: ${{ steps.determine-account.outputs.role_arn }}
@@ -76,4 +75,6 @@ jobs:
 
       - name: Cloudfront Invalidation
         run: |
-          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${{ inputs.cloudfront_distribution_id }} --paths '/' '/*'
+          AWS_MAX_ATTEMPTS=10 aws cloudfront create-invalidation --distribution-id ${INPUTS_CLOUDFRONT_DISTRIBUTION_ID} --paths '/' '/*'
+        env:
+          INPUTS_CLOUDFRONT_DISTRIBUTION_ID: ${{ inputs.cloudfront_distribution_id }}
