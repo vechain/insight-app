@@ -6,6 +6,37 @@
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel="icon" href="/favicon.ico">
     <title>Insight - VeChain Explorer</title>
+    <script>
+      // Chrome < 71 has no globalThis. Affects both our bundle and third-party
+      // scripts (e.g. Google Analytics) that are not processed by Vite.
+      if (typeof globalThis === 'undefined') { window.globalThis = window }
+
+      // Chrome < 67 has no BigInt. Provide a minimal shim so the legacy bundle
+      // can initialise, then block the plugin-legacy modern-browser flag so the
+      // legacy bundle (not the ES-module bundle) is actually loaded.
+      if (typeof BigInt === 'undefined') {
+        window.BigInt = function BigInt(v) {
+          if (typeof v === 'number') return v
+          if (typeof v === 'string') {
+            var s = v.trim()
+            return (s.startsWith('0x') || s.startsWith('-0x'))
+              ? parseInt(s, 16)
+              : parseInt(s, 10)
+          }
+          return Number(v)
+        }
+        window.BigInt.asUintN = function(w, v) { return v >>> 0 }
+        window.BigInt.asIntN  = function(w, v) { return v | 0 }
+
+        // Prevent @vitejs/plugin-legacy's detection script from marking this
+        // browser as "modern", so it falls through to the nomodule legacy bundle.
+        Object.defineProperty(window, '__vite_is_modern_browser', {
+          configurable: true,
+          get: function() { return false },
+          set: function() {}
+        })
+      }
+    </script>
   </head>
   <body>
     <noscript>

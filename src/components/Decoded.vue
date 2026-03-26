@@ -71,12 +71,12 @@
 </template>
 <script lang="ts">
 import Vue from 'vue'
-import { abi } from 'thor-devkit'
+import { abi, FunctionDef, EventDef } from '@/utils/abi'
 
 type Decoded = {
-    def: abi.Function.Definition | abi.Event.Definition
+    def: FunctionDef | EventDef
     canonicalName: string
-    params: Array<{ name: string, type: string, value: string, indexed?: boolean }>
+    params: Array<{ name: string; type: string; value: unknown; indexed?: boolean }>
 }
 
 export default Vue.extend({
@@ -90,7 +90,7 @@ export default Vue.extend({
         async decoded(): Promise<Decoded | null> {
             const val = this.value
             const sig = val.topics ? val.topics[0] : val.data.slice(0, 10)
-            let defs: Array<abi.Function.Definition | abi.Event.Definition> | undefined = abiCache.get(sig)
+            let defs: Array<FunctionDef | EventDef> | undefined = abiCache.get(sig)
             if (!defs) {
                 defs = await queryABI(sig)
                 abiCache.set(sig, defs)
@@ -103,29 +103,25 @@ export default Vue.extend({
                         const dec = ev.decode(val.data, val.topics!)
                         return {
                             def,
-                            params: def.inputs.map((p, i) => {
-                                return {
-                                    name: p.name,
-                                    type: p.type,
-                                    value: dec[i],
-                                    indexed: p.indexed
-                                }
-                            }),
-                            canonicalName: ev.canonicalName
+                            canonicalName: ev.canonicalName,
+                            params: def.inputs.map((p, i) => ({
+                                name: p.name,
+                                type: p.type,
+                                value: dec[i],
+                                indexed: p.indexed
+                            }))
                         }
                     } else {
-                        const fn = new abi.Function(def)
+                        const fn = new abi.Function(def as FunctionDef)
                         const dec = abi.decodeParameters(def.inputs, '0x' + val.data.slice(10))
                         return {
                             def,
-                            params: def.inputs.map((p, i) => {
-                                return {
-                                    name: p.name,
-                                    type: p.type,
-                                    value: dec[i]
-                                }
-                            }),
-                            canonicalName: fn.canonicalName
+                            canonicalName: fn.canonicalName,
+                            params: def.inputs.map((p, i) => ({
+                                name: p.name,
+                                type: p.type,
+                                value: dec[i]
+                            }))
                         }
                     }
                 } catch {
