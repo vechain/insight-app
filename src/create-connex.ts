@@ -19,11 +19,11 @@ export const nodeUrls = {
 
 const soloGenesis = {
   number: 0,
-  id: "0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6",
-  size: 170,
+  id: "0x00000000bb55405beed90df9fea5acdb1cb7caba61b0d7513395f42efd30e558",
+  size: 180,
   parentID:
-    "0xffffffff53616c757465202620526573706563742c20457468657265756d2100",
-  timestamp: 1530316800,
+    "0xffffffff00000000000000000000000000000000000000000000000000000000",
+  timestamp: 1526400000,
   gasLimit: 10000000,
   beneficiary: "0x0000000000000000000000000000000000000000",
   gasUsed: 0,
@@ -31,7 +31,7 @@ const soloGenesis = {
   txsRoot: "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
   txsFeatures: 0,
   stateRoot:
-    "0x93de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550",
+    "0xe27acf5fa834d6f148b2eba3ad3d7d51d0a31f2c185a4a2cddf7a37e26a5a8e4",
   receiptsRoot:
     "0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0",
   signer: "0x0000000000000000000000000000000000000000",
